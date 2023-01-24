@@ -86,7 +86,7 @@ Hello NodeJS
 
 `npm i express` 입력 후 기다리면 `mode_modules/`, `package-lock.json`이 생성된다.
 
-package.json / dependencies 에 있는 패키지들은 express를 구동하기 위해 필요한 패키지들이다. express를 설치 할 때 자동으로 설치된다.
+package.json / dependencies 에 있는 것들은 <strong style="color: pink">프로젝트를 구동시키는데 필요한 모듈들이다.</strong> 설치 할 때 자동으로 설치된다.
 
 npm이 package.json 파일에 해당 내용을 자동으로 추가한다
 
@@ -95,3 +95,21 @@ npm이 package.json 파일에 해당 내용을 자동으로 추가한다
    "express": "^4.18.2"
  }
 ```
+
+node_modules 파일과 package-lock.json 파일을 삭제하여도 `npm i` 만 입력해도 재설치된다.
+
+```javascript
+$ npm i /* dependencies에 작성된 모듈을 자동으로 다운로드 한다. */
+
+
+added 57 packages, and audited 58 packages in 631ms
+
+7 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+해당 기능 덕분에 node_modules를 공유하지 않아도 `package.json`과 `index.js`만 공유하면
+
+프로젝트를 공유 할 수 있다.

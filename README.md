@@ -54,30 +54,37 @@ About to write to /Users/hansan/Documents/GitHub/wetube/package.json: /* 파일 
 `index.js` 파일에 `console.log("Hello NodeJS");` 를 추가한다.  
 `package.json` 파일에 `scripts "scripts": { "win": "node index.js" }` 를 추가한다.  
 <br>
-1번: node를 사용한 방법
 
-`node index.js`
+### 1번: node를 사용한 방법
 
 ```
+$ node index.js
+
+
 Hello NodeJS
 ```
 
 <br>
-2번: npm을 사용해 package에서 명령어를 실행하기
 
-`npm run win`
+### 2번: npm을 사용해 package에서 명령어를 실행하기
 
 ```
+$ npm run win
+
+
 > wetube@1.0.0 win
 > node index.js
+
+Hello NodeJS
 ```
 
 프로젝트 폴더 안 콘솔에서 내가 만든 스크립트를 사용 할 수 있다.
 
 <br>
-설치하기
 
-`npm i express` 입력 후 기다리면 mode_modules/, package-lock.json이 생성된다.
+## 설치하기
+
+`npm i express` 입력 후 기다리면 `mode_modules/`, `package-lock.json`이 생성된다.
 
 package.json / dependencies 에 있는 패키지들은 express를 구동하기 위해 필요한 패키지들이다. express를 설치 할 때 자동으로 설치된다.
 

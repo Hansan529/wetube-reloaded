@@ -113,3 +113,40 @@ found 0 vulnerabilities
 해당 기능 덕분에 node_modules를 공유하지 않아도 `package.json`과 `index.js`만 공유하면
 
 프로젝트를 공유 할 수 있다.
+
+<br>
+
+## The Tower of Babel
+
+최신 자바스크립트를 다른 곳에서도 충돌 없이 원활하게 작동하기 위해 설치해준다.
+
+```
+$ npm install --save-dev @babel/core
+```
+
+설치하게 되면 package.json 파일에 "devDependencies" 과 같은 태그에 작성되있는 것을 확인 할 수 있다.
+
+devDependencies는 개발자에게 필요한 dependencies라고 알면 된다.
+
+dependencies는 프로젝트에 필요한 모듈이고, devDependencies는 개발자에 필요한 모듈이다.
+
+`--save-dev`는 devDependencies 텍스트 안에 넣게 해주는 옵션이다.
+
+<br>
+
+bable을 사용하기 위한 세팅
+
+```js
+babel.config.json /* 파일 이름 */
+
+
+{
+  "presets": ["@babel/preset-env"] /* 최신 자바스크립트를 사용 할 수 있음 */
+}
+```
+
+```js
+$ npm install @babel/preset-env --save-dev /* preset-env를 모듈에 추가함 (플러그인) */
+```
+
+devDependencies에 preset을 추가한다.

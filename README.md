@@ -116,7 +116,7 @@ found 0 vulnerabilities
 
 <br>
 
-## The Tower of Babel
+## #2.3 The Tower of Babel
 
 최신 자바스크립트를 다른 곳에서도 충돌 없이 원활하게 작동하기 위해 설치해준다.
 
@@ -164,7 +164,11 @@ devDependencies에 preset, node을 추가한다.
 
 자동으로 최신 자바스크립트를 변환해주는 스크립트이다. 이름은 임의로 지정하고 `babel-node`를 이용하여 변환시킨 뒤 실행한다.
 
-하지만 수정 할 때 마다 이를 반복해서 실행해주어야 하기 때문에, 수정되는걸 자동으로 감지하고 재시작 해 주는 편리한 유틸리티이다.
+하지만 수정 할 때 마다 이를 반복해서 실행해주어야 하기 때문에, 수정되는걸 자동으로 감지하고 재시작 해 주는 편리한 유틸리티를 사용해보자.
+
+<br>
+
+## #2.4 Nodemon
 
 ```json
 // 적용한 나의 package.json
@@ -241,7 +245,7 @@ node로 실행하는 게 아닌, babel-node로 실행하고 있는 결과이다.
 
 <br>
 
-## First Server
+## #3.0 First Server
 
 src 폴더를 생성한 후, 코드와 로직을 가지고 있는 파일을 넣어준다.
 
@@ -279,3 +283,36 @@ app.listen(
 로컬 서버 바로가기 <http://localhost:4000/>
 
 서버는 nodemon을 종료하면 종료된다.
+
+<br>
+
+## #3.1 ~ 3.2 GET Requests
+
+서버에 접속하면 `Cannot GET /`라는 텍스트가 보인다. 이는 브라우저가 서버에게 GET (http mathod) requests를 보내고 있는 것이다.
+
+이 요청을 반응하기 위해서
+
+```js
+const app = express();
+// 서버 생성 이후
+
+("해당 위치에 작성한다");
+app.get("/", () => console.log("somebody is trying to go home."));
+// button.addEvenListener("click", handleClick) 와 같은 맥락이다.
+
+// 외부 접속을 listen 하기 전
+const handleListening = () =>
+  console.log(`Server listening on port http://localhost:${PORT} 🚀`);
+
+app.listen(PORT, handleListening);
+```
+
+먼저 app.get으로 "/"를 request 받으면 console.log를 반응하게 만들었다.
+
+서버에 접속한 후, 새로고침을 해보면 페이지가 계속 로딩되면서 페이지를 불러 올 수 없을 것이다.
+
+다른 주소를 입력할 경우 <http://localhost:4000/abcdefg> 대기 시간 없이 바로바로 페이지가 로딩되는 것을 알 수 있다.
+
+/ 페이지(home)에 접속하면 서버에서는 console.log의 내용을 출력한 것을 확인 할 수 있다.
+
+`somebody is tring to go home.` 홈페이지를 보면 계속해서 로딩한다. 하지만 처리는 진행했고 응답을 안하고 있는 것이다.

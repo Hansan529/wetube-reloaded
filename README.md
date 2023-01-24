@@ -147,6 +147,92 @@ babel.config.json /* 파일 이름 */
 
 ```js
 $ npm install @babel/preset-env --save-dev /* preset-env를 모듈에 추가함 (플러그인) */
+$ npm install @babel/node --save -dev /* node를 모듈에 추가함 */
+
+$ npm i @babel/preset-env @babel/node --save-dev /* 한 번에 두가지 설치하기 */
 ```
 
-devDependencies에 preset을 추가한다.
+devDependencies에 preset, node을 추가한다.
+
+<br>
+
+```js
+"scripts": {
+    "dev": "babel-node index.js"
+  }
+```
+
+자동으로 최신 자바스크립트를 변환해주는 스크립트이다. 이름은 임의로 지정하고 `babel-node`를 이용하여 변환시킨 뒤 실행한다.
+
+하지만 수정 할 때 마다 이를 반복해서 실행해주어야 하기 때문에, 수정되는걸 자동으로 감지하고 재시작 해 주는 편리한 유틸리티이다.
+
+```js
+nodemon --exec (npm run) babel-node -- path/to/script.js
+
+// 적용한 나의 package.json
+"scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  }
+
+// 필요한 dependencies
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.12",  /* 핵심 바벨 패키지 */
+    "@babel/node": "^7.20.7",   /* 변환 패키지 */
+    "@babel/preset-env": "^7.20.2", /* 플러그인 */
+    "nodemon": "^2.0.20"  /* 자동 재시작 패키지 */
+  }
+```
+
+`npm run dev`를 해보자.
+
+```js
+$ npm run dev
+
+> wetube@1.0.0 dev /* 이름@version script */
+> nodemon --exec babel-node index.js /* nodemon으로 babel-node의 index.js를 실행 */
+
+[nodemon] 2.0.20 /* nodemon Ver */
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `babel-node index.js`
+Hi!
+[nodemon] clean exit - waiting for changes before restart
+```
+
+nodemon을 활성화 한 경우에는 콘솔이 종료되지 않고 계속 유지된다. 이 상태에서 js의 코드를 수정하고 저장하게 되면
+
+변경 된 점을 자동으로 인식해서 재실행하여 결과를 보여준다.
+
+```js
+// index.js
+import express from "express";
+
+1. console.log("Hi");
+2. console.log("안녕");
+3. console.log("아주 좋아요");
+
+// Terminal
+[nodemon] starting `babel-node index.js`
+Hi
+[nodemon] clean exit - waiting for changes before restart
+[nodemon] restarting due to changes...
+[nodemon] starting `babel-node index.js`
+안녕
+[nodemon] clean exit - waiting for changes before restart
+[nodemon] restarting due to changes...
+[nodemon] starting `babel-node index.js`
+아주 좋아요
+[nodemon] clean exit - waiting for changes before restart
+```
+
+node로 실행하는 게 아닌, babel-node로 실행하고 있는 결과이다. 이 덕분에 최신 자바스크립트를 사용 할 수 있는 것이다.
+
+`node index.JS` : index.js를 NodeJS로 실행한다.
+
+`babel-node index.js` : 최신 자바스크립트가 호환되도록 babel-node로 index.js를 실행한다.
+
+`nodemon --exec babel-node index.js` : 매번 `$ npm run dev` 를 입력하기엔 번거로우니 이를 반복하는 nodemon을 통해 index.js를 실행한다.

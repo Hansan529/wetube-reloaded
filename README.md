@@ -145,7 +145,7 @@ babel.config.json /* 파일 이름 */
 }
 ```
 
-```js
+```
 $ npm install @babel/preset-env --save-dev /* preset-env를 모듈에 추가함 (플러그인) */
 $ npm install @babel/node --save -dev /* node를 모듈에 추가함 */
 
@@ -156,7 +156,7 @@ devDependencies에 preset, node을 추가한다.
 
 <br>
 
-```js
+```json
 "scripts": {
     "dev": "babel-node index.js"
   }
@@ -166,9 +166,7 @@ devDependencies에 preset, node을 추가한다.
 
 하지만 수정 할 때 마다 이를 반복해서 실행해주어야 하기 때문에, 수정되는걸 자동으로 감지하고 재시작 해 주는 편리한 유틸리티이다.
 
-```js
-nodemon --exec (npm run) babel-node -- path/to/script.js
-
+```json
 // 적용한 나의 package.json
 "scripts": {
     "dev": "nodemon --exec babel-node index.js"
@@ -188,7 +186,9 @@ nodemon --exec (npm run) babel-node -- path/to/script.js
 
 `npm run dev`를 해보자.
 
-```js
+<br>
+
+```
 $ npm run dev
 
 > wetube@1.0.0 dev /* 이름@version script */
@@ -206,6 +206,8 @@ Hi!
 nodemon을 활성화 한 경우에는 콘솔이 종료되지 않고 계속 유지된다. 이 상태에서 js의 코드를 수정하고 저장하게 되면
 
 변경 된 점을 자동으로 인식해서 재실행하여 결과를 보여준다.
+
+<br>
 
 ```js
 // index.js
@@ -236,3 +238,44 @@ node로 실행하는 게 아닌, babel-node로 실행하고 있는 결과이다.
 `babel-node index.js` : 최신 자바스크립트가 호환되도록 babel-node로 index.js를 실행한다.
 
 `nodemon --exec babel-node index.js` : 매번 `$ npm run dev` 를 입력하기엔 번거로우니 이를 반복하는 nodemon을 통해 index.js를 실행한다.
+
+<br>
+
+## First Server
+
+src 폴더를 생성한 후, 코드와 로직을 가지고 있는 파일을 넣어준다.
+
+index.js 파일의 위치가 변경되었으니, package.json 파일의 scripts 속 dev의 경로를 변경해준다. `"dev": "nodemon --exec babel-node src/server.js"`
+
+index.js의 이름을 server.js로 변경하였다.
+
+---
+
+js에 `import express from "express"` 코드를 작성해 "express"라는 package를 express라는 이름으로 import를 한다.
+
+```js
+import express from "express"; /* express 패키지를 불러온다. */
+
+const app =
+  express(); /* express function을 사용하면 express application을 생성해준다. */
+```
+
+<br>
+
+서버를 생성한 후 서버가 요청(request)을 할 때 까지 기다리는 listening에 대한 코드를 작성한다.
+
+```js
+const handleListening = () =>
+  console.log(
+    "Server listening on port 4000 🚀"
+  ); /* 해당 코드를 listen에 한 줄에 넣어도 정상 작동한다. */
+
+app.listen(
+  4000,
+  handleListening
+); /* 4000번의 포트, handleListening 함수를 실행한다. */
+```
+
+로컬 서버 바로가기 <http://localhost:4000/>
+
+서버는 nodemon을 종료하면 종료된다.

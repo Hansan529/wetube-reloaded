@@ -4,8 +4,16 @@ const PORT = 4000;
 
 const app = express();
 
-app.get("/", () => console.log("somebody is trying to go home."));
+const handleHome = (req, res) => {
+  return res.end();
+};
+const handleLogin = (req, res) => {
+  return res.send("Login here");
+};
+
+app.get("/", handleHome);
 // button.addEvenListener("click", handleClick);
+app.get("/login", handleLogin);
 
 const handleListening = () =>
   console.log(`Server listening on port http://localhost:${PORT} 🚀`);

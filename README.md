@@ -316,3 +316,58 @@ app.listen(PORT, handleListening);
 / 페이지(home)에 접속하면 서버에서는 console.log의 내용을 출력한 것을 확인 할 수 있다.
 
 `somebody is tring to go home.` 홈페이지를 보면 계속해서 로딩한다. 하지만 처리는 진행했고 응답을 안하고 있는 것이다.
+
+<br>
+
+## #3.3 Responses
+
+```js
+const handleHome = (req, res)
+=> console.log("somebody is trying to go home.");
+
+app.get("/", handleHome);
+```
+
+EventListener에겐 event가 있고, express에선 2개의 object가 있다. `request object`, `responses object`
+
+req, res 이름 대신 다른 이름을 사용해도 되지만 <strong>필수로 2가지를 모두 작성해주어야 한다.</strong> req 하나만 작성한다거나, res 하나만 작성하면 문제가 발생한다.
+
+&lt;&quot;req&quot;&gt; &nbsp;&nbsp; &lt;&quot;res&quot;&gt; 형식이다.
+
+req를 console.log를 해본다면 https://localhost:4000/ 페이지를 request 해본다면 매우 많은 값들을 콘솔에서 확인 할 수 있다
+
+```js
+// express 생략
+
+const handleHome = (req, res) => console.log(req);
+
+app.get("/", handleHome);
+```
+
+해당 결과값들이 request object이다.
+
+브라우저가 요청하는 것이고, 쿠키나 GET, method 등등 여러 정보들을 얻을 수 있다.
+
+```js
+// 생략
+
+const handleHome = (req, res) => console.log(res);
+```
+
+많은 정보들을 얻을 수 있다.
+
+<br>
+
+브라우저가 request를 보내면 우리는 응답을 해주어야 하기에 return을 사용한다.
+
+```js
+const handleHome = (req, res) => {
+  return res.end();
+};
+```
+
+다시 서버를 실행하고, localhost에 request를 요청하면, 브라우저가 로딩되던 이전과는 다르게 return하여 페이지를 불러오게된다. 해당 함수가 responses를 종료하여 서버가 request를 끝내버린 것이다,
+
+다른 방법으로도 request를 종료시킬 수 있다.
+
+`return res.send()` 이렇게 2가지가 있다.

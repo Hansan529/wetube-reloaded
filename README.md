@@ -371,3 +371,119 @@ const handleHome = (req, res) => {
 다른 방법으로도 request를 종료시킬 수 있다.
 
 `return res.send()` 이렇게 2가지가 있다.
+
+<br>
+
+## #3.5 Middlewares
+
+Middleware는 request와 response 사이에 있다. 모든 함수(handle)는 controller가 될 수도 mideeleware가 될수있다.
+
+```js
+import express from "express";
+
+const PORT = 4000;
+
+const app = express();
+
+const controllerHome = (req, res) => {
+  return res.end("<h1>HTML h1</h1>");
+};
+const controllerLogin = (req, res) => {
+  return res.send({ message: "Login here" });
+};
+
+app.get("/", controllerHome);
+app.get("/login", controllerLogin);
+
+const controllerListening = () =>
+  console.log(`Server listening on port http://localhost:${PORT} 🚀`);
+
+app.listen(PORT, controllerListening);
+```
+
+req와 res 말고도 한 가지 요소가 더 있다. (req, res, `next`) next라는 것이 있다. 다음을 불러오는 함수인데 <br><br>
+
+```js
+const controllerHome = (req, res, next) => {
+  next();
+};
+```
+
+이와 같이 변경하고 메인 루트로 이동해보면 "Cannot GET /" 라는 텍스트만 로딩된다.  
+왜냐하나면 다음 함수가 없기 때문에 불러 올 수 없는 것이다. <br><br>
+
+```js
+const gossipMiddleware = (req, res, next) => {
+  console.log("I'm in the middle");
+  next();
+};
+const controllerHome = (req, res, next) => {
+  return res.end();
+};
+app.get("/", gossipMiddleware, controllerHome);
+```
+
+서버 터미널에 "I'm in the middle" 이라는 텍스트와 next 함수로 controllerHome 함수를 실행해 return을 한 결과를 얻을 수 있다.
+
+gossipMiddleware 함수가 middleware가 되고, controllerHome 함수가 return을 하기 때문에 finalware가 된다.
+
+<br>
+
+```js
+const gossipMiddleware = (req, res, next) => {
+  console.log(`Someone is going to: ${req.url}`);
+  next();
+};
+```
+
+console: `Someone is going to: /`
+
+request의 정보를 가지고 전달해주는 것이라 middleware에서 req.url 값을 호출해보면 값을 유지하고 있는 것을 알 수 있다.
+
+<br>
+
+`gossipMiddleware`는 현재 "/" URL에서만 반응하는데, 어느 URL에도 작동하도록 만들어 주는 게 `.use` method이다.
+
+```js
+// use 순서는 get 보다 먼저 불러와야 한다.
+app.use(gossipMiddleware);
+
+// controllerHome => handleHome
+app.get("/", handleHome);
+```
+
+다른 경로로 req를 보내보면 cannot GET /@@@@ 가 표시되지만 터미널에는 해당 경로값을 볼 수 있다.
+
+하지만 이 순서를 반대로 지정하면 콘솔에는 아무런 정보도 없다.
+
+```js
+app.get("/", handleHome);
+app.use(gossipMiddleware);
+```
+
+request가 요청되어 handleHome을 실행하고, 그 후에 gossipMiddleware를 실행하도록 express는 지정을 했는데,
+
+handleHome에서 request를 종료시켰기에 gossipMiddleware가 실행되지 않는 것이다. + `req.method`를 호출하면 어떤 method로 호출 하는지 알 수 있다. 기본으로는 'GET'이다.
+
+<br>
+
+```js
+// gossipMiddleware
+const logger = (req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+};
+// 새로운 middleware
+const privateMiddleware = (req, res, next) => {
+  const url = req.url;
+  if (url === "/protected") {
+    return res.send("<h1>Not Allowed</h1>");
+  }
+  next();
+};
+
+app.use(logger, privateMiddleware);
+app.get("/", handleHome);
+```
+
+어떠한 경로를 요청하던지 logger와 privateMiddleware 함수는 실행되도록 하고, 만약 요청한 경로가 protected일 경우 Not Allowed를 html에 출력하고, 아닐 경우에는 next로 넘긴다.

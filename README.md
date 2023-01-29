@@ -487,3 +487,64 @@ app.get("/", handleHome);
 ```
 
 어떠한 경로를 요청하던지 logger와 privateMiddleware 함수는 실행되도록 하고, 만약 요청한 경로가 protected일 경우 Not Allowed를 html에 출력하고, 아닐 경우에는 next로 넘긴다.
+
+<br>
+
+## 정보, Recap
+
+.get은 function이 필요하다. `1+1`, `console.log("hi")`와 같은 것은 바로 실행하기 때문에 에러가 발생하고, 이 에러를 해결하기 위해서는
+
+별도의 function을 생성해서 불러오거나, `app.get("", () => console.log("hi"))`와 같이 inline function을 지정해주어야 에러가 사라진다.
+
+```js
+// 유지보수 차원으로 별도의 function을 생성해서 지정하는게 좋다.
+
+// function
+const handleHome = (req, res) => {
+  res.sedn("hello");
+};
+app.get("/", handleHome);
+
+// inline
+app.get("/", (req, res) => res.send("hello"));
+```
+
+<br>
+
+`handler`의 경우 이름은 req, res로 지정 할 필요 없다. 단지 코드를 봤을 때 인지하기 쉽도록 한 것이다.
+
+```js
+// 기존 코드
+const handleHome = (req, res) => {
+  return res.send("<h1>hello</h1>");
+};
+
+// argument의 위치 순서만 지켜주면 어떠한 이름도 상관 없다.
+// request-object, response-object 순서이다.
+const handleHome = (x, y) => {
+  return y.send("<h1>hello</h1>");
+};
+```
+
+<br>
+
+### morgan
+
+GET, path, status code , 응답시간 모든 정보를 가지고있는 middleware이다.
+
+`npm i morgan` 으로 설치 가능하고, `import <morgan> from "morgan";` &lt;morgan&gt;은 별명이기에 마음대로 지정해도 된다.
+
+```js
+import morgan from "morgan";
+
+// 생략
+
+const logger = morgan("dev");
+
+app.use(logger);
+```
+
+```js
+// Method, Url, statusCode, 응답시간
+GET / 304 2.339 ms - -
+```

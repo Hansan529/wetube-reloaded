@@ -70,15 +70,11 @@
         // button.addEvenListener("click", handleClick) 와 같은 맥락이다.
       </div>
 
-      <div class="commit">// 외부 접속을 listen 하기 전</div>
-      <div class="const">const</div>
-      handleListening = () =&gt;
-      <div class="console">console</div>
-      .log(
-      <div class="text">`Server listening on port http://localhost:</div>
-      ${PORT} 🚀`); app.listen(
-      <div class="console">PORT</div>
-      , handleListening);
+      <span class="commit">// 외부 접속을 listen 하기 전</span>
+      <span class="const">const</span> handleListening = () =&gt;
+      <span class="console">console</span>.log(<span class="text">`Server listening on port http://localhost:</span>${PORT} 🚀`); 
+      
+      app.listen(<span class="console">PORT</span>, handleListening);
     </div>
     <p>
       먼저 app.get으로 "/"를 request 받으면 console.log를 반응하게 만들었다.
@@ -95,7 +91,7 @@
       / 페이지(home)에 접속하면 서버에서는 console.log의 내용을 출력한 것을 확인
       할 수 있다.
     </p>
-    <div class="codeline">somebody is tring to go home.</div>
+    <span class="codeline">somebody is tring to go home.</span>
     <span
       >홈페이지를 보면 계속해서 로딩한다. 하지만 처리는 진행했고 응답을 안하고
       있는 것이다.</span
@@ -106,14 +102,11 @@
     <h1>#3.3 Responses</h1>
 
     <div class="codeblock">
-      <div class="const">const</div>
-      handleHome = (req, res) =&gt;
-      <div class="console">console</div>
-      .log(
-      <div class="text">"somebody is trying to go home."</div>
-      ); app.get(
-      <div class="text">"/"</div>
-      , handleHome);
+      <span class="const">const</span> handleHome = (req, res) =&gt;
+      <span class="console">console</span>.log(<span class="text">"somebody is trying to go home."</span>
+      ); 
+      
+      app.get(<span class="text">"/"</span>, handleHome);
     </div>
     <p>
       EventListener에겐 event가 있고, express에선 2개의 object가 있다. request

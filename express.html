@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html {
+        background: #292d3e;
+        color: #999;
+      }
+      .codeline,
+      .const,
+      .commit,
+      .console,
+      .text,
+      .number,
+      .json {
+        display: inline;
+      }
+      .codeBlock {
+        white-space: pre;
+        background: #1d1f29;
+        padding-bottom: 20px;
+      }
+      .codeline {
+        background: #1d1f29;
+      }
+      .const {
+        color: #569cd6;
+      }
+      .commit {
+        color: #57a64a;
+      }
+      .console {
+        color: #bd63c5;
+      }
+      .text {
+        color: #8e6c61;
+      }
+      .number {
+        color: #b8d7a3;
+      }
+      .json {
+        color: #9ad9fa;
+      }
+    </style>
+    <title>Express</title>
+  </head>
+  <body>
+    <h1>#3.1 ~ 3.2 GET Requests</h1>
+    <p>
+      서버에 접속하면 <span class="codeline">Cannot GET /</span>라는 텍스트가
+      보인다. 이는 브라우저가 서버에게 GET (http mathod) requests를 보내고 있는
+      것이다.
+    </p>
+    <p>이 요청을 반응하기 위해서</p>
+    <div class="codeBlock">
+      const app = express();
+      <span class="commit">// 서버 생성 이후</span>
+
+      (<span class="text">"해당 위치에 작성한다"</span>); app.get( app.get(<span
+        class="text"
+        >"/"</span
+      >
+      , () =&gt; <span class="console">console</span>.log(<span class="text"
+        >"somebody is trying to go home."</span
+      >
+      <div class="commit">
+        // button.addEvenListener("click", handleClick) 와 같은 맥락이다.
+      </div>
+
+      <div class="commit">// 외부 접속을 listen 하기 전</div>
+      <div class="const">const</div>
+      handleListening = () =&gt;
+      <div class="console">console</div>
+      .log(
+      <div class="text">`Server listening on port http://localhost:</div>
+      ${PORT} 🚀`); app.listen(
+      <div class="console">PORT</div>
+      , handleListening);
+    </div>
+    <p>
+      먼저 app.get으로 "/"를 request 받으면 console.log를 반응하게 만들었다.
+    </p>
+    <p>
+      서버에 접속한 후, 새로고침을 해보면 페이지가 계속 로딩되면서 페이지를 불러
+      올 수 없을 것이다.
+    </p>
+    <p>
+      다른 주소를 입력할 경우 &lt;http://localhost:4000/abcdefg&gt; 대기 시간
+      없이 바로바로 페이지가 로딩되는 것을 알 수 있다.
+    </p>
+    <p>
+      / 페이지(home)에 접속하면 서버에서는 console.log의 내용을 출력한 것을 확인
+      할 수 있다.
+    </p>
+    <div class="codeline">somebody is tring to go home.</div>
+    <span
+      >홈페이지를 보면 계속해서 로딩한다. 하지만 처리는 진행했고 응답을 안하고
+      있는 것이다.</span
+    >
+
+    <br />
+
+    <h1>#3.3 Responses</h1>
+
+    <div class="codeblock">
+      <div class="const">const</div>
+      handleHome = (req, res) =&gt;
+      <div class="console">console</div>
+      .log(
+      <div class="text">"somebody is trying to go home."</div>
+      ); app.get(
+      <div class="text">"/"</div>
+      , handleHome);
+    </div>
+    <p>
+      EventListener에겐 event가 있고, express에선 2개의 object가 있다. request
+      object, responses object
+    </p>
+    <p>
+      req, res 이름 대신 다른 이름을 사용해도 되지만
+      <strong>필수로 2가지를 모두 작성해주어야 한다.</strong> req 하나만
+      작성한다거나, res 하나만 작성하면 문제가 발생한다.
+    </p>
+    <p>
+      &lt;&quot;req&quot;&gt; &nbsp;&nbsp; &lt;&quot;res&quot;&gt; 형식이다.
+    </p>
+    <p>
+      req를 console.log를 해본다면 https://localhost:4000/ 페이지를 request
+      해본다면 매우 많은 값들을 콘솔에서 확인 할 수 있다
+    </p>
+    <div class="codeblock">
+      <div class="commit">// express 생략</div>
+
+      <div class="const">const</div>
+      handleHome = (req, res) =&gt;
+      <div class="console">console</div>
+      .log(req); app.get(
+      <div class="text">"/"</div>
+      , handleHome);
+    </div>
+
+    <p>해당 결과값들이 request object이다.</p>
+
+    <p>
+      브라우저가 요청하는 것이고, 쿠키나 GET, method 등등 여러 정보들을 얻을 수
+      있다.
+    </p>
+    <div class="codeBlock">
+      <div class="commit">// 생략</div>
+
+      <div class="const">const</div>
+      handleHome = (req, res) =&gt;
+      <div class="console">console</div>
+      .log(res);
+    </div>
+
+    <p>
+      브라우저가 request를 보내면 우리는 응답을 해주어야 하기에
+      <span class="const">return</span>을 사용한다.
+    </p>
+
+    <div class="codeBlock">
+      <div class="const">const</div>
+      handleHome = (req, res) =&gt; {
+      <div class="const">return</div>
+      res.end(); };
+    </div>
+    <div>
+      다시 서버를 실행하고, localhost에 request를 요청하면, 브라우저가 로딩되던
+      이전과는 다르게
+      <div class="const">return</div>
+      하여 페이지를 불러오게된다. 해당 함수가 responses를 종료하여 서버가
+      request를 끝내버린 것이다,
+    </div>
+    <p>다른 방법으로도 request를 종료시킬 수 있다.</p>
+    <div>
+      <div class="codeline">
+        <div class="const">return</div>
+        res.send()
+      </div>
+      이렇게 2가지가 있다.
+    </div>
+
+    <h1>#3.5 Middlewares</h1>
+
+    <p>
+      Middleware는 request와 response 사이에 있다. 모든 함수(handle)는
+      controller가 될 수도 mideeleware가 될수있다.
+    </p>
+
+    <div class="codeBlock">
+      import express from "express";
+
+      <div class="const">const</div>
+      PORT = 4000;
+
+      <div class="const">const</div>
+      app = express();
+
+      <div class="const">const</div>
+      controllerHome = (req, res) =&gt; {
+      <div class="const">return</div>
+      res.end("
+      <h1>HTML h1</h1>
+      "); };
+      <div class="const">const</div>
+      controllerLogin = (req, res) =&gt; {
+      <div class="const">return</div>
+      res.send({ message: "Login here" }); }; app.get("/", controllerHome);
+      app.get("/login", controllerLogin);
+
+      <div class="const">const</div>
+      controllerListening = () =&gt;
+      <div class="console">console</div>
+      .log(`Server listening on port http://localhost:${PORT} 🚀`); app.listen(
+      <div class="console">PORT</div>
+      , controllerListening);
+    </div>
+
+    <p>
+      req와 res 말고도 한 가지 요소가 더 있다. (req, res, `next`) next라는 것이
+      있다. 다음을 불러오는 함수인데
+    </p>
+
+    <div class="codeBlock">
+      <div class="const">const</div>
+      controllerHome = (req, res, next) =&gt; { next(); };
+    </div>
+
+    <p>
+      이와 같이 변경하고 메인 루트로 이동해보면 "Cannot GET /" 라는 텍스트만
+      로딩된다.
+    </p>
+    <p>왜냐하나면 다음 함수가 없기 때문에 불러 올 수 없는 것이다.</p>
+
+    <div class="codeBlock">
+      <div class="const">const</div>
+      gossipMiddleware = (req, res, next) =&gt; {
+      <div class="console">console</div>
+      .log("I'm in the middle"); next(); };
+      <div class="const">const</div>
+      controllerHome = (req, res, next) =&gt; {
+      <div class="const">return</div>
+      res.end(); }; app.get("/", gossipMiddleware, controllerHome);
+    </div>
+
+    <p>
+      서버 터미널에 "I'm in the middle" 이라는 텍스트와 next 함수로
+      controllerHome 함수를 실행해 return을 한 결과를 얻을 수 있다.
+    </p>
+    <p>
+      gossipMiddleware 함수가 middleware가 되고, controllerHome 함수가 return을
+      하기 때문에 finalware가 된다.
+    </p>
+
+    <div class="codeBlock">
+      <div class="const">const</div>
+      gossipMiddleware = (req, res, next) =&gt; {
+      <div class="console">console</div>
+      .log(`Someone is going to: ${req.url}`); next(); };
+    </div>
+
+    <p>console: <span class="codeline">Someone is going to: /</span></p>
+
+    <p>
+      request의 정보를 가지고 전달해주는 것이라 middleware에서 req.url 값을
+      호출해보면 값을 유지하고 있는 것을 알 수 있다.
+    </p>
+
+    <p>
+      <span class="codeline">gossipMiddleware</span>는 현재
+      <span class="text">"/"</span> URL에서만 반응하는데, 어느 URL에도
+      작동하도록 만들어 주는 게 <span class="codeline">.use</span> method이다.
+    </p>
+
+    <div class="codeBlock">
+      <div class="commit">// use 순서는 get 보다 먼저 불러와야 한다.</div>
+      app.use(gossipMiddleware);
+
+      <div class="commit">// controllerHome =&gt; handleHome</div>
+      app.get("/", handleHome);
+    </div>
+
+    <p>
+      다른 경로로 req를 보내보면 cannot GET /@@@@ 가 표시되지만 터미널에는 해당
+      경로값을 볼 수 있다.
+    </p>
+
+    <p>하지만 이 순서를 반대로 지정하면 콘솔에는 아무런 정보도 없다.</p>
+
+    <div class="codeBlock">
+      app.get("/", handleHome); app.use(gossipMiddleware);
+    </div>
+
+    <p>
+      request가 요청되어 handleHome을 실행하고, 그 후에 gossipMiddleware를
+      실행하도록 express는 지정을 했는데,
+    </p>
+
+    <p>
+      handleHome에서 request를 종료시켰기에 gossipMiddleware가 실행되지 않는
+      것이다. + <span class="codeline">req.method</span>를 호출하면 어떤
+      method로 호출 하는지 알 수 있다. 기본으로는 '<span class="codeline"
+        >GET</span
+      >'이다.
+    </p>
+
+    <div class="codeBlock">
+      <div class="commit">// gossipMiddleware</div>
+      <div class="const">const</div>
+      logger = (req, res, next) =&gt; {
+      <div class="console">console</div>
+      .log(`${req.method} ${req.url}`); next(); };
+      <div class="commit">// 새로운 middleware</div>
+      <div class="const">const</div>
+      privateMiddleware = (req, res, next) =&gt; {
+      <div class="const">const</div>
+      url = req.url; if (url === "/protected") {
+      <div class="const">return</div>
+      res.send("
+      <h1>Not Allowed</h1>
+      "); } next(); }; app.use(logger, privateMiddleware); app.get("/",
+      handleHome);
+    </div>
+
+    <p>
+      어떠한 경로를 요청하던지 logger와 privateMiddleware 함수는 실행되도록
+      하고, 만약 요청한 경로가 protected일 경우 Not Allowed를 html에 출력하고,
+      아닐 경우에는 next로 넘긴다.
+    </p>
+
+    <h1># 정보, Recap</h1>
+
+    <p>
+      .get은 function이 필요하다. <span class="codeline">1+1</span>,
+      <span class="codeline">console.log("hi")</span>와 같은 것은 바로 실행하기
+      때문에 에러가 발생하고, 이 에러를 해결하기 위해서는
+    </p>
+
+    <p>
+      별도의 function을 생성해서 불러오거나,
+      <span class="codeline">app.get("", () =&gt; console.log("hi"))</span>와
+      같이 inline function을 지정해주어야 에러가 사라진다.
+    </p>
+
+    <div class="codeBlock">
+      <span class="commit"
+        >// 유지보수 차원으로 별도의 function을 생성해서 지정하는게 좋다.</span
+      >
+
+      <span class="commit">// function</span>
+      <span class="const">const</span> handleHome = (req, res) =&gt; {
+      res.sedn(<span class="text">"hello"</span>); };
+
+      <span>app.get(<span class="text">"/"</span>, handleHome);</span>
+
+      <span class="commit">// inline</span>
+      app.get(<span class="text">"/"</span>, (req, res) =&gt;
+      res.send("hello"));
+    </div>
+
+    <p>
+      <span class="codeline">handler</span>의 경우 이름은 req, res로 지정 할
+      필요 없다. 단지 코드를 봤을 때 인지하기 쉽도록 한 것이다.
+    </p>
+
+    <div class="codeBlock">
+      <div class="commit">// 기존 코드</div>
+      <span class="const">const</span> handleHome = (req, res) =&gt; {
+      <span class="const">return</span> res.send("&lt;h1&gt;hello&lt;/h1&gt;");
+      };
+
+      <div class="commit">
+        //argument의 위치 순서만 지켜주면 어떠한 이름도 상관 없다.
+        //request-object, response-object 순서이다.
+      </div>
+      <span class="const">const</span> handleHome = (x, y) =&gt; {
+      <span class="const">return</span> y.send("&lt;h1&gt;hello&lt;/h1&gt;"); };
+    </div>
+
+    <h2>morgan</h2>
+
+    <p>
+      GET, path, status code , 응답시간 모든 정보를 가지고있는 middleware이다.
+    </p>
+
+    <p>
+      <span class="codeline">npm i morgan</span> 으로 설치 가능하고,
+      <span class="codeline"> import &lt;morgan&gt; from "morgan"; </span>`
+      &lt;morgan&gt;은 별명이기에 마음대로 지정해도 된다. &lt;morgan&gt;은
+      별명이기에 마음대로 지정해도 된다.
+    </p>
+
+    <div class="codeBlock">
+      import morgan from "morgan"; // 생략
+
+      <div class="const">const</div>
+      logger = morgan("dev"); app.use(logger);
+    </div>
+
+    <div class="codeBlock">
+      <div class="commit">// Method, Url, statusCode, 응답시간</div>
+      <div class="console">GET</div>
+      / 304 2.339 ms - -
+    </div>
+  </body>
+</html>

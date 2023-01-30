@@ -1,0 +1,38 @@
+html {
+  background: #292d3e;
+  color: #999;
+}
+.codeline,
+.const,
+.commit,
+.console,
+.text,
+.number,
+.json {
+  display: inline;
+}
+.codeBlock {
+  background: #1d1f29;
+  padding-bottom: 20px;
+}
+.codeline {
+  background: #1d1f29;
+}
+.const {
+  color: #569cd6;
+}
+.commit {
+  color: #57a64a;
+}
+.console {
+  color: #bd63c5;
+}
+.text {
+  color: #8e6c61;
+}
+.number {
+  color: #b8d7a3;
+}
+.json {
+  color: #9ad9fa;
+}

@@ -13,7 +13,7 @@ html {
 }
 .codeBlock {
   background: #1d1f29;
-  padding-bottom: 20px;
+  padding: 20px 0;
 }
 .codeline {
   background: #1d1f29;

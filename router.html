@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ROUTER</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <h1>#4.0 What are Routers?</h1>
+    <p>기본적인 URL 경로이다.</p>
+    <pre class="codeBlock">
+      / → home
+      /join → Join
+      /login → Login
+      /search → Search
+
+      /edit-user → Edit User
+      /delete-user → Delete User
+      /watch-video → What Video
+      /edit-video → Edit Video
+      /delete-video → Delete Video
+    </pre>
+    <p>해당 주제에 대해 라우터를 통해 정리해겠다.</p>
+
+    <p>라우터는 작업중인 주제를 기반으로 URL을 그룹화한다.</p>
+
+    <pre class="codeBlock">
+      <span class="commit">// /edit-user → Edit User</span>
+      /users/edit → Edit <meta name="uservoice" content="#" />
+
+      <span class="commit">// /delete-user → Delete User</span>
+      /users/delete
+
+      <span class="commit">// /watch-video → What Video</span>
+      /videos/watch
+
+      <span class="commit">// /edit-video → Edit Video</span>
+      /videos/edit
+
+      <span class="commit">// /delete-video → Delete Video</span>
+      /videos/delete
+    </pre>
+  </body>
+</html>

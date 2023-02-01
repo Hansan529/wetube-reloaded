@@ -18,10 +18,14 @@ html {
 .codeline {
   background: #1d1f29;
 }
+
 .const {
+  color: #bb8add;
+}
+.attribute {
   color: #569cd6;
 }
-.commit {
+.comment {
   color: #57a64a;
 }
 .console {
@@ -35,4 +39,10 @@ html {
 }
 .json {
   color: #9ad9fa;
+}
+.tag {
+  color: #f07178;
+}
+.quot {
+  color: #bbde89;
 }

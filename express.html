@@ -17,28 +17,22 @@
     <p>이 요청을 반응하기 위해서</p>
     <pre class="codeBlock">
       const app = express();
-      <span class="commit">// 서버 생성 이후</span>
+      <span class="comment">// 서버 생성 이후</span>
 
-      (<span class="text">"해당 위치에 작성한다"</span>); app.get( app.get(<span
-        class="text"
-        >"/"</span
-      >
-      , () =&gt; <span class="console">console</span>.log(<span class="text"
-        >"somebody is trying to go home."</span
-      >
-      <div class="commit">
-        // button.addEvenListener("click", handleClick) 와 같은 맥락이다.
-      </div>
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, () =&gt; <span class="console">console</span>.log(<span class="text">"somebody is trying to go home."</span>)
 
-      <span class="commit">// 외부 접속을 listen 하기 전</span>
+      <span class="comment">// 외부 접속을 listen 하기 전</span>
       <span class="const">const</span> handleListening = () =&gt;
-      <span class="console">console</span>.log(<span class="text"
+        <span class="console">console</span>.log(<span class="text"
         >`Server listening on port http://localhost:</span
-      >${PORT} 🚀`); app.listen(<span class="console">PORT</span>,
-      handleListening);
+      >${PORT} 🚀`); 
+      
+      app.listen(<span class="console">PORT</span>, handleListening);
     </pre>
     <p>
-      먼저 app.get으로 "/"를 request 받으면 console.log를 반응하게 만들었다.
+      먼저 app.<span class="attribute">get</span>으로
+      <span class="text">"/"</span>를 request 받으면 console.log를 반응하게
+      만들었다.
     </p>
     <p>
       서버에 접속한 후, 새로고침을 해보면 페이지가 계속 로딩되면서 페이지를 불러
@@ -63,11 +57,9 @@
     <h1>#3.3 Responses</h1>
 
     <pre class="codeBlock">
-      <span class="const">const</span> handleHome = (req, res) =&gt;
-      <span class="console">console</span>.log(<span class="text"
-        >"somebody is trying to go home."</span
-      >
-      ); app.get(<span class="text">"/"</span>, handleHome);
+      <span class="const">const</span> handleHome = (req, res) =&gt; <span class="console">console</span>.log(<span class="text">"somebody is trying to go home."</span>); 
+      
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, handleHome);
     </pre>
     <p>
       EventListener에겐 event가 있고, express에선 2개의 object가 있다. request
@@ -86,12 +78,11 @@
       해본다면 매우 많은 값들을 콘솔에서 확인 할 수 있다
     </p>
     <pre class="codeBlock">
-      <span class="commit">// express 생략</span>
+      <span class="comment">// express 생략</span>
 
-      <span class="const">const</span> handleHome = (req, res) =&gt;
-      <span class="console">console</span>.log(req); app.get(<span class="text"
-        >"/"</span
-      >, handleHome);
+      <span class="const">const</span> handleHome = (req, res) =&gt; <span class="console">console</span>.log(req); 
+      
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, handleHome);
     </pre>
 
     <p>해당 결과값들이 request object이다.</p>
@@ -101,10 +92,9 @@
       있다.
     </p>
     <pre class="codeBlock">
-      <span class="commit">// 생략</span>
+      <span class="comment">// 생략</span>
 
-      <span class="const">const</span> handleHome = (req, res) =&gt;
-      <span class="console">console</span>.log(res);
+      <span class="const">const</span> handleHome = (req, res) =&gt; <span class="console">console</span>.log(res);
     </pre>
 
     <p>
@@ -114,7 +104,8 @@
 
     <pre class="codeBlock">
       <span class="const">const</span> handleHome = (req, res) =&gt; {
-      <span class="const">return</span> res.end(); };
+        <span class="const">return</span> res.end(); 
+      };
     </pre>
 
     <p>
@@ -137,29 +128,28 @@
     </p>
 
     <pre class="codeBlock">
-      <p>
-        <span class="const">import</span> express
-        <span class="const">from</span> <span class="text">"express"</span>;
-      </p>
+      <span class="const">import</span> express <span class="const">from</span> <span class="quot">"express"</span>;
 
-      <span class="const">const</span> PORT = 4000;
+      <span class="const">const</span> <span class="tag">PORT</span> = 4000;
 
-      <span class="const">const</span> app = express();
+      <span class="const">const</span> <span class="tag">app</span> = <span class="attribute">express</span>();
 
       <span class="const">const</span> controllerHome = (req, res) =&gt; {
-      <span class="const">return</span> res.end("&lt;h1&gt;HTML h1&lt;/h1&gt;");
-      }; <span class="const">const</span> controllerLogin = (req, res) =&gt; {
-      <span class="const">return</span> res.send({ message:
-      <span class="text">"Login here"</span> }); }; app.get(<span class="text"
-        >"/"</span
-      >, controllerHome); app.get(<span class="text">"/login"</span>,
-      controllerLogin);
+        <span class="const">return</span> res.<span class="attribute">end</span>("<span class="tag">&lt;h1&gt;</span>HTML h1<span class="tag">&lt;/h1&gt;</span>");
+      }; 
+      <span class="const">const</span> controllerLogin = (req, res) =&gt; {
+        <span class="const">return</span> res.<span class="attribute">send</span>({ message: <span class="text">"Login here"</span> }
+        ); 
+      }; 
+      
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, controllerHome); 
+      app.<span class="attribute">get</span>(<span class="text">"/login"</span>, controllerLogin);
 
-      <span class="const">const</span> controllerListening = () =&gt;
-      <span class="console">console</span>.log(<span class="text"
+      <span class="const">const</span> <span class="tag">controllerListening</span> = () =&gt; <span class="console">console</span>.log(<span class="text"
         >Server listening on port http://localhost:</span
-      >${PORT} 🚀`); app.listen(<span class="console">PORT</span>,
-      controllerListening);
+      >${PORT} 🚀`); 
+      
+      app.<span class="attribute">listen</span>(<span class="console">PORT</span>, controllerListening);
     </pre>
 
     <p>
@@ -169,8 +159,9 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="const">const</span> controllerHome = (req, res, next) =&gt; {
-      next(); };
+      <span class="const">const</span> <span class="tag">controllerHome</span> = (req, res, next) =&gt; {
+        <span class="attribute">next</span>();
+      };
     </pre>
 
     <p>
@@ -180,12 +171,15 @@
     <p>왜냐하나면 다음 함수가 없기 때문에 불러 올 수 없는 것이다.</p>
 
     <pre class="codeBlock">
-      <span class="const">const</span> gossipMiddleware = (req, res, next) =&gt;
-      { <span class="console">console</span>.log(<span class="text"
-        >"I'm in the middle"</span
-      >); next(); }; <span class="const">const</span> controllerHome = (req,
-      res, next) =&gt; { <span class="const">return</span> res.end(); };
-      app.get(<span class="text">"/"</span>, gossipMiddleware, controllerHome);
+      <span class="const">const</span> <span class="tag">gossipMiddleware</span> = (req, res, next) =&gt; { 
+        <span class="console">console</span>.log(<span class="text">"I'm in the middle"</span>);
+        <span class="attribute">next</span>();
+      }; 
+      <span class="const">const</span> <span class="tag">controllerHome</span> = (req, res, next) =&gt; { 
+        <span class="const">return</span> res.<span class="attribute">end</span>(); 
+      };
+
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, gossipMiddleware, controllerHome);
     </pre>
 
     <p>
@@ -198,9 +192,10 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="const">const</span> gossipMiddleware = (req, res, next) =&gt;
-      { <span class="console">console</span>.log(`Someone is going to:
-      ${req.url}`); next(); };
+      <span class="const">const</span> <span class="tag">gossipMiddleware</span> = (req, res, next) =&gt; { 
+        <span class="console">console</span>.log(`Someone is going to:${req.url}`); 
+        <span class="attribute">next</span>();
+      };
     </pre>
 
     <p>console: <span class="codeline">Someone is going to: /</span></p>
@@ -212,16 +207,17 @@
 
     <p>
       <span class="codeline">gossipMiddleware</span>는 현재
-      <span class="text">"/"</span> URL에서만 반응하는데, 어느 URL에도
-      작동하도록 만들어 주는 게 <span class="codeline">.use</span> method이다.
+      <span class="text"><span class="text">"/"</span></span> URL에서만
+      반응하는데, 어느 URL에도 작동하도록 만들어 주는 게
+      <span class="codeline">.use</span> method이다.
     </p>
 
     <pre class="codeBlock">
-      <span class="commit">// use 순서는 get 보다 먼저 불러와야 한다.</span>
-      app.use(gossipMiddleware);
+      <span class="comment">// use 순서는 get 보다 먼저 불러와야 한다.</span>
+      app.<span class="attribute">use</span>(gossipMiddleware);
 
-      <span class="commit">// controllerHome =&gt; handleHome</span>
-      app.get("/", handleHome);
+      <span class="comment">// controllerHome =&gt; handleHome</span>
+      app.<span class="attribute">get</span>(<span class="text">"/"</span>, handleHome);
     </pre>
 
     <p>
@@ -232,7 +228,8 @@
     <p>하지만 이 순서를 반대로 지정하면 콘솔에는 아무런 정보도 없다.</p>
 
     <pre class="codeBlock">
-      app.get("/", handleHome); app.use(gossipMiddleware);
+      app.<span class="attribute">get</span>(<span class="text">"/"</span>, handleHome); 
+      app.<span class="attribute">use</span>(gossipMiddleware);
     </pre>
 
     <p>
@@ -248,16 +245,23 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="commit">// gossipMiddleware</span>
-      <span class="const">const</span> logger = (req, res, next) =&gt; {
-      <span class="console">console</span>.log(`${req.method} ${req.url}`);
-      next(); };
-      <span class="commit">// 새로운 middleware</span>
-      <span class="const">const</span> privateMiddleware = (req, res, next)
-      =&gt; { <span class="const">const</span> url = req.url; if (url ===
-      "/protected") { <span class="const">return</span> res.send("&lt;h1&gt;Not
-      Allowed&lt;/h1&gt;"); } next(); }; app.use(logger, privateMiddleware);
-      app.get(<span class="text">"/"</span>, handleHome);
+      <span class="comment">// gossipMiddleware</span>
+      <span class="const">const</span> <span class="tag">logger</span> = (req, res, next) =&gt; {
+        <span class="console">console</span>.log(`${req.method} ${req.url}`);
+        <span class="attribute">next</span>();
+      };
+
+      <span class="comment">// 새로운 middleware</span>
+      <span class="const">const</span> <span class="tag">privateMiddleware</span> = (req, res, next) =&gt; { 
+        <span class="const">const</span> <span class="tag">url</span> = req.<span class="attribute">url</span>; 
+        if (<span class="tag">url</span> === <span class="quot">"/protected"</span>) { 
+          <span class="const">return</span> res.<span class="attribute">send</span>(<span class="tag">"&lt;h1&gt;</span>Not Allowed<span class="tag">&lt;/h1&gt;</span>"); 
+          } 
+        <span class="attribute">next</span>();
+      };
+
+      app.<span class="attribute">use</span>(<span class="tag">logger</span>, privateMiddleware);
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, handleHome);
     </pre>
 
     <p>
@@ -281,19 +285,19 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="commit"
+      <span class="comment"
         >// 유지보수 차원으로 별도의 function을 생성해서 지정하는게 좋다.</span
       >
 
-      <span class="commit">// function</span>
-      <span class="const">const</span> handleHome = (req, res) =&gt; {
-      res.sedn(<span class="text">"hello"</span>); };
+      <span class="comment">// function</span>
+      <span class="const">const</span> <span class="tag">handleHome</span> = (req, res) =&gt; { 
+        res.<span class="attribute">send</span>(<span class="text">"hello"</span>); 
+      };
 
-      <span>app.get(<span class="text">"/"</span>, handleHome);</span>
+      <span>app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, handleHome);</span>
 
-      <span class="commit">// inline</span>
-      app.get(<span class="text">"/"</span>, (req, res) =&gt;
-      res.send("hello"));
+      <span class="comment">// inline</span>
+      app.<span class="attribute">get</span>(<span class="text"><span class="text">"/"</span></span>, (<span class="tag">req</span>, <span class="tag">res</span>) =&gt; res.send("hello"));
     </pre>
 
     <p>
@@ -302,17 +306,18 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="commit">// 기존 코드</span>
-      <span class="const">const</span> handleHome = (req, res) =&gt; {
-      <span class="const">return</span> res.send("&lt;h1&gt;hello&lt;/h1&gt;");
+      <span class="comment">// 기존 코드</span>
+      <span class="const">const</span> <span class="tag">handleHome</span> = (req, res) =&gt; {
+        <span class="const">return</span> res.<span class="attribute">send</span>("<span class="tag">&lt;h1&gt;</span>hello<span class="tag">&lt;/h1&gt;</span>");
       };
 
-      <div class="commit">
-        //argument의 위치 순서만 지켜주면 어떠한 이름도 상관 없다.
-        //request-object, response-object 순서이다.
-      </div>
-      <span class="const">const</span> handleHome = (x, y) =&gt; {
-      <span class="const">return</span> y.send("&lt;h1&gt;hello&lt;/h1&gt;"); };
+      <span class="comment">
+      //argument의 위치 순서만 지켜주면 어떠한 이름도 상관 없다.
+      //request-object, response-object 순서이다.
+      </span>
+      <span class="const">const</span> <span class="tag">handleHome</span> = (x, y) =&gt; {
+        <span class="const">return</span> y.<span class="attribute">send</span>("<span class="tag">&lt;h1&gt;</span>hello<span class="tag">&lt;/h1&gt;</span>"); 
+      };
     </pre>
 
     <h2>morgan</h2>
@@ -329,14 +334,17 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="const">import</span> morgan
-      <span class="const">from</span> "morgan"; // 생략
+      <span class="const">import</span> <span class="tag">morgan</span> <span class="const">from</span> <span class="quot">"morgan"</span>; 
+      
+      <span class="comment">// 생략</span>
 
-      <span class="const">const</span> logger = morgan("dev"); app.use(logger);
+      <span class="const">const</span> <span class="tag">logger</span> = <span class="attribute">morgan</span>(<span class="quot">"dev"</span>); 
+      
+      app.<span class="attribute">use</span>(logger);
     </pre>
 
     <pre class="codeBlock">
-      <span class="commit">// Method, Url, statusCode, 응답시간</span>
+      <span class="comment">// Method, Url, statusCode, 응답시간</span>
       <span class="console">GET</span> / 304 2.339 ms - -
     </pre>
   </body>

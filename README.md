@@ -285,3 +285,9 @@ app.listen(
 로컬 서버 바로가기 <http://localhost:4000/>
 
 서버는 nodemon을 종료하면 종료된다.
+
+<br>
+
+# Express
+
+<https://hansan529.github.io/wetube-reloaded/express.html>

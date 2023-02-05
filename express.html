@@ -71,7 +71,7 @@
       작성한다거나, res 하나만 작성하면 문제가 발생한다.
     </p>
     <p>
-      &lt;&quot;req&quot;&gt; &nbsp;&nbsp; &lt;&quot;res&quot;&gt; 형식이다.
+      &lt;&text;req&text;&gt; &nbsp;&nbsp; &lt;&text;res&text;&gt; 형식이다.
     </p>
     <p>
       req를 console.log를 해본다면 https://localhost:4000/ 페이지를 request
@@ -128,7 +128,7 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="const">import</span> express <span class="const">from</span> <span class="quot">"express"</span>;
+      <span class="const">import</span> express <span class="const">from</span> <span class="text">"express"</span>;
 
       <span class="const">const</span> <span class="tag">PORT</span> = 4000;
 
@@ -254,7 +254,7 @@
       <span class="comment">// 새로운 middleware</span>
       <span class="const">const</span> <span class="tag">privateMiddleware</span> = (req, res, next) =&gt; { 
         <span class="const">const</span> <span class="tag">url</span> = req.<span class="attribute">url</span>; 
-        if (<span class="tag">url</span> === <span class="quot">"/protected"</span>) { 
+        if (<span class="tag">url</span> === <span class="text">"/protected"</span>) { 
           <span class="const">return</span> res.<span class="attribute">send</span>(<span class="tag">"&lt;h1&gt;</span>Not Allowed<span class="tag">&lt;/h1&gt;</span>"); 
           } 
         <span class="attribute">next</span>();
@@ -334,11 +334,11 @@
     </p>
 
     <pre class="codeBlock">
-      <span class="const">import</span> <span class="tag">morgan</span> <span class="const">from</span> <span class="quot">"morgan"</span>; 
+      <span class="const">import</span> <span class="tag">morgan</span> <span class="const">from</span> <span class="text">"morgan"</span>; 
       
       <span class="comment">// 생략</span>
 
-      <span class="const">const</span> <span class="tag">logger</span> = <span class="attribute">morgan</span>(<span class="quot">"dev"</span>); 
+      <span class="const">const</span> <span class="tag">logger</span> = <span class="attribute">morgan</span>(<span class="text">"dev"</span>); 
       
       app.<span class="attribute">use</span>(logger);
     </pre>

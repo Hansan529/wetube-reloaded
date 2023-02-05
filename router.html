@@ -94,5 +94,53 @@
       그 덕분에 <span class="codeline">/videos/watch</span> 라고 지정을 하지
       않아도 이동이 된다.
     </p>
+    <h1>#4.2 Cleaning the Code</h1>
+    <p>작동하는 코드를 완성했을 때, 너저분한 코드를 정리해주어야 한다.</p>
+    <p>
+      우선 컨트롤러와 라우터를 분리해준다. 모듈과 같이 별도의 파일에서도
+      독립적으로 작동해야하기에, 분리한 파일에서도 express를 import 해야 한다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// 기존 파일 구성 (통합)</span>
+      <span class="const">src</span>/server.js
+
+      <span class="comment">// 이후의 파일 구성 (분리)</span>
+      <span class="const">src</span>/<span class="attribute">routers</span>/globalRouter.js
+      <span class="const">src</span>/<span class="attribute">routers</span>/userRouter.js
+      <span class="const">src</span>/<span class="attribute">routers</span>/videoRouter.js
+    </pre>
+    <p>
+      server.js 에서 router들을 불러오기 위해서는 router에서 export를 진행해야
+      한다. 개개인의 독립적인 파일이기에 공개되어있지 않아서, 같은 이름을
+      지정하더라도 아무런 문제가 없다.
+    </p>
+    <p>
+      우리는 파일 자체를 import 할 것이 아닌, 변수만 import 하고자 하는 것이기에
+      코드를 작성해준다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// server.js</span>
+      <span class="json">import</span> globalRouter <span class="json">from</span> ".<span class="text">/routers/globalRouter</span>";
+      <span class="json">import</span> userRouter <span class="json">from</span> ".<span class="text">/routers/userRouter</span>";
+      <span class="json">import</span> videoRouter <span class="json">from</span> ".<span class="text">/routers/videoRouter</span>";
+
+      <span class="comment">// globalRouter.js</span>
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      
+      <span class="const">const</span> <span class="tag">globalRouter</span> = express.<span class="console">Router</span>();
+      
+      <span class="const">const</span> <span class="attribute">handleHome</span> = (req, res) =&gt; res.send("home");
+      
+      globalRouter.<span class="attribute">get</span>("<span class="text">/</span>", handleHome);
+      
+      <span class="json">export</span> <span class="json">default</span> globalRouter;span
+      
+      <span class="comment">// userRouter.js</span>
+      <span class="comment">// videoRouter.js</span>
+    </pre>
+    <p>
+      server 파일에 있던 코드를 모두 옮기고 Router에서는 Export를 하며
+      server.js에서는 이를 import 하여 이용한다.
+    </p>
   </body>
 </html>

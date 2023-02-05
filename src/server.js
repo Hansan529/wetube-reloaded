@@ -23,7 +23,7 @@ const videoRouter = express.Router();
 
 const handleWatchVvideo = (req, res) => res.send("Watch  Video");
 
-videoRouter.get("/wtach", handleWatchVvideo);
+videoRouter.get("/watch", handleWatchVvideo);
 
 app.use("/", globalRouter);
 app.use("/users", userRouter);

@@ -32,7 +32,7 @@ html {
   color: #bd63c5;
 }
 .text {
-  color: #8e6c61;
+  color: #bbde89;
 }
 .number {
   color: #b8d7a3;
@@ -43,6 +43,6 @@ html {
 .tag {
   color: #f07178;
 }
-.quot {
-  color: #bbde89;
+h1 {
+  margin-top: 50px;
 }

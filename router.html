@@ -27,20 +27,72 @@
     <p>라우터는 작업중인 주제를 기반으로 URL을 그룹화한다.</p>
 
     <pre class="codeBlock">
-      <span class="commit">// /edit-user → Edit User</span>
+      <span class="comment">// /edit-user → Edit User</span>
       /users/edit → Edit <meta name="uservoice" content="#" />
 
-      <span class="commit">// /delete-user → Delete User</span>
+      <span class="comment">// /delete-user → Delete User</span>
       /users/delete
 
-      <span class="commit">// /watch-video → What Video</span>
+      <span class="comment">// /watch-video → What Video</span>
       /videos/watch
 
-      <span class="commit">// /edit-video → Edit Video</span>
+      <span class="comment">// /edit-video → Edit Video</span>
       /videos/edit
 
-      <span class="commit">// /delete-video → Delete Video</span>
+      <span class="comment">// /delete-video → Delete Video</span>
       /videos/delete
     </pre>
+    <pre class="codeBlock">
+      <span class="comment">/* 글로벌 라우터(global router)</span>
+      <span class="comment">홈에서 바로 갈 수 있는 페이지들을 담고 있다. */</span>
+      / → Home
+      /join → Join
+      /login → Login
+      /search → Search
+
+      <span class="comment">/* 기존 규칙대로 Router를 작성해본다면 아래와 같을 거다.</span>
+      <span class="comment">user가 join, login을 하는 것이 명확하고, video를 search하는 것으로 명확히 구분 되어 있기 때문이다. */</span>
+      /users/join
+      /users/login
+      /videos/search
+
+      <span class="comment">/* 하지만 간략하게 하여 접근이 쉽도록 할 때 예외로 router를 만들기도 한다.</span>
+      <span class="comment">두 차이를 보면 이해하기 쉽다. */</span>
+      http://hansan529.github.io/wetube-reloaded/join
+      http://hansan529.github.io/wetube-reloaded/users/join 
+    </pre>
+    <p>라우터에 대해 알았으니, 생성하는 방법에 대해 알아보자</p>
+    <br />
+    <pre class="codeBlock">
+      <span class="comment">// 생성</span>
+      <span class="const">const</span> <span class="tag">globalRouter</span> = express.<span class="attribute">Router</span>();
+      <span class="const">const</span> <span class="tag">userRouter</span> = express.<span class="attribute">Router</span>();
+      <span class="const">const</span> <span class="tag">videoRouter</span> = express.<span class="attribute">Router</span>();
+      
+      <span class="comment">// 사용</span>
+      app.<span class="attribute">use</span>(<span class="text">"/"</span>, globalRouter);
+      app.<span class="attribute">use</span>(<span class="text">"/users"</span>, userRouter);
+      app.<span class="attribute">use</span>(<span class="text">"/videos"</span>, videoRouter);
+    </pre>
+    <p>Router들의 첫 페이지를 생성한다.</p>
+    <pre class="codeBlock">
+      <span class="const">const</span> <span class="tag">globalRouter</span> = express.<span class="console">Router</span>();
+      <span class="const">const</span> <span class="attribute">handleHome</span> = (req, res) =&gt; res.<span class="attribute">send</span>(<span class="text">"home"</span>);
+      globalRouter.<span class="attribute">get</span>(<span class="text">"/"</span>, handleHome)
+
+      <span class="const">const</span> <span class="tag">userRouter</span> = express.<span class="console">Router</span>();
+      <span class="const">const</span> <span class="attribute">handleEditUser</span> = (req, res) =&gt; res.<span class="attribute">send</span>(<span class="text">"Edit User"</span>);
+      userRouter.<span class="attribute">get</span>(<span class="text">"/edit"</span>, handleEditUser)
+
+      <span class="const">const</span> <span class="tag">videoRouter</span> = express.<span class="console">Router</span>();
+      <span class="const">const</span> <span class="attribute">handleWatchVideo</span> = (req, res) =&gt; res.<span class="attribute">send</span>(<span class="text">"home"</span>);
+      videoRouter.<span class="attribute">get</span>(<span class="text">"/watch"</span>, handleWatchVideo)
+    </pre>
+    <p>
+      request에서 "/videos"로 시작하는 url을 찾는다면, Express는 videoRouter를
+      실행하여, /watch 루트를 이용하게 된다. <br />
+      그 덕분에 <span class="codeline">/videos/watch</span> 라고 지정을 하지
+      않아도 이동이 된다.
+    </p>
   </body>
 </html>

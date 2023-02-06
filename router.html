@@ -140,7 +140,141 @@
     </pre>
     <p>
       server 파일에 있던 코드를 모두 옮기고 Router에서는 Export를 하며
-      server.js에서는 이를 import 하여 이용한다.
+      server.js에서는 이를 import 하여 이용한다. 여러개의 Router를 추가해도
+      동일하다.
     </p>
+    <p>
+      허나, 하나 두개의 적은 개수라면 괜찮겠지만, 많아지면 Router.js 안에
+      Controller와 Router 두 가지가 모두 들어있기에 이를 또 분리해준다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// src</span>
+      <span class="attribute">controllers</span>/userController.js
+      <span class="attribute">controllers</span>/videoController.js
+    </pre>
+    <p>
+      globalController가 없는 이유는 url을 간단하게 사용하려고 만든 것이기에,
+      실제로 이용하는 것은 user와 videoController 범위에 들어간다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// userController</span>
+      <span class="const">const</span> join = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Join</span>");
+      <span class="json">export default</span> join;
+
+      <span class="comment">// videoController</span>
+      <span class="const">const</span> trending = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Home Page Videos</span>");
+      <span class="json">export default</span> trending;
+
+      <span class="comment">// globalRouter</span>
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> join <span class="json">from</span> "<span class="text">../controllers/userController</span>";
+      <span class="json">import</span> trending <span class="json">from</span> "<span class="text">../controllers/videoController</span>";
+
+      <span class="const">const</span> <span class="tag">globalRouter</span> = express.<span class="attribute">Router</span>();
+
+      globalRouter.<span class="attribute">get</span>("/", trending);
+      globalRouter.<span class="attribute">get</span>("/join", join);
+
+      <span class="json">export default</span> globalRouter;
+    </pre>
+    <p>
+      Router를 server에서 독립시킬 때와 마찬가지로 별도의 js에서 controller
+      변수를 지정하고, export한 다음 router에서 import하는 것이다.
+    </p>
+    <p>
+      다만 문제점은 export default는 하나밖에 export하지 못한다. 그래서 이름은
+      상관 없이 지정할 수 있는 것이다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// globalRouter</span>
+      import express from "express";
+      import { join } from "../controllers/userController";
+      import { trending } from "../controllers/videoController";
+      
+      const globalRouter = express.Router();
+      
+      globalRouter.get("/", trending);
+      globalRouter.get("/join", join);
+      
+      export default globalRouter;
+      
+      
+      <span class="comment">// videoController</span>
+      export const trending = (req, res) =&gt; res.send("Home Page Videos");
+      export const watch = (req, res) =&gt; res.send("Watch");
+      export const edit = (req, res) =&gt; res.send("Eidt");
+    </pre>
+    <p>
+      하지만 export를 변수 앞에 지정해줄 경우, 여러개를 export 할 수 있다.
+      하지만 정확한 이름을 작성해주어야 정상적으로 값을 불러온다.
+    </p>
+    <p>
+      만약에 없는 router를 불러올 경우 이와 같은 에러가 발생한다.
+      <br />
+      <span class="codeline"
+        >Route.get() requires a callback function but got a [object
+        Undefined]</span
+      >
+      라우터에게 존재하지 않은 함수를 지정했다는 말이다.
+    </p>
+    <br />
+    <h2>복습</h2>
+    <pre class="codeBlock">
+      <span class="comment">// 현재까지의 코드</span>
+
+      <span class="comment">// server.js</span>
+      import express from "express";
+      import morgan from "morgan";
+      import globalRouter from "./routers/globalRouter";
+      import videoRouter from "./routers/videoRouter";
+      import userRouter from "./routers/userRouter";
+      const PORT = 4000;
+      const app = express();
+      const logger = morgan("dev");
+      app.use(logger);
+      app.use("/", globalRouter);
+      app.use("/users", userRouter);
+      app.use("/videos", videoRouter);
+      const handleListening = () =&gt; console.log(`Server listening on port http://localhost:${PORT} 🚀`);
+      app.listen(PORT, handleListening);
+
+      <span class="comment">// globalRouter.js</span>
+      import express from "express";
+      import { join } from "../controllers/userController";
+      import { trending } from "../controllers/videoController";
+      const globalRouter = express.Router();
+      globalRouter.get("/", trending);
+      globalRouter.get("/join", join);
+      export default globalRouter;
+
+      <span class="comment">// videoRouter.js</span>
+      import express from "express";
+      import { watch } from "../controllers/videoController";
+      import { edit } from "../controllers/videoController";
+      const videoRouter = express.Router();
+      videoRouter.get("/watch", watch);
+      videoRouter.get("/edit", edit);
+      export default videoRouter;
+
+      <span class="comment">// userRouter.js</span>
+      import express from "express";
+      import { edit, remove } from "../controllers/userController";
+      const userRouter = express.Router();
+      userRouter.get("/edit", edit);
+      userRouter.get("/delete", remove);
+      export default userRouter;
+
+      <span class="comment">// userController.js</span>
+      export const join = (req, res) =&gt; res.send("Join");
+      export const edit = (req, res) =&gt; res.send("Edit User");
+      export const removed = (req, res) =&gt; res.send("Remove User");
+
+
+      <span class="comment">// videoController.js</span>
+      export const trending = (req, res) =&gt; res.send("Home Page Videos");
+      export const watch = (req, res) =&gt; res.send("Watch");
+      export const edit = (req, res) =&gt; res.send("Eidt");
+    </pre>
+    <p>라우터는 url이 어떻게 시작하는지에 따라 나누는 방법이다.</p>
   </body>
 </html>

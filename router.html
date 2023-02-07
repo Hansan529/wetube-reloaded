@@ -187,22 +187,22 @@
     </p>
     <pre class="codeBlock">
       <span class="comment">// globalRouter</span>
-      import express from "express";
-      import { join } from "../controllers/userController";
-      import { trending } from "../controllers/videoController";
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> { join } <span class="json">from</span> "<span class="text">../controllers/userController</span>";
+      <span class="json">import</span> { trending } <span class="json">from</span> "<span class="text">../controllers/videoController</span>";
       
-      const globalRouter = express.Router();
+      <span class="const">const</span> <span class="tag">globalRouter</span> = express.<span class="attribute">Router</span>();
       
-      globalRouter.get("/", trending);
-      globalRouter.get("/join", join);
+      globalRouter.<span class="attribute">get</span>("<span class="text">/</span>", trending);
+      globalRouter.<span class="attribute">get</span>("<span class="text">/join</span>", join);
       
-      export default globalRouter;
+      <span class="json">export default</span> globalRouter;
       
       
       <span class="comment">// videoController</span>
-      export const trending = (req, res) =&gt; res.send("Home Page Videos");
-      export const watch = (req, res) =&gt; res.send("Watch");
-      export const edit = (req, res) =&gt; res.send("Eidt");
+      <span class="json">export</span> <span class="const">const</span> trending = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Home Page Videos</span>");
+      <span class="json">export</span> <span class="const">const</span> watch = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Watch</span>");
+      <span class="json">export</span> <span class="const">const</span> edit = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Edit</span>");
     </pre>
     <p>
       하지만 export를 변수 앞에 지정해줄 경우, 여러개를 export 할 수 있다.
@@ -223,57 +223,57 @@
       <span class="comment">// 현재까지의 코드</span>
 
       <span class="comment">// server.js</span>
-      import express from "express";
-      import morgan from "morgan";
-      import globalRouter from "./routers/globalRouter";
-      import videoRouter from "./routers/videoRouter";
-      import userRouter from "./routers/userRouter";
-      const PORT = 4000;
-      const app = express();
-      const logger = morgan("dev");
-      app.use(logger);
-      app.use("/", globalRouter);
-      app.use("/users", userRouter);
-      app.use("/videos", videoRouter);
-      const handleListening = () =&gt; console.log(`Server listening on port http://localhost:${PORT} 🚀`);
-      app.listen(PORT, handleListening);
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> morgan <span class="json">from</span> "<span class="text">morgan</span>";
+      <span class="json">import</span> globalRouter <span class="json">from</span> "<span class="text">./routers/globalRouter</span>";
+      <span class="json">import</span> videoRouter <span class="json">from</span> "<span class="text">./routers/videoRouter</span>";
+      <span class="json">import</span> userRouter <span class="json">from</span> "<span class="text">./routers/userRouter</span>";
+      <span class="const">const</span> <span class="tag">PORT</span> = 4000;
+      <span class="const">const</span> <span class="tag">app</span> = express();
+      <span class="const">const</span> <span class="tag">logger</span> = morgan("<span class="text">dev</span>");
+      app.<span class="attribute">use</span>(logger);
+      app.<span class="attribute">use</span>("<span class="text">/</span>", globalRouter);
+      app.<span class="attribute">use</span>("<span class="text">/users</span>", userRouter);
+      app.<span class="attribute">use</span>("<span class="text">/videos</span>", videoRouter);
+      <span class="const">const</span> <span class="tag">handleListening</span> = () =&gt; console.log(`<span class="text">Server listening on port http://localhost:${PORT} 🚀</span>`);
+      app.<span class="attribute">listen</span>(PORT, <span class="attribute">handleListening</span>);
 
       <span class="comment">// globalRouter.js</span>
-      import express from "express";
-      import { join } from "../controllers/userController";
-      import { trending } from "../controllers/videoController";
-      const globalRouter = express.Router();
-      globalRouter.get("/", trending);
-      globalRouter.get("/join", join);
-      export default globalRouter;
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> { join } <span class="json">from</span> "<span class="text">../controllers/userController</span>";
+      <span class="json">import</span> { trending } <span class="json">from</span> "<span class="text">../controllers/videoController</span>";
+      <span class="const">const</span> globalRouter = express.<span class="attribute">Router</span>();
+      globalRouter.<span class="attribute">get</span>("<span class="text">/</span>", trending);
+      globalRouter.<span class="attribute">get</span>("<span class="text">/join</span>", join);
+      <span class="json">export default</span> globalRouter;
 
       <span class="comment">// videoRouter.js</span>
-      import express from "express";
-      import { watch } from "../controllers/videoController";
-      import { edit } from "../controllers/videoController";
-      const videoRouter = express.Router();
-      videoRouter.get("/watch", watch);
-      videoRouter.get("/edit", edit);
-      export default videoRouter;
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> { watch } <span class="json">from</span> "<span class="text">../controllers/videoController</span>";
+      <span class="json">import</span> { edit } <span class="json">from</span> "<span class="text">../controllers/videoController</span>";
+      <span class="const">const</span> videoRouter = express.<span class="attribute">Router</span>();
+      videoRouter.<span class="attribute">get</span>("<span class="text">/watch</span>", watch);
+      videoRouter.<span class="attribute">get</span>("<span class="text">/edit</span>", edit);
+      <span class="json">export default</span> videoRouter;
 
       <span class="comment">// userRouter.js</span>
-      import express from "express";
-      import { edit, remove } from "../controllers/userController";
-      const userRouter = express.Router();
-      userRouter.get("/edit", edit);
-      userRouter.get("/delete", remove);
-      export default userRouter;
+      <span class="json">import</span> express <span class="json">from</span> "<span class="text">express</span>";
+      <span class="json">import</span> { edit, remove } <span class="json">from</span> "<span class="text">../controllers/userController</span>";
+      <span class="const">const</span> userRouter = express.<span class="attribute">Router</span>();
+      userRouter.<span class="attribute">get</span>("<span class="text">/edit</span>", edit);
+      userRouter.<span class="attribute">get</span>("<span class="text">/delete</span>", remove);
+      <span class="json">export default</span> userRouter;
 
       <span class="comment">// userController.js</span>
-      export const join = (req, res) =&gt; res.send("Join");
-      export const edit = (req, res) =&gt; res.send("Edit User");
-      export const removed = (req, res) =&gt; res.send("Remove User");
+      <span class="json">export</span> <span class="const">const</span> join = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Join</span>");
+      <span class="json">export</span> <span class="const">const</span> edit = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Edit User</span>");
+      <span class="json">export</span> <span class="const">const</span> removed = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Remove User</span>");
 
 
       <span class="comment">// videoController.js</span>
-      export const trending = (req, res) =&gt; res.send("Home Page Videos");
-      export const watch = (req, res) =&gt; res.send("Watch");
-      export const edit = (req, res) =&gt; res.send("Eidt");
+      <span class="json">export</span> <span class="const">const</span> trending = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Home Page Videos</span>");
+      <span class="json">export</span> <span class="const">const</span> watch = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Watch</span>");
+      <span class="json">export</span> <span class="const">const</span> edit = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Eidt</span>");
     </pre>
     <p>라우터는 url이 어떻게 시작하는지에 따라 나누는 방법이다.</p>
   </body>

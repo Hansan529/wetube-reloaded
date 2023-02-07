@@ -291,3 +291,7 @@ app.listen(
 # Express
 
 <https://hansan529.github.io/wetube-reloaded/express.html>
+
+# Router
+
+<https://hansan529.github.io/wetube-reloaded/router.html>

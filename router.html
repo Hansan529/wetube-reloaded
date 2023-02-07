@@ -16,11 +16,14 @@
       /login → Login
       /search → Search
 
-      /edit-user → Edit User
-      /delete-user → Delete User
-      /watch-video → What Video
-      /edit-video → Edit Video
-      /delete-video → Delete Video
+      /user/edit → Edit User
+      /user/delete → Delete User
+      
+      /video/watch → Watch Video
+      /video/edit → Edit Video
+      /video/delete → Delete Video
+      /video/comments → Comment on a video
+      /video/comments/delete → Delete A
     </pre>
     <p>해당 주제에 대해 라우터를 통해 정리해겠다.</p>
 
@@ -276,5 +279,51 @@
       <span class="json">export</span> <span class="const">const</span> edit = (req, res) =&gt; res.<span class="attribute">send</span>("<span class="text">Eidt</span>");
     </pre>
     <p>라우터는 url이 어떻게 시작하는지에 따라 나누는 방법이다.</p>
+    <pre class="codeBlock">
+      <span class="comment">// export default</span>
+      import abc from "default" <span class="comment">// import abc = "default" 이름은 abc 이지만 기능은 "default" 함수이다.</span>
+
+      <span class="comment">// export</span>
+      import { function-name } from "../" <span class="comment">// object를 열고 그 안에 export 한 상수 이름 그대로 사용해야 한다.</span>
+      <span class="comment">// 추가로, from 이후 ""에 단어만 있을 경우 express는 node_modules에서 찾아보고, ../와 같은 절대, 상대주소를 이용하면 경로로 인식한다.</span>
+    </pre>
+    <h1>#4.6 Planning Routes</h1>
+    <pre class="codeBlock">
+      / → home
+      /join → Join
+      /login → Login
+      /search → Search
+
+      /user/:id → See User
+      /user/logout → Log Out
+      <span class="comment">// 현재 로그인 중인 유저만 가능함</span>
+      /user/edit → Edit My Profile
+      /user/delete → Delete My Profile
+      
+      <span class="comment">// 누구나 동영상을 볼 수 있음</span>
+      /video/:id → See Video
+      <span class="comment">// 작성자만 가능함</span>
+      /video/:id/edit → Edit Video
+      /video/:id/delete → Delete Video
+      <span class="comment">// 로그인 시 누구나 업로드 할 수 있음</span>
+      /video/upload → Upload Video
+    </pre>
+    <pre class="codeBlock">
+      <span class="comment">// globalRouter</span>
+      login, search Router 생성,
+      login, search import
+      
+      <span class="comment">// userRouter</span>
+      logout, see Router 생성
+      logout, see import
+      <span class="comment">// userController</span>
+      login, logout, see Controller 생성
+      login, logout, see import
+
+      <span class="comment">// videoRouter</span>
+       upload, delete 생성 watch -&gt; see 변경
+      <span class="comment">// videoController</span>
+       search, upload, deleteVideo Controller 생성 watch -&gt; see 변경
+    </pre>
   </body>
 </html>

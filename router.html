@@ -325,5 +325,122 @@
       <span class="comment">// videoController</span>
        search, upload, deleteVideo Controller 생성 watch -&gt; see 변경
     </pre>
+    <br />
+    <h1>#4.7 URL Parameters</h1>
+    <p>
+      4.6에서 있던 router 중에 :id라는 항목이 있는데, :(파라미터) 라고 명칭한다
+    </p>
+    <p>
+      url 안에 변수를 포함시킬 수 있게 한다. 주소에 아래와 같이 입력 후 접속을
+      시도해보자
+    </p>
+    <p class="codeline">
+      <a
+        href="http://localhost:4000/videos/62483247"
+        style="color: #fff; text-decoration: none"
+        >http://localhost:4000/videos/62483247</a
+      >
+    </p>
+    <p>
+      분명 62483247 이라는 router를 만들지 않았는데, videoController의 see
+      Controller가 실행되어 결과로 "See" 와 같은 텍스트를 볼 수 있다.
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// videoController</span>
+      export const see = (req, res) =&gt; {
+        console.log(req.params);
+        return res.send("See");
+      };</pre>
+    <p>
+      /video/ 를 통해 접속을 해보면 콘솔에 입력한 url의 주소를 확인 해 볼 수
+      있다.
+    </p>
+    <span class="codeline">{ id: `62483247` }</span>
+    <p>파라미터 이름과 url 함수값을 확인 할 수 있다.</p>
+    <p>
+      또한 Router의 위치가 중요한데, 파라미터를 사용한 Router 뒤에, id값 자리에
+      들어가는 주소가 있다면, 그걸 주소가 아닌 id로 해석하여 원하지 않는 결과를
+      얻을 수 있기에 순서가 중요하다
+    </p>
+    <pre class="codeBlock">
+      <span class="comment">// videoRouter</span>
+      videoRouter.get("/:id", see);
+      videoRouter.get("/upload", upload);
+
+      <span class="comment">// videoController</span>
+      export const see = (req, res) =&gt; {
+        return res.send(`Watch Video #${req.params.id}`);
+      };
+      
+      <span class="comment">// web</span>
+      http://localhost:4000/videos/upload <span class="comment">/* Watch Video #upload */</span></pre>
+    <p>
+      분명 upload Router를 실행하기 위해서 upload를 입력하고 req를 줬는데,
+      돌아온 답은 see 함수를 확인할 수 있다. 순서를 다시 upload가 위에 있다면
+      정상적인 답을 얻을 수 있다.
+    </p>
+    <p>express가 router를 id로 인식하지 않도록 순서를 잘 확인하자.</p>
+    <p>
+      만약 파라미터값을 숫자만 받고자 한다면 정규식을 이용해야한다. 다양한 식이
+      있지만, 일단 작게 알아보자
+    </p>
+    <pre class="codeBlock">
+      videoRouter.get("/:id(\\d+)", see); <span class="comment">d(digit): 숫자만 선택한다. w: 아무 단어를 선택한다.</span>
+      videoRouter.get("/:id(\\d+)/edit", edit);
+      videoRouter.get("/:id(\\d+)/delete", deleteVideo);
+      videoRouter.get("/upload", upload);
+    </pre>
+    <p>
+      정규식을 사용해 숫자만 받게되면, upload의 위치를 옮겨도 정상 작동한다.
+      upload는 문자이고, 파라미터는 숫자만을 입력받으니 조건에 맞지 않아
+      upload가 실행되는 거다
+    </p>
+    <br />
+    <pre class="codeBlock">
+      <span class="comment">루트 라우트 /에 일치시킨다</span>
+      app.get('/', function (req, res) {
+        res.send('root');
+      });
+      
+      <span class="comment">req를 /about에 일치시킨다</span>
+      app.get('/about', function (req, res) {
+        res.send('about');
+      });
+      
+      <span class="comment">/random.text에 일치시킨다</span>
+      app.get('/random.text', function (req, res) {
+        res.send('random.text');
+      });
+      
+      <span class="comment">문자열 패턴을 기반으로 하여 acd, abcd와 일치한다 (b 선택)</span>
+      app.get('/ab?cd', function(req, res) {
+        res.send('ab?cd');
+      });
+      
+      <span class="comment">abcd, abbcd, abbbcd 등과 일치한다 (여러번 가능)</span>
+      app.get('/ab+cd', function(req, res) {
+        res.send('ab+cd');
+      });
+      
+      <span class="comment">abcd, abxcd, abRABOMcd 및 ab123cd 등과 일치한다 (아무런 텍스트)</span>
+      app.get('/ab*cd', function(req, res) {
+        res.send('ab*cd');
+      });
+      
+      <span class="comment">/abe 및 /abcde와 일치한다 (그룹 선택)</span>
+      app.get('/ab(cd)?e', function(req, res) {
+        res.send('ab(cd)?e');
+      });
+      
+      <span class="comment">라우트 이름에 "a"가 포함된 모든 항목과 일치시킨다</span>
+      app.get(/a/, function(req, res) {
+        res.send('/a/');
+      });
+      
+      <span class="comment">butterfly 및 dragonfly와 일치, butterflyman 및 dragonfly man 등과 일치하지 않음 (정확)</span>
+      app.get(/.*fly$/, function(req, res) {
+        res.send('/.*fly$/');
+      });
+    </pre>
   </body>
 </html>

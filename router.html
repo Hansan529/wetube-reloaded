@@ -385,8 +385,8 @@
       있지만, 일단 작게 알아보자
     </p>
     <pre class="codeBlock">
-      videoRouter.get("/:id(\\d+)", see); <span class="comment">d(digit): 숫자만 선택한다. w: 아무 단어를 선택한다.</span>
-      videoRouter.get("/:id(\\d+)/edit", edit);
+      videoRouter.get("/:id(\\d+)", see); <span class="comment">d(digit): 숫자만 선택한다. w: 아무 단어를 선택한다. +: 전체 선택한다</span>
+      videoRouter.get("/:id(\\d+)/edit", edit); <span class="comment">js에서는 \를 하나 더 붙여서 작성한다</span>
       videoRouter.get("/:id(\\d+)/delete", deleteVideo);
       videoRouter.get("/upload", upload);
     </pre>

@@ -157,10 +157,12 @@ dependencies는 프로젝트에 필요한 모듈이고, devDependencies는 개�
 
 bable을 사용하기 위한 세팅
 
-```js
-babel.config.json /* 파일 이름 */
+```
+$ touch babel.config.json
+```
 
-
+```json
+// babel.config.json
 {
   "presets": ["@babel/preset-env"] /* 최신 자바스크립트를 사용 할 수 있음 */
 }
@@ -191,13 +193,22 @@ devDependencies에 preset, node을 추가한다.
 
 ## #2.4 Nodemon
 
+자바스크립트에서 일일이 변환을 하는 작업을 하고 싶지 않기에, 이를 package.json에서 처리할 수 있는 패키지를 추가로 설치한다.
+
+수정을 한 다음에 다시 npm run dev 를 매 번 입력하기는 불 필요한 반복이기에 이를 대신해주는 작업을 한다.
+
 ```json
 // 적용한 나의 package.json
 "scripts": {
     "dev": "nodemon --exec babel-node index.js"
   }
+```
 
-// 필요한 dependencies
+점차 수식어가 추가로 생기는 것을 볼 수 있다.
+
+node -> babel-node -> nodemon --exec
+
+```json
   "dependencies": {
     "express": "^4.18.2"
   },
@@ -307,10 +318,10 @@ app.listen(
 
 <br>
 
-# Express
+## Express
 
 <https://hansan529.github.io/wetube-reloaded/express.html>
 
-# Router
+## Router
 
 <https://hansan529.github.io/wetube-reloaded/router.html>

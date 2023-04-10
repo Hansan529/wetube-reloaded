@@ -61,10 +61,9 @@ About to write to /Users/hansan/Documents/GitHub/wetube/package.json: /* 파일 
 
 ```
 $ node index.js
-
-
-Hello NodeJS
 ```
+
+    Hello NodeJS
 
 <br>
 
@@ -72,15 +71,16 @@ Hello NodeJS
 
 ```
 $ npm run win
-
-
-> wetube@1.0.0 win
-> node index.js
-
-Hello NodeJS
 ```
 
+    > wetube@1.0.0 win
+    > node index.js
+
+    Hello NodeJS
+
 프로젝트 폴더 안 콘솔에서 내가 만든 스크립트를 사용 할 수 있다.
+
+이름은 사용자가 마음대로 지정하여 사용하면 된다.
 
 <br>
 
@@ -92,13 +92,32 @@ package.json / dependencies 에 있는 것들은 <strong style="color: pink">프
 
 npm이 package.json 파일에 해당 내용을 자동으로 추가한다
 
-```
+```js
 "dependencies": {
    "express": "^4.18.2"
  }
 ```
 
-node_modules 파일과 package-lock.json 파일을 삭제하여도 `npm i` 만 입력해도 재설치된다.
+dependencies라는 것은, 해당 npm이 정상적으로 작동되게 하려면 필요한 패키지들을 말한다.
+
+```js
+// express의 package.json
+"accepts": "~1.3.8",
+"array-flatten": "1.1.1",
+"body-parser": "1.20.1",
+"content-disposition": "0.5.4",
+"content-type": "~1.0.4",
+"cookie": "0.5.0",
+...
+```
+
+그래서 express를 설치하면서 dependencies에 있는 패키지들도 함께 설치가 되는 것이다.
+
+<br>
+
+`package.json`에 있는 dependencies 내용 덕분에, node_modules 파일과 package-lock.json 파일이 없더라도
+
+`npm i` 만 입력해도 필요한 모듈을 설치한다.
 
 ```javascript
 $ npm i /* dependencies에 작성된 모듈을 자동으로 다운로드 한다. */
@@ -112,7 +131,7 @@ added 57 packages, and audited 58 packages in 631ms
 found 0 vulnerabilities
 ```
 
-해당 기능 덕분에 node_modules를 공유하지 않아도 `package.json`과 `index.js`만 공유하면
+해당 기능 덕분에 node_modules를 공유하지 않아도 `package.json`과 `index.js`(실행될 스크립트)만 공유하면
 
 프로젝트를 공유 할 수 있다.
 

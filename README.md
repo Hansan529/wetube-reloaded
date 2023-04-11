@@ -318,10 +318,6 @@ app.listen(
 
 <br>
 
-## Express
-
-<https://hansan529.github.io/wetube-reloaded/express.html>
+## [Express 기초](https://github.com/Hansan529/wetube-reloaded/blob/main/express.md)
 
 ## Router
-
-<https://hansan529.github.io/wetube-reloaded/router.html>

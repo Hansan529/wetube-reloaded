@@ -217,44 +217,93 @@ const logger = (req, res, next) => {
 const privateMiddleware = (req, res, next) => {
   const url = req.url;
   if (url === "/protected") {
-    return res.send("<h1></h1>Not Allowed</h1>");
+    return res.send("<h1>Not Allowed</h1>");
   }
   next();
 };
 
+const handlePritected = (req, res) => {
+  return res.send("접근이 제한된 페이지입니다");
+};
+
 app.use(logger, privateMiddleware);
 app.get("/", handleHome);
+app.get("/protected", handlePritected);
 ```
 
 어떠한 경로를 요청하던지 logger와 privateMiddleware 함수는 실행되도록
 하고, 만약 요청한 경로가 protected일 경우 Not Allowed를 html에
 출력하고, 아닐 경우에는 next로 넘긴다.
 
-## 정보, Recap
+그렇기에, handlePritected를 실행시키지 못하고, privateMiddleware에서 request가 종료되어 더이상 진행하지 않게 된다.
 
-.get은 function이 필요하다. 1+1, console.log("hi")와 같은 것은 바로
-실행하기 때문에 에러가 발생하고, 이 에러를 해결하기 위해서는
+<br>
 
-별도의 function을 생성해서 불러오거나, app.get("", () =&gt;
-console.log("hi"))와 같이 inline function을 지정해주어야 에러가
-사라진다.
+## Recap 복습
 
 ```js
-// 유지보수 차원으로 별도의 function을 생성해서 지정하는게 좋다.
+import express from "express";
+```
 
-// function
+여기서 "express"는 `node_modules/express` 이지만, node_modules를 생략을 하여도
+지장이 없다.
+
+<br>
+
+```js
+const PORT = 4000;
+
+const listenServer = () => {
+  console.log(`http://localhost:${PORT}`);
+};
+
+app.listen(PORT, listenServer);
+```
+
+포트를 지정하는 이유는, 서버는 컴퓨터 전체를 listen 할 수 없기 때문이다.  
+특정 포트를 listen을 통해서, 해당 포트를 호스팅하는 것이다.
+
+현 상태에서 접속을 해 보면, 홈페이지 로딩이 계속해서 하는 것을 볼 수 있을 것이다.
+
+> 내가 문 밖에서 열어달라고(req) 했는데, 문 안에서 열어주지(res) 않는 것이다.
+
+브라우저에서 페이지에 대한 요청을 하면, 서버는 페이지를 브라우저에게 준다.
+
+즉 브라우저가 이동하는 것이 아닌, 스크린에 페이지를 가져 오는 것이다.
+
+<br>
+
+요청에 따른 반응(res)을 해주기 위해서 `get()`를 사용한다.  
+get에는 실행 될 함수가 필요하다. `1+1, console.log("hi")`와 같은 것은 바로
+실행하기 때문에 에러가 발생하고, 이 에러를 해결하기 위해서는
+
+별도의 function을 생성해서 불러오거나,  
+`app.get("", () =&gt; console.log("hi"))` 와 같이 inline function을 지정해주어야 에러가 사라진다.
+
+> 재사용을 해야 한다면 **함수**를 생성하고,  
+> 일회성인 경우 **인라인**으로 실행시킨다.
+
+```js
+/* function */
 const handleHome = (req, res) => {
   res.send("hello");
 };
 
 app.get("/", handleHome);
+```
 
-// inline
+```js
+/* inline */
 app.get("/", (req, res) => res.send("hello"));
 ```
 
 handler의 경우 이름은 req, res로 지정 할 필요 없다. 단지 코드를 봤을
 때 인지하기 쉽도록 한 것이다.
+
+반응을 하기 위해 필요한 get을 사용했으니, 브라우저에게 요청을 중지시키도록 하는 메소드인  
+`res.send()`, `res.end()`가 있다.
+
+send는 메시지를 출력하는 것이고, end는 말 그대로 종료시켜버린다.
 
 ```js
 // 기존 코드
@@ -263,33 +312,85 @@ const handleHome = (req, res) => {
 };
 
 //argument의 위치 순서만 지켜주면 어떠한 이름도 상관 없다.
-//request-object, response-object 순서이다.
+//request-object, response-object , next 순서이다.
 
 const handleHome = (x, y) => {
   return y.send("<h1></h1>hello</h1>");
 };
 ```
 
+만약에 모든 접속에 middleware를 사용해야 한 다면, get 대신 use를 사용한다.
+
+```js
+// Before
+app.get("/", middleware, home);
+app.get("/login", middleware, login);
+```
+
+```js
+// After
+app.use(middleware);
+app.get("/", login);
+app.get("/login", login);
+```
+
+**주의 할 점은 use의 선언 위치가 get 보다 뒤에 있다면, get에서 request를 종료시키기 때문에, use가 실행되지 않는다!**
+
+<br>
+
 ## morgan
 
 GET, path, status code , 응답시간 모든 정보를 가지고있는
-middleware이다.
+node.js용 middleware이다.
 
-npm i morgan 으로 설치 가능하고, import &lt;morgan&gt; from "morgan";
-` &lt;morgan&gt;은 별명이기에 마음대로 지정해도 된다. &lt;morgan&gt;은
-별명이기에 마음대로 지정해도 된다.
+`npm i morgan` 으로 설치 가능하고, import 한 뒤에 사용하면 된다.
+
+morgan에는 combined, common, dev, short, tiny 가 있다.
 
 ```js
 import morgan from "morgan";
-
-// 생략
 
 const logger = morgan("dev");
 
 app.use(logger);
 ```
 
+- dev
+
 ```js
-// Method, Url, statusCode, 응답시간
+// Method, Path, StatusCode, 응답시간
 GET / 304 2.339 ms - -
+```
+
+- common
+
+```js
+// 시간, method, path, http 버전, statusCode
+::1 - - [11/Apr/2023:03:21:50 +0000] "GET / HTTP/1.1" 304 -
+```
+
+- combined
+
+```js
+// 시간, method, path, http 버전, statuscode, os, 브라우저, 브라우저버전
+
+/* chrome */
+::1 - - [11/Apr/2023:03:18:13 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+
+/* safari */
+::1 - - [11/Apr/2023:03:18:33 +0000] "GET / HTTP/1.1" 200 17 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Safari/605.1.15"
+```
+
+- short
+
+```js
+// method, path, http-v, statuscode, 응답시간
+::1 - GET / HTTP/1.1 304 - - 1.359 ms
+```
+
+- tiny
+
+```js
+// method, path, statuscode, 응답시간
+GET / 304 - - 2.396 ms
 ```

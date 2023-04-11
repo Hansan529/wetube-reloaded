@@ -200,19 +200,25 @@ globalRouter.get("/join", join);
 // server.js
 import express from "express";
 import morgan from "morgan";
+
 import globalRouter from "./routers/globalRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
+
 const PORT = 4000;
+
 const app = express();
 const logger = morgan("dev");
+
 app.use(logger);
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 const handleListening = () =>; console.log(`Server listening on port http://localhost:${PORT} 🚀`);
 app.listen(PORT, handleListening);
+```
 
+```js
 // globalRouter.js
 import express from "express";
 import { join } from "../controllers/userController";
@@ -221,16 +227,19 @@ const globalRouter = express.Router();
 globalRouter.get("/", trending);
 globalRouter.get("/join", join);
 export default globalRouter;
+```
 
+```js
 // videoRouter.js
 import express from "express";
-import { watch } from "../controllers/videoController";
-import { edit } from "../controllers/videoController";
+import { watch, edit } from "../controllers/videoController";
 const videoRouter = express.Router();
 videoRouter.get("/watch", watch);
 videoRouter.get("/edit", edit);
 export default videoRouter;
+```
 
+```js
 // userRouter.js
 import express from "express";
 import { edit, remove } from "../controllers/userController";
@@ -238,30 +247,47 @@ const userRouter = express.Router();
 userRouter.get("/edit", edit);
 userRouter.get("/delete", remove);
 export default userRouter;
+```
 
+```js
 // userController.js
 export const join = (req, res) =>; res.send("Join");
 export const edit = (req, res) =>; res.send("Edit User");
 export const removed = (req, res) =>; res.send("Remove User");
+```
 
+```js
 // videoController.js
 export const trending = (req, res) =>; res.send("Home Page Videos");
 export const watch = (req, res) =>; res.send("Watch");
 export const edit = (req, res) =>; res.send("Eidt");
-
 ```
 
-라우터는 url이 어떻게 시작하는지에 따라 나누는 방법이다.
+/users + /edit 을 자동으로 해주어서 /users/edit 과 같이 get을 작성하지 않아도 된다.
+
+라우터는 url을 그룹화 하는 방법이다.
+
+<br>
 
 ```js
 // export default
-import abc from "default" // import abc = "default" 이름은 abc 이지만 기능은 "default" 함수이다.
-
-// export
-import { function-name } from "../" // object를 열고 그 안에 export 한 상수 이름 그대로 사용해야 한다.
-// 추가로, from 이후 ""에 단어만 있을 경우 express는 node_modules에서 찾아보고, ../와 같은 절대, 상대주소를 이용하면 경로로 인식한다.
-
+import abc from "default";
 ```
+
+abc 이지만 기능은 "default" 함수이다.
+
+<br>
+
+```js
+// export
+import { function-name } from "../"
+```
+
+object를 열고 그 안에 export 한 상수 이름 그대로 사용해야 한다.  
+추가로, from 이후 ""에 단어만 있을 경우 express는 node_modules에서 찾아본다  
+/, ../와 같은 절대, 상대주소를 이용하면 경로로 인식한다.
+
+<br>
 
 ## 4.6 Planning Routes
 

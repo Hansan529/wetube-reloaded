@@ -134,28 +134,16 @@ server 파일에 있던 코드를 모두 옮기고 Router에서는 Export를 하
 server.js에서는 이를 import 하여 이용한다. 여러개의 Router를 추가해도
 동일하다.
 
-허나, 하나 두개의 적은 개수라면 괜찮겠지만, 많아지면 Router.js 안에
-Controller와 Router 두 가지가 모두 들어있기에 이를 또 분리해준다.
-
 ```js
-// src
-controllers / userController.js;
-controllers / videoController.js;
-```
-
-globalController가 없는 이유는 url을 간단하게 사용하려고 만든 것이기에,
-실제로 이용하는 것은 user와 videoController 범위에 들어간다.
-
-```js
-// userController
+// userController.js
 const join = (req, res) =>; res.send("Join");
 export default join;
 
-// videoController
+// videoController.js
 const trending = (req, res) =>; res.send("Home Page Videos");
 export default trending;
 
-// globalRouter
+// globalRouter.js
 import express from "express";
 import join from "../controllers/userController";
 import trending from "../controllers/videoController";
@@ -171,33 +159,36 @@ export default globalRouter;
 Router를 server에서 독립시킬 때와 마찬가지로 별도의 js에서 controller
 변수를 지정하고, export한 다음 router에서 import하는 것이다.
 
-다만 문제점은 export default는 하나밖에 export하지 못한다. 그래서 이름은
+다만 문제점은 export default는 **하나밖에 export하지 못한다.** 그래서 이름
 상관 없이 지정할 수 있는 것이다.
 
+    import 아무이름 from "../controllers/videoController.js"
+
+export default 로 내보내기 했으니, 해당 파일에서 import 해 오는 변수는  
+trending 인 것을 알 수 있기때문에 이름에 대한 제한이 없는 것이다.
+
+<br>
+
+하지만 export를 변수 앞에 지정해줄 경우, 여러개를 export 할 수 있다.
+단 정확한 이름을 작성해주어야 값을 불러온다.
+
 ```js
-// globalRouter
-import express from "express";
+// userController.js
+export const join = (req, res) => res.send("Join");
+
+// videoController.js
+export const trending = (req, res) => res.send("Home Page Videos");
+
+// globalRouter.js
 import { join } from "../controllers/userController";
 import { trending } from "../controllers/videoController";
 
-const globalRouter = express.Router();
-
 globalRouter.get("/", trending);
 globalRouter.get("/join", join);
-
-export default globalRouter;
-
-
-// videoController
-export const trending = (req, res) =>; res.send("Home Page Videos");
-export const watch = (req, res) =>; res.send("Watch");
-export const edit = (req, res) =>; res.send("Edit");
 ```
 
-하지만 export를 변수 앞에 지정해줄 경우, 여러개를 export 할 수 있다.
-하지만 정확한 이름을 작성해주어야 정상적으로 값을 불러온다.
-
-만약에 없는 router를 불러올 경우 이와 같은 에러가 발생한다.
+만약에 없는 router를 불러올 경우 에러가 발생한다.  
+`Route.get() requires a callback function but got a [object Undefined]`
 
 <br />
 

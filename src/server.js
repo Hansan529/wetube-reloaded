@@ -2,25 +2,20 @@
 // const express = require("express");
 
 import express from "express";
+import morgan from "morgan";
 
 const PORT = 4000;
-const app = express();
 
-const gossipMiddleware = (req, res, next) => {
-  console.log(`누군가 ${req.url}로 이동하려고 합니다.`);
-  // console.log(req);
-  next();
-};
+const app = express(); // express 어플리케이션
+const logger = morgan("dev"); // morgan 미들웨어
 
 const handleHome = (req, res) => {
-  console.log("메인 루트로 이동했습니다.");
   return res.send("<h1>res send</h1>");
 };
 
-const handleLogin = (req, res) => {
-  return res.send("Login 완료");
-};
-app.use(gossipMiddleware);
+const handleLogin = (req, res) => res.send("Login 완료");
+
+app.use(logger);
 app.get("/", handleHome);
 app.get("/login", handleLogin);
 

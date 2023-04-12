@@ -243,6 +243,24 @@ block content
       li=video
 ```
 
+아래와 같이 변환되어 출력된다.
+
+```pug
+block content
+  h2 Home!
+  ul
+    li 1
+    li 2
+    li 3
+    li 4
+    li 5
+    li 6
+    li 7
+    li 8
+    li 9
+    li 10
+```
+
 이름은 배열 안의 각 item에 대해 가르킨다. ES6의 forEach 와 유사하다.
 
     const videos = [{ name: "1" }, { name: "2" }, { name: "3" }];
@@ -258,7 +276,8 @@ SCSS의 @mixin과 기능이 비슷하다. 반복되어 사용될 코드를 함�
 
 ```pug
 //- home.pug
-extend base.pug
+extends base.pug
+include mixins/video
 
 block content
   h1 Home!
@@ -280,6 +299,8 @@ mixin video(info)
       li #{info.views} views.
 ```
 
+mixin을 한 pug를 불러오기 위해서 `include mixins/video` 경로를 입력한다. 보는것과 같이 /mixins 폴더를 생성했고, 그 안에 video.pug 파일을 생성했다.
+
 videos이란 변수(배열)를 video 라는 item에 넣고, mixin 한 이름 즉, video에 video(item)을 넣는다.
 
 > const <span style="color:aqua">videos</span>
@@ -290,3 +311,5 @@ videos이란 변수(배열)를 video 라는 item에 넣고, mixin 한 이름 즉
 > mixin <span style=color:skyblue>video</span>(info)
 
 이해하기 조금 수월 할 것이다.
+
+mixin을 사용하기 위해서는 `+mixinName` 을 사용해야 불러온다

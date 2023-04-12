@@ -165,3 +165,111 @@ get의 경우, name을 지정하면 해당 변경 내용이 주소창에 그대�
 
 그와 반대로 POST는 주소창에 어떠한 정보도 주지 않는다.  
 파일을 전송하거나, database를 변경할 때 사용하는 것이 POST다.
+
+우리는 videoRouter 에 POST는 없다. 모두 get 밖에 없다. 그래서 추가를 해 주는데,  
+get과 post 모두 사용할 때 사용하기 좋은 코드가 있다.
+
+    videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+
+edit에서 경로 변경 없이 해당 경로에서 수정을 요청하니, get과 post를 하나의 코드에 작성할 수 있는 것이다. 이렇게 되면 코드 줄 수를 줄일 수 있어서 좋다.
+
+postEdit에서, res.redirect()를 사용하면 브라우저가 자동으로 이동하도록 할 수 있다.
+
+id값이 있으니, 절대 경로를 이용해서, id값의 videos로 이동하도록 한다.
+
+    res.redirect(`/videos/${id}`)
+
+완료!
+
+<br>
+
+### 추출하기
+
+우리는 form의 POST 전송 방식으로 데이터를 받는데, 해당 정보를 확인하려면 어떻게 해야 할까?
+
+마치 req.params처럼 말이다. `req.body` 라는 메소드를 사용하면 된다.
+
+req.body를 이용하기 위해서는 express.unlencoded 라는 것이 필요하다.  
+여러 옵션들이 있는데, 일단은 urlencoded를 사용한다.
+
+```js
+// server.js
+app.use(express.urlencoded({ extended: true }));
+app.use("/", globalRouter);
+```
+
+`express.urlencoded의 extended: true`는 form이 value들을 이해할 수 있도록 하며 사용할 수 있는 자바스크립트 형식으로 변형시켜준다.
+
+edit에서 수정한 다음, save를 누른다면 다음과 같이 콘솔에 나온다.  
+`{ title: 'text' }`: title은 input의 name이고, text는 input에 입력한 값이다.
+
+해당 값도 id와 같이 req.body.title로 값을 추출할 수 있다. title은 input의 name 값이니 참고하기 바람.
+
+<br>
+
+```js
+export const postEdit = (req, res) => {
+  const {
+    params: { id },
+    body: { title },
+  } = req;
+  videos[id - 1].title = title;
+  return res.redirect(`/videos/${id}`);
+};
+```
+
+id에 req.params.id를, title에 req.body.title 값을 지정하고 title을 콘솔에서 보면,  
+{ title: 'text' } 이 아닌, text 라는 단어를 추출 할 수 있다.
+
+videos[].title를 'text'로 변경하는 것이다!!!
+
+<br>
+<br>
+
+```js
+// videoRouter
+import { getUpload, postUpload } from "../controllers/videoController";
+
+videoRouter.route("/upload").get(getUpload).post(postUpload);
+```
+
+```js
+// videoController
+
+export const getUpload = (req, res) => {
+  return res.render("upload");
+};
+export const postUpload = (req, res) => {
+  return res.redirect("/");
+};
+```
+
+다음과 같이, get과 post에 대한 라우터를 생성해준다. upload.pug를 render하기로 했으니 views 파일에 생성해 준다.
+
+그리고 videoRouter의 getUpload와 postUpload에 대해 접근할 수 있는 링크를 생성한다.  
+home.pug에다 `a(href="/videos/upload") Upload Video` 추가하여 확인해본다.
+
+Upload Video를 클릭하면, /videos/upload로 이동하며, 이전에 edit 문과 같이 form 요소를 만들어준다.  
+그 후, input에 값을 입력하고 submit을 하면, redirect로 인해 / 루트로 이동한다.
+
+해당 값을 출력하기 위해서, postUpload에서 req.body 값을 추출한다. 그러기 위해서는 input에 name이 있어야 출력이 가능하다.
+
+```js
+// postUpload
+const {
+  body: { title },
+} = req;
+const newVideo = {
+  title,
+  rating: 0,
+  comments: 0,
+  createdAt: "방금",
+  views: 0,
+  id: videos.length + 1,
+};
+videos.push(newVideo);
+return res.redirect("/");
+```
+
+videos에 있는 배열에 newVideo를 추가한다. 그 후 / 루트로 이동한다.  
+서버를 재시작하면 추가한 배열은 제거된다. 왜냐면 가짜 데이터베이스기 때문이다.

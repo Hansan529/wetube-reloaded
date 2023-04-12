@@ -168,11 +168,19 @@ $ touch babel.config.json
 }
 ```
 
-```
-$ npm install @babel/preset-env --save-dev /* preset-env를 모듈에 추가함 (플러그인) */
-$ npm install @babel/node --save -dev /* node를 모듈에 추가함 */
+<br>
 
-$ npm i @babel/preset-env @babel/node --save-dev /* 한 번에 두가지 설치하기 */
+preset-env를 모듈에 추가함 (플러그인), node를 모듈에 추가
+
+```
+$ npm install @babel/preset-env --save-dev
+$ npm install @babel/node --save -dev
+```
+
+한 번에 두가지 설치하기
+
+```
+$ npm i @babel/preset-env @babel/node --save-dev
 ```
 
 devDependencies에 preset, node을 추가한다.
@@ -196,6 +204,10 @@ devDependencies에 preset, node을 추가한다.
 자바스크립트에서 일일이 변환을 하는 작업을 하고 싶지 않기에, 이를 package.json에서 처리할 수 있는 패키지를 추가로 설치한다.
 
 수정을 한 다음에 다시 npm run dev 를 매 번 입력하기는 불 필요한 반복이기에 이를 대신해주는 작업을 한다.
+
+```
+$ npm i nodemon --save-dev
+```
 
 ```json
 // 적용한 나의 package.json

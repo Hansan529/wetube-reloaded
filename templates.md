@@ -11,6 +11,10 @@
 
 해당 작업을 개선해주는 도구로, `Pug`가 있다.
 
+<br>
+
+## Configuring Pug
+
 ```
 $ npm i pug
 ```
@@ -71,6 +75,10 @@ html(lang="ko")
     footer &copy; #{new Date().getFullYear()} Webtube
 ```
 
+<br>
+
+## Partials
+
 문제가 있다. footer에 대한 내용을 변경했다면, 모든 페이지에서도 자동으로 적용되게 해야하는게 작업 시간을 줄일 텐데,  
 지금과 같이 한다면 모든 페이지에서도 복사 붙여넣기 작업을 해야한다.
 
@@ -85,6 +93,8 @@ views/partials/ 폴더 안에 footer.pug를 생성후,
 pug로 얻을 수 있는 점에 깔끔한 코드, html에 자바스크립트 사용, 반복하지 않아도 되는 점을 얻을 수 있다.
 
 <br>
+
+## Extending Templates
 
 더 발전해서, 매 파일마다 docytype ~ body, include 하는 내용이 모두 같은 점을 통해 inheritance(상속)이라는 개념으로 접근해보자.
 
@@ -123,6 +133,10 @@ block content
 
 blcok content가 body가 된다. `block` 는 필수이고, content는 사용자 마음대로 변경해도 된다.
 
+<br>
+
+## Variable to Templates
+
 title를 Home | Wetube, Edit | Wetube 형식으로 하려면 변수를 이용해야한다.
 
 ```pug
@@ -142,3 +156,66 @@ export const edit = (req, res) => res.render("edit", { pageTitle: "Edit" });
 ```
 
 홈페이지를 접속해보면 적용이 된 것을 볼 수 있다!
+
+<br>
+
+## MVP Style
+
+CSS는 프론트엔드 맨 마지막에 하는 것이기에, 현재로서는 건들일 부분이 아니지만 못난 HTML로만으로는 작업하기 어렵기에
+
+```pug
+link(rel="stylesheet" href="https://unpkg.com/mvp.css@1.12/mvp.css")
+```
+
+해당 코드를 base.pug에 넣어서 작업을 하겠음.
+
+## Conditionals
+
+```pug
+//- base.pug
+body
+  header
+    h1=pageTitle
+```
+
+해당 결과로 모든 페이지에, pageTitle 변수명인 제목 타이틀이 생긴다.  
+태그 뒤에 =을 붙이고 variable을 입력하면, text가 아닌 variable로 적용된다.
+
+`h1 #{pageTitle}` 도 가능하지만 다른 텍스트를 사용하고 있지 않아서 단독으로 사용하기 위해서 사용하는 것이다.
+
+if + 조건문, else if + 조건문, else 가장 큰 차이가 (), {}가 없는 것이다.
+
+```js
+const fakeUser = {
+  username: "Hansan",
+  loggedIn: false,
+};
+
+export const trending = (req, res) =>
+  res.render("home", { pageTitle: "Home", fakeUser: fakeUser });
+```
+
+fakeUser를 임시로 생성해보았다.
+
+```pug
+  body
+    header
+      nav
+        ul
+          if fakeUser.loggedIn
+            li
+              a(href="/logout") Logout
+          else
+            li
+              a(href="/login") Login
+      h1=pageTitle
+    main
+      block content
+  include partials/footer.pug
+```
+
+fakeUser의 loggedIn 값이 true라면, Logout을 보여주고, false라면 Login을 보여준다.  
+정말 놀랍지 않은가? HTML에서 자바스크립트를 사용해서 출력할 것을 선택할 수 있으니 말이다!
+
+원래 같았으면 HTML에서, Login 요소 하나를 만들고, javascript에서 querySelector를 통해 선택하고 a의 속성 값과  
+TEXT를 변경하는 코드를 작성했을 텐데, 이 pug에서는 애초에 출력할 결과물이 정해져있다

@@ -5,7 +5,7 @@ export const trending = (req, res) => {
       rating: 5,
       comments: 2,
       createdAt: "2분 전",
-      view: 59,
+      views: 59,
       id: 1,
     },
     {
@@ -13,7 +13,7 @@ export const trending = (req, res) => {
       rating: 2,
       comments: 64,
       createdAt: "59분 전",
-      view: 1532,
+      views: 1532,
       id: 2,
     },
     {
@@ -21,7 +21,7 @@ export const trending = (req, res) => {
       rating: 6,
       comments: 152,
       createdAt: "1시간 전",
-      view: 665,
+      views: 665,
       id: 3,
     },
   ];

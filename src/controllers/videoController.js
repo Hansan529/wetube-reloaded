@@ -43,5 +43,29 @@ export const getEdit = (req, res) => {
   res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
 };
 export const postEdit = (req, res) => {
-  return res.send("변경 완료");
+  const {
+    params: { id },
+    body: { title },
+  } = req;
+  videos[id - 1].title = title;
+  return res.redirect(`/videos/${id}`);
+};
+export const getUpload = (req, res) => {
+  return res.render("upload", { pageTitle: "Upload Video" });
+};
+export const postUpload = (req, res) => {
+  // 이곳에서 비디오를 videos array에 추가할 예정
+  const {
+    body: { title },
+  } = req;
+  const newVideo = {
+    title,
+    rating: 0,
+    comments: 0,
+    createdAt: "방금",
+    views: 0,
+    id: videos.length + 1,
+  };
+  videos.push(newVideo);
+  return res.redirect("/");
 };

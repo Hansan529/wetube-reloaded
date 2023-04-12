@@ -1,4 +1,9 @@
-extend base.pug
+extends base
+include mixins/video
 
 block content 
   h1 Home!
+  each video in videos
+    +video(video)
+  else
+    div 아무것도 찾지 못했습니다.

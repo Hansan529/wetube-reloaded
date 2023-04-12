@@ -137,3 +137,31 @@ localhost:4000/edit
 
 해당 현상이 absolute url과, relative url의 차이점이다.  
 현재 /videos/1에 접속해있다면, 1이 edit으로 변경되는 것이다.
+
+## Edit Video
+
+```pug
+extends base
+
+block content
+  h4 영상 제목 수정하기
+  form(action="")
+    input(placeholder="영상 제목", value=video.title, required)
+    input(value="save", type="submit")
+```
+
+form을 통해서, 제목을 수정하고자 하는데 수정한 값을 서버에 전송을 해야 하는데, 그 역할이 action이다.
+
+해당 정보를 같은 주소에 전송해야하니, action은 제거하도록 한다.  
+그리고 form의 method 기본 값은 GET이니, 우리는 서버에 전송하기 위해 POST로 변경해준다.
+
+    form(method="POST")
+
+해당 작업을 마치고 save 버튼을 누르면 `Cannot POST /videos/id/edit` 과 같이 나온다.  
+id는 접속한 video.id의 값이 나오니 다르다고 걱정하지 않아도 된다.
+
+get의 경우, name을 지정하면 해당 변경 내용이 주소창에 그대로 나타난다.  
+`http://localhost:4000/videos/1/edit?title=첫번째+영상`
+
+그와 반대로 POST는 주소창에 어떠한 정보도 주지 않는다.  
+파일을 전송하거나, database를 변경할 때 사용하는 것이 POST다.

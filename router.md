@@ -341,23 +341,10 @@ search, upload, deleteVideo Controller 생성 watch ->; see 변경
 url 안에 변수를 포함시킬 수 있게 한다. 주소에 아래와 같이 입력 후 접속을
 시도해보자
 
-<p class="codeline">
-<a
-href="http://localhost:4000/videos/62483247"
-style="color: #fff; text-decoration: none"
->http://localhost:4000/videos/62483247</a
->
+`http://localhost:4000/videos/62483247`
 
 분명 62483247 이라는 router를 만들지 않았는데, videoController의 see
 Controller가 실행되어 결과로 "See" 와 같은 텍스트를 볼 수 있다.
-
-```js
-// videoController
-export const see = (req, res) =>; {
-console.log(req.params);
-return res.send("See");
-};
-```
 
 /video/ 를 통해 접속을 해보면 콘솔에 입력한 url의 주소를 확인 해 볼 수
 있다.
@@ -378,10 +365,10 @@ videoRouter.get("/upload", upload);
 export const see = (req, res) =>; {
 return res.send(`Watch Video #${req.params.id}`);
 };
-
-// web
-http://localhost:4000/videos/upload /* Watch Video #upload */
 ```
+
+> localhost:4000/videos/upload  
+> 결과: Watch Video #upload
 
 분명 upload Router를 실행하기 위해서 upload를 입력하고 req를 줬는데,
 돌아온 답은 see 함수를 확인할 수 있다. 순서를 다시 upload가 위에 있다면
@@ -389,70 +376,53 @@ http://localhost:4000/videos/upload /* Watch Video #upload */
 
 express가 router를 id로 인식하지 않도록 순서를 잘 확인하자.
 
-만약 파라미터값을 숫자만 받고자 한다면 정규식을 이용해야한다. 다양한 식이
-있지만, 일단 작게 알아보자
+만약 파라미터값을 숫자만 받고자 한다면 정규식을 이용해야한다. 정규식과 문자열에는 다양한 식이 있다.
 
 ```js
-videoRouter.get("/:id(\\d+)", see); d(digit): 숫자만 선택한다. w: 아무 단어를 선택한다. +: 전체 선택한다
-videoRouter.get("/:id(\\d+)/edit", edit); js에서는 \를 하나 더 붙여서 작성한다
+/* 루트 라우트 /에 일치시킨다 */
+app.get("/", (req, res) => res.end());
+
+/* req를 /about에 일치시킨다 */
+app.get("/about", (req, res) => res.end());
+
+/* /random.text에 일치시킨다 */
+app.get("/random.text", (req, res) => res.end());
+
+/* 문자열 패턴을 기반으로 하여 acd, abcd와 일치한다 (b 선택) */
+app.get("/ab?cd", (req, res) => res.end());
+
+/* abcd, abbcd, abbbcd 등과 일치한다 (여러번 가능) */
+app.get("/ab+cd", (req, res) => res.end());
+
+/* abcd, abxcd, abRABOMcd 및 ab123cd 등과 일치한다 (아무런 텍스트) */
+app.get("/ab*cd", (req, res) => res.end());
+
+/* /abe 및 /abcde와 일치한다 (그룹 선택) */
+app.get("/ab(cd)?e", (req, res) => res.end());
+
+/* 라우트 이름에 "a"가 포함된 모든 항목과 일치시킨다 */
+app.get(/a/, (req, res) => res.end());
+
+/* butterfly 및 dragonfly와 일치, butterflyman 및 dragonfly man 등과 일치하지 않음 (정확) */
+app.get(/.*fly$/, (req, res) => res.end());
+```
+
+```js
+/* \d(digit): 숫자만 선택한다. */
+/* \w: 아무 단어를 선택한다. */
+/* \+: 전체 선택한다 */
+
+videoRouter.get("/:id(\\d+)", see);
+videoRouter.get("/:id(\\d+)/edit", edit);
 videoRouter.get("/:id(\\d+)/delete", deleteVideo);
 videoRouter.get("/upload", upload);
 ```
 
-정규식을 사용해 숫자만 받게되면, upload의 위치를 옮겨도 정상 작동한다.
-upload는 문자이고, 파라미터는 숫자만을 입력받으니 조건에 맞지 않아
-upload가 실행되는 거다
+자바스크립트이기 때문에, \ 를 하나 더 입력해서 인식하도록 해주어야 한다.
 
-<br />
+정규식을 사용해 **숫자만** 받게되면, **영문인** upload의 위치를 옮겨도 정상 작동한다.  
+upload는 문자이고, 파라미터는 숫자만을 입력받으니 조건에 맞지 않아 넘어가서 upload가 실행되는 거다
 
-```js
-루트 라우트 /에 일치시킨다
-app.get('/', function (req, res) {
-res.send('root');
-});
+그렇다면 :id 가 없어도 되지 않을까? 맞다. `/(\\d+)/edit` 으로 코드를 작성해도 정상 작동한다. 근데, parms.id 값을 얻을 수 없다. 마찬가지로 `/\\d+/edit`도 식과 값을 나눌 수 없다.
 
-req를 /about에 일치시킨다
-app.get('/about', function (req, res) {
-res.send('about');
-});
-
-/random.text에 일치시킨다
-app.get('/random.text', function (req, res) {
-res.send('random.text');
-});
-
-문자열 패턴을 기반으로 하여 acd, abcd와 일치한다 (b 선택)
-app.get('/ab?cd', function(req, res) {
-res.send('ab?cd');
-});
-
-abcd, abbcd, abbbcd 등과 일치한다 (여러번 가능)
-app.get('/ab+cd', function(req, res) {
-res.send('ab+cd');
-});
-
-abcd, abxcd, abRABOMcd 및 ab123cd 등과 일치한다 (아무런 텍스트)
-app.get('/ab*cd', function(req, res) {
-res.send('ab*cd');
-});
-
-/abe 및 /abcde와 일치한다 (그룹 선택)
-app.get('/ab(cd)?e', function(req, res) {
-res.send('ab(cd)?e');
-});
-
-라우트 이름에 "a"가 포함된 모든 항목과 일치시킨다
-app.get(/a/, function(req, res) {
-res.send('/a/');
-});
-
-butterfly 및 dragonfly와 일치, butterflyman 및 dragonfly man 등과 일치하지 않음 (정확)
-app.get(/.*fly$/, function(req, res) {
-res.send('/.*fly$/');
-});
-
-```
-
-</body>
-</html>
-```
+그래서 ()를 붙이는 것이 정규식을 URL에 전달할 수 있는 방법이다.

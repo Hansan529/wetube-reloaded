@@ -219,3 +219,74 @@ fakeUser의 loggedIn 값이 true라면, Logout을 보여주고, false라면 Logi
 
 원래 같았으면 HTML에서, Login 요소 하나를 만들고, javascript에서 querySelector를 통해 선택하고 a의 속성 값과  
 TEXT를 변경하는 코드를 작성했을 텐데, 이 pug에서는 애초에 출력할 결과물이 정해져있다
+
+## Iteration
+
+기본적으로 elements의 list를 보여주는 기능이다. 사용하기 위해서는 **배열**이 있어야한다.  
+일단 배열을 생성해보겠다.
+
+```js
+// videoController.js
+export const trending = (req, res) => {
+  const videos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  return res.render("home", { pageTitle: "Home", videos });
+};
+```
+
+```pug
+//- home.bug
+
+block content
+  h2 Home!
+  ul
+    eacah video in vidoes
+      li=video
+```
+
+이름은 배열 안의 각 item에 대해 가르킨다. ES6의 forEach 와 유사하다.
+
+    const videos = [{ name: "1" }, { name: "2" }, { name: "3" }];
+
+만약 배열에 {} 오브젝트로 감싸져있다면, [object Object] 라는 걸 볼 수 있다.  
+문자열화된 객체라고 한다.
+
+물론 `li=video.name` 으로 한다면 고쳐진다.
+
+## Mixin
+
+SCSS의 @mixin과 기능이 비슷하다. 반복되어 사용될 코드를 함수화 시키는 것이다.
+
+```pug
+//- home.pug
+extend base.pug
+
+block content
+  h1 Home!
+  each video in videos
+    +video(video)
+  else
+    div 아무것도 찾지 못했습니다.
+```
+
+```pug
+//- video.pug
+mixin video(info)
+  div
+    h4=info.title
+    ul
+      li #{info.rating}/5
+      li #{info.comments} comments,
+      li Posted #{info.createdAt}
+      li #{info.views} views.
+```
+
+videos이란 변수(배열)를 video 라는 item에 넣고, mixin 한 이름 즉, video에 video(item)을 넣는다.
+
+> const <span style="color:aqua">videos</span>
+
+> each <span style=color:pink>video</span> in <span style=color:aqua>videos</span>  
+> +<span style=color:skyblue>video</span>(<span style=color:pink>video</span>)
+
+> mixin <span style=color:skyblue>video</span>(info)
+
+이해하기 조금 수월 할 것이다.

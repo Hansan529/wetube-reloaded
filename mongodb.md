@@ -336,3 +336,57 @@ db.once("open", handleOpen);
 
 on은 클릭과 같이 여러번 계속 발생시킬 수 있다.  
 once는 한 번만 발생한다.
+
+<br>
+
+## Video Model
+
+```js
+// Video
+import mongoose from "mongoose";
+
+const videoSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  createdAt: Date,
+  hashtag: [{ type: String }],
+  meta: {
+    views: Number,
+    rating: Number,
+  },
+});
+```
+
+mongoose를 불러오고, 데이터의 형식을 데이터베이스에게 알려준다. 직접 데이터를 저장하지 않는 이유는,  
+유저가 데이터를 추가하기 때문이다. 해당 데이터 형식을 바탕으로 모델을 생성한다.
+
+```js
+const Video = mongoose.model("Video", videoSchema);
+export default Video;
+```
+
+몽구스의 모델 명은 첫번째 대문자를 사용한다.
+
+<br>
+
+## Our First Query
+
+server에 별별 파일을 다 불러오고 있다. 그래서 해당 코드를 분리해준다. **init.js** 라는 파일을 생성한다.
+
+```js
+// server
+export default app;
+
+// init
+import "./db";
+import "./models/Video";
+import app from "./server";
+
+const PORT = 4000;
+
+const handleListening = () => {
+  console.log(`🐤 http://localhost:${PORT} 포트에서 listening 하고 있습니다.`);
+};
+
+app.listen(PORT, handleListening);
+```

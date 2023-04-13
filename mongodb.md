@@ -557,3 +557,95 @@ await Video.create({
 
 이전 코드와 완전히 동일한 작업을 한다. create는 내부적으로 new Video()를 호출하고,  
 save() 메소드를 호출하는 일을 한다.
+
+<br>
+
+## Exceptions and Validation
+
+데이터베이스에 전송할 때, input에 required 가 없으면, 해당 값이 없어도 오류 없이 저장이된다.
+
+pug의 input에서 required 속성을 기입하면, 사용자가 입력하게 할 수 있지만, 만약에 자바스크립트 등으로 별도의 방법으로 POST를 시켰다면, 서버로 해당 값이 저장되게 되는데, 이와 같은 상황은 원하지 않기 때문에 모델에 다음과 같은 작업을 해준다.
+
+```js
+const videoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  createdAt: { type: Date, required: true },
+  hashtags: [{ type: String }],
+  meta: {
+    views: Number,
+    rating: Number,
+  },
+});
+```
+
+만약에 값을 전송받아서 Video가 실행되다가 title이 없다면 해당 Video 생성을 할 수 없을 것이다.
+우리가 **videoController.js** 파일에서, async, await 기능을 사용했기 때문이다.
+
+await 된 요소는 저장되지 않는다. 오류를 잡기 위해서 **try, catch**를 사용한다.
+
+```js
+try {
+  await Video.create({});
+  return res.redirect("/");
+} catch (error) {
+  console.log(error);
+}
+```
+
+오류가 발생하면, try 하던 것에서 즉시 catch가 실행된다.
+
+만약 제목이 필수인데, 없이 Submit을 한다면 다음과 같은 오류를 볼 수 있다.
+
+```json
+{
+  errors: {
+    title: ValidatorError: Path `title` is required.
+        at validate (/Users/hansan/Documents/GitHub/wetube/node_modules/mongoose/lib/schematype.js:1347:13)
+        at SchemaString.SchemaType.doValidate (/Users/hansan/Documents/GitHub/wetube/node_modules/mongoose/lib/schematype.js:1331:7)
+        at /Users/hansan/Documents/GitHub/wetube/node_modules/mongoose/lib/document.js:2872:18
+        at processTicksAndRejections (node:internal/process/task_queues:77:11) {
+      properties: [Object],
+      kind: 'required',
+      path: 'title',
+      value: '',
+      reason: undefined,
+      [Symbol(mongoose:validatorError)]: true
+    }
+  },
+  _message: 'Video validation failed'
+}
+```
+
+다음 오류를 확인해보면, 제목은 필수다. 하지만 값이 없어서 에러가 발생했다는 말을 알려준다.
+
+해당 오류는 현재 사용자는 알 수 없다. 해당 오류를 respone 해주자.
+
+```js
+// videoController.js
+catch(error){
+  return res.render("upload", {
+    pageTitle: "Upload Video",
+  errorMessage: error._message,
+});
+  }
+```
+
+```pug
+    //- upload.pug
+    if errorMessage
+      span=errorMessage
+```
+
+만약 errorMessage가 있다면, span에 에러 메시지를 보여준다.
+
+Schema마다 매번 값을 지정하는 것은 너무 반복적인 노동이다. 그래서 기본 값을 설정해주도록 하자.
+
+```js
+// Video.js
+createAt: { type: Date, required: true, default: Date.now },
+```
+
+그리고, videoController.js 에서는 ~~createAt: Date.now()~~ 삭제한다.
+
+Video.js에서 Date.now에서 ()를 하지 않는 이유는, 즉시 실행하고싶지 않아서이다.

@@ -453,3 +453,107 @@ export const home = async (req, res) => {
 
 **await은 함수가 async 일 때만 가능하다**
 자바스크립트가 await 하는 동안, 오류가 발생하면 try-catch문의 catch가 이를 발견하고, try에 있던 await 뒤에 있던 코드를 실행하지 않고, 즉각 catch 문을 실행한다.
+
+## Createing a Video
+
+home.pug에서, input 요소를 추가해준다. description, hashtags, req.body에 값이 3개가 됐으니, 추출을 해야하므로  
+pushUpload에서 **const { body: {title, description, hashtags} } = req;** 나머지 2개를 추가해준다.
+
+```js
+export const postUpload = (req, res) => {
+  const {
+    body: { title, description, hashtags },
+  } = req;
+  const video = new Video({
+    title,
+    description,
+    createdAt: Date.now(),
+    meta: {
+      views: 0,
+      rating: 0,
+    },
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+  });
+  return res.redirect("/");
+};
+```
+
+post를 받으면, Video를 추가한다. schema 형식에 맞게 작성하고, hashtags는 배열의 문자열로 받기로 했는데,  
+문자열을 splite으로 분리해서 구분한다. 해당 단어에 map으로 #을 붙여준다.
+
+Upload를 시도하면, 데이터베이스에 저장되지 않는다, 하지만 video를 console.log를 해본다면, object를 얻을 수 있다.
+
+title에 String이 아닌, 숫자를 입력하고 post를 한다면? 똑똑한 mongoose는 이를 String으로 변경해서 저장한다.  
+하지만 meta의 Number로 지정한 view,rating을 "abcd" 형식으로 보낸다면, 데이터에 포함되지 않아 meta가 사라진다.
+
+<br>
+
+열심히 만든 영상을 데이터베이스에 저장하기 위해서, 함수에 async와 **await video.save();**를 만들어준다.  
+그렇게 되면, 데이터베이스에 파일이 저장되는 것을 기다릴 수 있다.
+
+```js
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
+};
+
+export const postUpload = async (req, res) => {
+  const {
+    body: { title, description, hashtags },
+  } = req;
+  const video = new Video({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    },
+  });
+  const dbVideo = await video.save();
+  return res.redirect("/");
+};
+```
+
+업로드하고, home으로 와보면 데이터베이스에 저장되어 화면에 보인다!!!!
+
+<br>
+
+터미널 - mongosh에서 show dbs를 하면 wetube가 보인다, use wetube로 들어간 후,  
+show collections를 통해 확인해보자. videos 가 있으면 완료.
+
+우리는 videos로 생성했으니, db.videos.find()로 object의 내용을 볼 수 있다.
+
+```json
+wetube> db.videos.find()
+[
+  {
+    _id: ObjectId("6437df441699bf53b9fbdcfc"),
+    title: '첫번째 동영상',
+    description: '설명입니다',
+    createdAt: ISODate("2023-04-13T10:53:56.466Z"),
+    hashtags: [ '#진짜', '#데이터베이스', '#저장' ],
+    meta: { views: 0, rating: 0 },
+    __v: 0
+  }
+]
+```
+
+추가로 new Video의 코드를 간단하게 하면 다음과 같다.
+
+```js
+await Video.create({
+  title,
+  description,
+  createdAt: Date.now(),
+  hashtags: hashtags.split(",").map((word) => `#${word}`),
+  meta: {
+    views: 0,
+    rating: 0,
+  },
+});
+```
+
+이전 코드와 완전히 동일한 작업을 한다. create는 내부적으로 new Video()를 호출하고,  
+save() 메소드를 호출하는 일을 한다.

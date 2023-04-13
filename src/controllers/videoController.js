@@ -2,7 +2,7 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
   const videos = await Video.find({});
-  return res.render("home", { pageTitle: "Home", videos: [] });
+  return res.render("home", { pageTitle: "Home", videos });
 };
 export const watch = (req, res) => {
   const {
@@ -26,10 +26,19 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
-export const postUpload = (req, res) => {
-  // 이곳에서 비디오를 videos array에 추가할 예정
+export const postUpload = async (req, res) => {
   const {
-    body: { title },
+    body: { title, description, hashtags },
   } = req;
+  await Video.create({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    },
+  });
   return res.redirect("/");
 };

@@ -273,3 +273,66 @@ return res.redirect("/");
 
 videos에 있는 배열에 newVideo를 추가한다. 그 후 / 루트로 이동한다.  
 서버를 재시작하면 추가한 배열은 제거된다. 왜냐면 가짜 데이터베이스기 때문이다.
+
+## 데이터베이스 시작
+
+mongoDB는 SQL 기반이 아닌, 문서 기반 데이터베이스이다.  
+행과 열로 이루어진 데이터베이스가 아닌, 오브젝트 즉 {} 로 이루어져있다.
+
+- mongoDB 설치
+
+Xcode 명령줄 도구 설치
+
+     xcode-select --install
+
+MongoDB 설치
+
+    brew tap mongodb/brew
+
+    brew install mongodb-community@6.0
+
+MongoDB 실행
+
+    brew services start mongodb-community@6.0
+
+MongoDB 종료
+
+    brew services stop mongodb-community@6.0
+
+<br>
+
+설치되었나 확인하려면 `mongod`를 터미널에 입력해보자.
+
+`mongosh` 를 입력하고 mongodb://url 을 복사하자.
+
+<br>
+
+mongoDB를 설치했으니, nodeJS에도 연결을 해주어야 하기에 `mongoose`를 설치한다.
+
+    npm i mongoose
+
+그 다음 server.js 파일 루트에 `db.js` 라는 파일을 생성한 다음
+
+```js
+// db.js
+import mongoose from "mongoose";
+
+mongoose.connect("mongodb://127.0.0.1:27017/");
+```
+
+data를 추가하려면 / 뒤에 이름을 명시해야한다. `/wetube`로 하겠음.
+
+db.js를 server.js에서 불러온다. `import "./db"`
+
+해당 db를 정상적으로 불러왔는지 확인하기 위해 db.js에서 다음과 같은 코드를 작성해준다.
+
+```js
+const db = mongoose.connection;
+
+const handleOpen = () => console.log("✅ DB가 연결되었습니다.");
+db.on("error", (error) => console.log("DB 오류", error));
+db.once("open", handleOpen);
+```
+
+on은 클릭과 같이 여러번 계속 발생시킬 수 있다.  
+once는 한 번만 발생한다.

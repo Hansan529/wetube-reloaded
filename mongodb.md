@@ -390,3 +390,66 @@ const handleListening = () => {
 
 app.listen(PORT, handleListening);
 ```
+
+그 후, videoController로 진입해서, model인 Video를 불러오도록 한다.
+
+    import Video from "../models/Video.js";
+
+<br>
+
+```js
+export const home = (req, res) => {
+  Video.find({});
+  return res.redner("home");
+};
+```
+
+Video 데이터베이스를 CRUD하는 것에 도움을 주는 메소드 중 find를 사용한다.  
+find는 2가지의 방법을 사용하는데, cellback과, parameters 방식이 있는데 callback 방식이 최근에는 사라졌다.
+
+{}의 경우, **search terms** 이라고 하는데 해당 요소가 비어있으면, 모든 형식을 찾는다.
+
+```js
+export const home = (req, res) => {
+  Video.find({})
+    .then((videos) => {
+      console.log("videos", videos);
+    })
+    .catch((err) => {
+      console.log("errors", err);
+    });
+  console.log("안녕");
+  return res.render("home", { pageTitle: "Home", videos: [] });
+};
+```
+
+에러가 발생하지 않는다면 터미널에는 **videos []** 값만 보게 될 것이다.  
+해당 코드로 database와의 통신이 된 것이다!
+
+하지만 의문이 드는것이, 분명 videos가 먼저 console에 나와야하는데, 뒤에 작성한 "안녕" 이 먼저 출력이 되는 것을 알 수 있다.  
+왜그럴까? 요청한 사항을 일단 다 받고, 오래걸리는 사항은 나중에 실행하기 때문에, 즉각 출력이 되는 "안녕"이 먼저 출력되는 것이다.
+
+카페에서 음료를 주문하는데, 앞에 주문건이 커피 1잔, 커피 20잔이 있고 나 또한 커피 1잔을 주문하는데, 일반적인 서버의 경우  
+개인 -> 단체 -> 개인, 주문 들어온 순서대로 처리하지만, node.js 서버는 개인 -> 개인 -> 단체 순으로 일처리를 한다.
+
+금방 출력되고 갈 사람인데, 늦게까지 기다리지 않도록 할 수 있다.
+
+**정리하자면 일반 서버는 순차적으로 처리하는 동기 처리 방식이며,  
+노드서버는 비순차적으로 처리, 동시에 처리하는 방식이 비동기 처리 방식이다.**
+
+개선된 버전이다.
+
+```js
+export const home = async (req, res) => {
+  console.log("안녕");
+  const videos = await Video.find({});
+  console.log("안녕2");
+  return res.render("home", { pageTitle: "Home", videos: [] });
+};
+```
+
+순서대로 출력이 된다. 자바스크립트는 기다리는 기능이 없지만, await으로 인해 database가 불러와질 때 까지 기다리다가,  
+완료되면 출력을 재시작한다. 비동기 방식을 await으로 동기 처리 방식으로 변경한다.
+
+**await은 함수가 async 일 때만 가능하다**
+자바스크립트가 await 하는 동안, 오류가 발생하면 try-catch문의 catch가 이를 발견하고, try에 있던 await 뒤에 있던 코드를 실행하지 않고, 즉각 catch 문을 실행한다.

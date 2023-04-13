@@ -564,7 +564,7 @@ save() 메소드를 호출하는 일을 한다.
 
 데이터베이스에 전송할 때, input에 required 가 없으면, 해당 값이 없어도 오류 없이 저장이된다.
 
-pug의 input에서 required 속성을 기입하면, 사용자가 입력하게 할 수 있지만, 만약에 자바스크립트 등으로 별도의 방법으로 POST를 시켰다면, 서버로 해당 값이 저장되게 되는데, 이와 같은 상황은 원하지 않기 때문에 모델에 다음과 같은 작업을 해준다.
+pug의 input에서 required 속성을 기입하면, 사용자가 입력하게 할 수 있지만, 만약에 HTML 검사를 통해 required 속성이나 설정해놓은 값을 제거한 다음, POST를 시켰다면, 서버로 해당 값이 저장되게 되는데, 이와 같은 상황은 원하지 않기 때문에 모델에 다음과 같은 작업을 해준다.
 
 ```js
 const videoSchema = new mongoose.Schema({
@@ -649,3 +649,7 @@ createAt: { type: Date, required: true, default: Date.now },
 그리고, videoController.js 에서는 ~~createAt: Date.now()~~ 삭제한다.
 
 Video.js에서 Date.now에서 ()를 하지 않는 이유는, 즉시 실행하고싶지 않아서이다.
+
+<br>
+
+## More Schema

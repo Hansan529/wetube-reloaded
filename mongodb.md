@@ -704,3 +704,42 @@ pageTitle에 영상 제목이 들어가고, p에 설명과, small에 생성일, 
 
 watch에서 해당 :id값을 id에 저장해서, 그 id를 findById를 통해서 값을 찾아서 동영상을 선택하고,  
 그 동영상에 대한 정보들을 보여주는 것이다.
+
+예시에 있던 .exec()를 사용하지 않은 이유는, promise가 return이 될텐데, async await을 사용하고 있기 떄문에  
+우리는 필요 없어서 사용하지 않았다.
+
+<br>
+
+## Edit Videos
+
+현재, id값이 있지 않은, 즉 데이터베이스에 존재하지 않는 다른 주소로 이동 할 경우, video는 **null** 이 된다.
+
+video를 pug로 보내고 있는데, null.title은 존재하지 않으니 오류가 발생한다. 다음과 같은 사태를 예방하기 위해서,
+
+404 페이지를 생성한다. **404.pug**, Controllers에서는 다음과 같이 추가해준다.
+
+```js
+if (!video) {
+  return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+}
+return res.render("watch", { pageTitle: video.title, video });
+```
+
+만약에, video.findById 를 통해서 id를 찾았는데, video가 null이라면 404 라는 pug를 render하게 만든다.
+
+<br>
+
+edit도 마찬가지로 변경한다.
+
+```js
+export const getEdit = async (req, res) => {
+  const {
+    body: { id },
+  } = req;
+  const video = Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  return res.render("edit", { pageTitle: `${video.title} 수정중`, video });
+};
+```

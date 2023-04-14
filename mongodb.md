@@ -652,4 +652,55 @@ Video.js에서 Date.now에서 ()를 하지 않는 이유는, 즉시 실행하고
 
 <br>
 
-## More Schema
+## Video Detail
+
+mongoDB에서 데이터에 id값을 지정하는데, 우리는 :id(\\d+) 정규표현식을 사용했기 때문에,  
+어떠한 Router에도 포함되지 않아서 GET을 할 수 없다. ID는 24바이트 16진수로 정의된다.
+
+16진수는 0부터 F까지 이루어져있다. 그걸 24개로 이루어져있으니까 다음과 같이 정규표현식을 변경해준다.
+
+**[0-9a-f]{24}** 0부터 F까지 24개가 연속되어 있는 값을 받는다.
+
+```js
+// videoRouter
+videoRouter.get("/:id([0-9a-f]{24})", watch);
+videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
+videoRouter.route("/upload").get(getUpload).post(postUpload);
+```
+
+Router에서, 해당 정규표현식을 사용함으로 첫번째 해결책인 /upload 라우터의 위치를 상단으로 옮기지 않아도 된다.
+
+하지만 watch 탭으로 이동해보면, 오류가 발생한다. 우리는 watch.pug에서 video에 대한 값을들 참조하는데, videoControllers에서는 video에 대한 값을 주지 않았으니 당연한 일이다.
+
+<br>
+
+### findById와, findOne이란 것에 대해 알아보자
+
+findOnd은 보내는 모든 조건을 적용시킨다. 예를 들어, 조회수가 25인 영상을 찾을 수 있다.
+
+    await Adventure.findOne({ views: 25 }).exec();
+
+findByid는 id로 영상을 찾아낼 수 있는 기능을 지원한다.
+
+    await Adventure.findById(id).exec();
+
+적용해보도록 하자.
+
+```js
+// videoController watch
+const video = await Video.findById(id);
+return res.rendeer("watch", { pageTitle: video.title, video });
+```
+
+```pug
+//- watch
+div
+    p=video.description
+    small=video.createdAt
+  a(href=`${video.id}/edit`) Edit Video &rarr;
+```
+
+pageTitle에 영상 제목이 들어가고, p에 설명과, small에 생성일, 링크에 id값이 정상적으로 들어가는 것을 확인할 수 있다.
+
+watch에서 해당 :id값을 id에 저장해서, 그 id를 findById를 통해서 값을 찾아서 동영상을 선택하고,  
+그 동영상에 대한 정보들을 보여주는 것이다.

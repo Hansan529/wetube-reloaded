@@ -9,13 +9,21 @@ export const watch = async (req, res) => {
     params: { id },
   } = req;
   const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
   return res.render("watch", { pageTitle: video.title, video });
 };
-export const getEdit = (req, res) => {
+export const getEdit = async (req, res) => {
   const {
     params: { id },
   } = req;
-  res.render("edit", { pageTitle: `Editing:` });
+  const video = await Video.findById(id);
+  console.log("video: ", video);
+  if (!video) {
+    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  res.render("edit", { pageTitle: `${video.title} Editing:`, video });
 };
 export const postEdit = (req, res) => {
   const {

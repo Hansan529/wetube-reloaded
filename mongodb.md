@@ -881,4 +881,47 @@ videoSchema.pre("save", async function () {
 });
 ```
 
-정상적으로 작동한다.
+pre의 ("save")와 비슷한, static에 대해 알아보자.
+
+```js
+videoSchema.statick("formatHashtags", function (hashtags) {
+  return hashtags
+    .split(",")
+    .map((word) => (word.startsWith("#") ? word : `#${word}`));
+});
+```
+
+기존에 pre와 비슷하다. **formatHashtags**라는 제목으로 매개변수 hashtags를 받는 함수이다. 해당 함수로, postUpload의 Video.create 사항의
+
+`hashtags: Video.formatHashtags(hashtags)`가 가능해진다.
+
+<br>
+
+## Statices
+
+Statics는 스키마 객체의 메소드를 정의한다.
+
+<br>
+
+## Delete Video
+
+새로운 컨트롤러를 만들자.
+
+```js
+export const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndDelete(id);
+  res.redirect("/");
+};
+```
+
+```js
+import { deleteVideo } from "../controllers/videoController",
+
+videoRouter.get("/:id([0-9a-f]{24})/delete", deleteVideo);
+```
+
+id에 delete로 진입하면 **deleteVideo** 함수가 실행된다. await **Video.findByIdAndDelte(id)** 코드때문에,  
+해당 id를 갖은 데이터베이스를 삭제시켜버린다.
+
+findByIdAndDelete 말고도, findByIdAndRemvoe도 있지만, 거의 Delete를 사용한다.

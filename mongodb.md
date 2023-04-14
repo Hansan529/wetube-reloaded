@@ -817,3 +817,68 @@ null인지에 대해 체크를 하는데, findById 대신, exists()를 사용하
 
 object를 보내기 위해서는 findById()로 object를 구해야하고, 진위 여부를 확인하기 위해서는  
 exists()를 사용한다. **exists**는 filter를 받기에, 기존처럼 id 만 주면 안된다.
+
+<br>
+
+## Middleware
+
+Express의 middleware의 경우 요청을 가로채서 먼저 실행하는 것인데,
+mongoose에서도 마찬가지로, 전 후로 middleware를 적용하거나 function을 실행 할 수 있다.
+
+```js
+// Video
+videoSchema.pre("save", async function () {
+  console.log("this: ", this);
+});
+```
+
+저장할 요소들이 this에 담긴다.
+
+```json
+this: {
+  title: '123',
+  description: 'asd',
+  hashtags: [ '#z', '#x', '#c' ],
+  meta: { views: 0, rating: 0 },
+  _id: new ObjectId("6438cb837da5ac1b069399eb"),
+  createdAt: 2023-04-14T03:41:55.773Z
+}
+```
+
+그러면 Model을 생성하기 전에, this의 값을 변경하면?
+
+    this.title = "가로채기";
+
+업로드 된 목록을 보면, 제목이 "가로채기"로 변경되어있다 ㅋㅋㅋ
+
+**postUpload**의 create에 hashtags에 대한 함수를 제거한다.
+
+~~: hashtags.split(",").map((word) => `#${word}`),~~
+
+console에서 this의 값을 보면,
+
+```json
+video:  {
+  meta: { views: 0, rating: 0 },
+  _id: new ObjectId("6438ccc3cfecb87dfa22e86b"),
+  title: 'abc',
+  description: 'ㅁㄴㅇ',
+  hashtags: [ '1,2,3,4,5' ],
+  createdAt: 2023-04-14T03:47:15.777Z,
+  __v: 0
+}
+```
+
+분명, input에 1,2,3,4,5 라고 문자열을 입력했는데, mongoose가 배열로 만들어줬다.  
+다만 함수를 지워서, 나뉘어져 있지는 않다.
+
+```js
+// Video
+videoSchema.pre("save", async function () {
+  this.hashtags = this.hashtags[0]
+    .split(",")
+    .map((word) => (word.startsWith("#") ? word : `#${word}`));
+});
+```
+
+정상적으로 작동한다.

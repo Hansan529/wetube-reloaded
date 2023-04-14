@@ -5,4 +5,6 @@ block content
   h4 영상 제목 수정하기
   form(method="POST") 
     input(name="title", placeholder="영상 제목", value=video.title, required)
+    input(name="description" placeholder="설명" value=video.description, type="text" maxlength=140)
+    input(name="hashtags" placeholder="태그" value=video.hashtags.join(), type="text")
     input(value="save", type="submit")

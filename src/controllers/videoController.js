@@ -4,6 +4,7 @@ export const home = async (req, res) => {
   const videos = await Video.find({});
   return res.render("home", { pageTitle: "Home", videos });
 };
+
 export const watch = async (req, res) => {
   const {
     params: { id },
@@ -14,6 +15,7 @@ export const watch = async (req, res) => {
   }
   return res.render("watch", { pageTitle: video.title, video });
 };
+
 export const getEdit = async (req, res) => {
   const {
     params: { id },
@@ -25,16 +27,32 @@ export const getEdit = async (req, res) => {
   }
   res.render("edit", { pageTitle: `${video.title} Editing:`, video });
 };
-export const postEdit = (req, res) => {
+
+export const postEdit = async (req, res) => {
   const {
     params: { id },
-    body: { title },
+    body: { title, description, hashtags },
   } = req;
+  const video = await Video.exists({ _id: id });
+  console.log(video);
+  console.log(req.body);
+  if (!video) {
+    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  await Video.findByIdAndUpdate(id, {
+    title,
+    description,
+    hashtags: hashtags
+      .split(",")
+      .map((word) => (word.startsWith("#") ? word : `#${word}`)),
+  });
   return res.redirect(`/videos/${id}`);
 };
+
 export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
+
 export const postUpload = async (req, res) => {
   const {
     body: { title, description, hashtags },

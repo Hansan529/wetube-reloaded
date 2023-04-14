@@ -787,4 +787,33 @@ video.hashtags = hashtags
 시작하는 음절이 #이라면 word 그대로 작성하고, 아니라면 #을 붙인다.  
 단 하나의 메소드로 삼항 연산자를 사용해 간편하게 문제를 해결했다.
 
-근데, 이 코드를 매 번 복사, 붙여넣기를 해야 한다는 점이 문제다. 그래서 그 문제를 해결하기 위한 방법
+근데, 이 코드를 매 번 복사, 붙여넣기를 해야 한다는 점이 문제다.
+
+<br>
+
+findByIdAndUpdate 메소드를 사용해보겠다.
+
+```js
+const video = await Video.findById(id);
+if (!video) {
+  return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+}
+await Video.findByIdAndUpdate(id, {
+  title,
+  description,
+  hashtags: hashtags
+    .split(",")
+    .map((word) => (word.startsWith("#") ? word : `#${word}`)),
+});
+```
+
+방금전의 video.title = title 과 같은 작업을 대체했다.  
+현재 우리는 postEdit에서 video 전체를 찾고, 그 안에서 id에서 해당 video가  
+null인지에 대해 체크를 하는데, findById 대신, exists()를 사용하면 불필요한 오브젝트를
+
+불러오지 않아도 된다.
+
+~~const video = await Video.findById(id)~~ &rarr; const video = await Video.exists({\_id:id})
+
+object를 보내기 위해서는 findById()로 object를 구해야하고, 진위 여부를 확인하기 위해서는  
+exists()를 사용한다. **exists**는 filter를 받기에, 기존처럼 id 만 주면 안된다.

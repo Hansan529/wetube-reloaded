@@ -743,3 +743,48 @@ export const getEdit = async (req, res) => {
   return res.render("edit", { pageTitle: `${video.title} 수정중`, video });
 };
 ```
+
+get은 이만하고, postEdit을 살펴보자
+
+```js
+export const postEdit = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, hashtags } = req.body;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  video.title = title;
+  video.description = description;
+  video.hashtags = hashtags.split(",").map((word) => `#${word}`);
+  await video.save();
+  return res.redirect(`/videos/${id}`);
+};
+```
+
+이와 같이 데이터베이스의 요소마다 변경해주는 방법을 먼저 소개한다.  
+먼저 엄청 큰 form의 경우 해당 작업을 일일이 수작업으로 입력을 해줘야 한다는게 말이 안되긴 하다.
+
+지금 우리가 hashtags에서 받은 배열은 postUpload 할 때, #형태로 지정을 했다. 그래서
+
+    #일,#이,#삼,#사,#오
+
+형식으로 볼 수 있다. 그래서 현재로서는 #을 지우고 재작성 한다.
+
+<br>
+
+정상적으로 변경이 된 것을 볼 수 있다. 만약에 #를 제거하지 않고 계속해서 수정하면?  
+`###일,###이,###삼,###사,###오` 정말 보기 힘든게 나온다.
+
+startsWith 메소드를 사용할 것이다. 시작하는 단어를 확인한다.
+
+```js
+video.hashtags = hashtags
+  .split(",")
+  .map((word) => (word.startsWith("#") ? word : `#${word}`));
+```
+
+시작하는 음절이 #이라면 word 그대로 작성하고, 아니라면 #을 붙인다.  
+단 하나의 메소드로 삼항 연산자를 사용해 간편하게 문제를 해결했다.
+
+근데, 이 코드를 매 번 복사, 붙여넣기를 해야 한다는 점이 문제다. 그래서 그 문제를 해결하기 위한 방법

@@ -925,3 +925,52 @@ id에 delete로 진입하면 **deleteVideo** 함수가 실행된다. await **Vid
 해당 id를 갖은 데이터베이스를 삭제시켜버린다.
 
 findByIdAndDelete 말고도, findByIdAndRemvoe도 있지만, 거의 Delete를 사용한다.
+
+<br>
+
+## Search
+
+동영상들이 있으니 검색을 해야 하니까, search.pug를 생성해서 input들을 만들어주자.
+
+```pug
+form
+  input(name="q", placeholder="검색", type="search");
+  input(type="submit", value="검색하기")
+```
+
+```js
+export const search = (req, res) => {
+  console.log(req.query);
+  return res.render("search", { pageTitle: "검색" });
+};
+```
+
+GET 형식의 검색한 값을 얻으려면 req의 query를 콘솔로 보면 다음과 같다.
+
+    { q: '검색한 내용' }
+
+사용자가 검색을 해야 얻을 수 있기 때문에, search 창에서는 undefined 를 얻을 수 있다.
+
+하지만 title를 정확하게 입력해야 해당 배열을 보여준다. 그것을 원하지 않기 때문에, regular expression을 사용한다.  
+특정 단어로 시작하거나 끝나는 제목이거나, 특정 단어를 포함한 제목을 검색 할 수 있다.
+
+/단어/igm 이라는 expression flags 들이 있는데,
+
+- ignore case: 대소문자 무시
+- global: 전체에서 검색
+- mutiline: 다중 행 모드 처리
+
+특정 단어로 시작하는 것을 찾으려면 단어 앞에 `^`을 붙이고, 마치는 것은 단어 뒤에 `$`를 붙인다.
+
+```js
+if (q) {
+  videos = await Video.find({
+    title: {
+      $regex: new RegExp(p, "i"),
+    },
+  });
+}
+```
+
+앞서 보았던 것중에, ignore case를 함축적으로 "i" 로 사용하는 것이다. 내가 검색한 결과에  
+**대소문자 구별 없이 검색하겠다** 라는 의미인 것이다.

@@ -1,0 +1,14 @@
+extends base
+
+block content
+  form
+    input(name="name", placeholder="별명", required, uniquem type="text")
+    input(name="username", placeholder="아이디", required, unique, type="text")
+    input(name="password", placeholder="비밀번호", required, type="password")
+    input(name="email", placeholder="이메일", required, type="text") 
+    select(name="emailType")
+      option(value="gmail.com") gmail.com
+      option(value="naver.com") naver.com
+      option(value=".net") .net
+      option(value="icloud.com") icloud.com
+    input(type="submit", value="가입하기")

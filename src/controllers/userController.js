@@ -19,7 +19,10 @@ export const postJoin = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.render("404", { pageTitle: "오류가 발생했습니다" });
+    return res.render("join", {
+      pageTitle: "회원가입",
+      errorMessage: error._message,
+    });
   }
   return res.redirect("/");
 };

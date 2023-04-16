@@ -7,6 +7,7 @@ export const postJoin = async (req, res) => {
   const {
     body: { name, username, password, email, emailType },
   } = req;
+  console.log(req.body);
   console.log(emailType);
   try {
     await User.create({
@@ -14,7 +15,7 @@ export const postJoin = async (req, res) => {
       username,
       password,
       email,
-      required,
+      emailType,
     });
   } catch (error) {
     console.log(error);

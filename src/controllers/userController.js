@@ -5,7 +5,7 @@ export const getJoin = (req, res) => {
 };
 export const postJoin = async (req, res) => {
   const {
-    body: { name, username, password, email, emailType },
+    body: { name, username, password, email },
   } = req;
   console.log(req.body);
   console.log(emailType);
@@ -15,7 +15,6 @@ export const postJoin = async (req, res) => {
       username,
       password,
       email,
-      emailType,
     });
   } catch (error) {
     console.log(error);

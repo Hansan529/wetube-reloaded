@@ -35,7 +35,7 @@ export const getJoin = (req, res) => {
 
 export const postJoin = async (req, res) => {
   const {
-    body: { name, username, password, email, emailType },
+    body: { name, username, password, email },
   } = req;
   try {
     await User.create({
@@ -43,7 +43,6 @@ export const postJoin = async (req, res) => {
       username,
       password,
       email,
-      emailType,
     });
   } catch (err) {
     console.log(err);

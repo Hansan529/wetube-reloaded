@@ -1,6 +1,8 @@
 extends base
 
 block content
+  if (errorMessage)
+    span=errorMessage
   form(method="POST")
     input(name="name", placeholder="별명", required, uniquem type="text" minlength="2")
     input(name="username", placeholder="아이디", required, unique, type="text", minlength="4")

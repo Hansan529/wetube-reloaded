@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://root:1234@0.0.0.0:27017/wetube");
+mongoose.connect("mongodb://admin:123@0.0.0.0:27017/wetube");
 
 const db = mongoose.connection;
 

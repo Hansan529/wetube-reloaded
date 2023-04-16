@@ -84,7 +84,7 @@ export const search = async (req, res) => {
     videos = await Video.find({
       $or: [
         { title: { $regex: new RegExp(q, "i") } },
-        { hashtags: { $regex: new RexExp(q, "i") } },
+        { hashtags: { $regex: new RegExp(q, "i") } },
       ],
     });
   }

@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hansan529/wetube-reloaded.git"
+    "url": "git+git@github.com:Hansan529/wetube-reloaded.git"
   },
   "author": "",
   "license": "MIT",

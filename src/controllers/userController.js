@@ -5,16 +5,16 @@ export const getJoin = (req, res) => {
 };
 export const postJoin = async (req, res) => {
   const {
-    body: { name, username, password, email },
+    body: { name, username, password, email, location },
   } = req;
   console.log(req.body);
-  console.log(emailType);
   try {
     await User.create({
       name,
       username,
       password,
       email,
+      location,
     });
   } catch (error) {
     console.log(error);

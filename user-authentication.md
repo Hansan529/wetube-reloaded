@@ -123,3 +123,39 @@ middleware를 생성해준다.
 
 해당 미들웨어에는 this, 생성되기 전이니까 input에서 받은 req.body 값들로 User.create 하는 요소를 선택한다.  
 **this.password** 해당 데이터베이스 요소의 패스워드를 가져와서, bcrpyt로 해싱을 5번 진행한 해싱값을 대입한다.
+
+pre에 해싱 전, 후를 `console.log` 해보면 다음과 같이 확인이 가능하다.
+
+```json
+해싱전 this {
+  name: '별명',
+  username: '아이디-',
+  password: 'password',
+  email: 'asd@asd.com',
+  location: '거주지',
+  _id: new ObjectId("643c912930a8b223498f32a7")
+}
+해싱전 this.password password
+```
+
+password 값이 그대로 데이터베이스에 저장되는 모습이다.
+
+다음은 해싱을 한 이후다.
+
+```json
+해싱이후 this {
+  name: '별명',
+  username: '아이디-',
+  password: '$2b$05$G6GUw510rgu1XLcCmxW4v.Y80NPxqnIcNOw2z9inIk.UAY2nKCKte',
+  email: 'asd@asd.com',
+  location: '거주지',
+  _id: new ObjectId("643c912930a8b223498f32a7")
+}
+해싱이후 this.password $2b$05$G6GUw510rgu1XLcCmxW4v.Y80NPxqnIcNOw2z9inIk.UAY2nKCKte
+```
+
+알아 보기 힘든 난수로 저장되어있는 모습을 볼 수 있다.
+
+Video를 생성할 때, static을 사용한 것과 같이 모델을 생성하기 전에 작업을 진행한 것이다.
+
+User.js의 해싱 횟수를 변경하면 같은 입력값이여도 다른 해싱값이 나온다.

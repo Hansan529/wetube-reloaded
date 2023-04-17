@@ -11,7 +11,9 @@ export const watch = async (req, res) => {
   } = req;
   const video = await Video.findById(id);
   if (!video) {
-    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res
+      .status(400)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
   }
   return res.render("watch", { pageTitle: video.title, video });
 };
@@ -23,7 +25,9 @@ export const getEdit = async (req, res) => {
   const video = await Video.findById(id);
   console.log("video: ", video);
   if (!video) {
-    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res
+      .status(404)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
   }
   res.render("edit", { pageTitle: `${video.title} Editing:`, video });
 };
@@ -35,7 +39,9 @@ export const postEdit = async (req, res) => {
   } = req;
   const video = await Video.exists({ _id: id });
   if (!video) {
-    return res.render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res
+      .status(404)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
   }
   await Video.findByIdAndUpdate(id, {
     title,
@@ -62,7 +68,7 @@ export const postUpload = async (req, res) => {
     return res.redirect("/");
   } catch (error) {
     console.log(error);
-    return res.render("upload", {
+    return res.status(400).render("upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });

@@ -1,7 +1,7 @@
 extends base
 
 block content
-  if (errorMessage)
+  if errorMessage
     span=errorMessage
   form(method="POST")
     input(name="name", placeholder="별명", required, uniquem type="text" minlength="2")

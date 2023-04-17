@@ -337,3 +337,5 @@ app.listen(
 ## [Templates](http://github.com/Hansan529/wetube-reloaded/blob/main/templates.md)
 
 ## [mongoDB](http://github.com/Hansan529/wetube-reloaded/blob/main/mongodb.md)
+
+## [User Authentication](http://github.com/Hansan529/wetube-reloaded/blob/main/user-authentication.md)

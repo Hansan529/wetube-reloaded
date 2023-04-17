@@ -436,3 +436,22 @@ locals 값을 지정하는 미들웨어를 별도의 파일로 지정했다.
 
 그런 다음 Login을 한 다음 터미널에 res.locals를 확인해보면, 다음과 같다
 `[Object: null prototype] { loggedIn: true, siteName: 'Wetube' }`
+
+<br>
+
+### 복습
+
+cookie는 정보를 주고받는 방법이고, 자동으로 작동한다. session Id는 cookie 안에 저장된다.  
+cookie는 session ID를 전송한다.
+
+session store는 session들을 저장하는 공간이다. 서버를 재시작되면 초기화된다.
+추후에 DB와 연결하면 해결된다. 브라우저들이 n개만큼 접속해서 쿠키를 생성하면,  
+session Store에는 n개의 session들이 저장되는 것이다!
+
+쿠키가 저장된 브라우저들마다 sessionID값들을 살펴보면, 모두 다른 걸 알 수 있다.
+미들웨어에 `console.log(req.sessionID)`를 한 뒤, 서로 다른 브라우저 혹은 시크릿모드에서 확인해보면 된다.
+
+login을 하면, req.session의 loggedIn 값을 true로 지정하는데, 이게 가능한 이유가  
+session은 object이기 때문에 가능하다
+
+<br>

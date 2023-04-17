@@ -298,3 +298,84 @@ export const postLogin = async (req, res) => {
 **User** Collection에서, 입력받은 username을 찾고, 해당 배열을 user에 저장한다.  
 user가 null이라면, 에러를 표시하고, user.password로 해당 배열의 비밀번호 해시값과 입력받은  
 password를 비교하여, true, false로 나온다 그래서 ok가 false라면 에러 페이지, true라면 정상 render
+
+<br>
+
+## Session and Cookies
+
+로그인 한 정보를 기억하려면 어떻게 할 까? 유저에게 쿠키를 전송하는 방법이 있다.
+
+브라우저에서 요청을 하면, 서버에서는 응답을 하고, 종료한다. 즉 서버에서는 누가 요청한지 기억하지 못한다.
+브라우저도 더이상 서버가 필요하지 않아 잊어버린다. 해당 상황을 stateles(무상태)라고 한다
+
+그래서 유저가 로그인 할 때마다 해당 정보를 주고 기억하도록 하는 것이 쿠키이다.  
+쿠키를 갖고, 서버에 요청을 하면, 서버에서는 해당 쿠키를 읽고, 누군지 확인이 가능하다.
+
+```bash
+$ npm i express-session
+```
+
+세션을 설치한다.  
+그 후, server에서 불러오고, Router 앞에 session을 사용한다.
+
+```js
+import session from "express-session";
+
+app.use(
+  session({
+    secret: "Hello",
+  })
+);
+```
+
+```bash
+express-session deprecated undefined resave option; provide resave option src/server.js:24:40
+express-session deprecated undefined saveUninitialized option; provide saveUninitialized option src/server.js:24:40
+```
+
+section에 다음과 같이 추가해준다.
+
+```js
+  secret: "Hello",
+  resave: true,
+  saveUninitialized: true,
+```
+
+해당 미들웨어가, 사이트로 들어오는 모두를 기억하게 된다.
+
+```js
+app.use((req, res, next) => {
+  req.sessionStore.all((error, sessions) => {
+    console.log(sessions);
+    next();
+  });
+});
+```
+
+쿠키를 유저에게 전송해준다.
+
+주소에 접속해보고, 개발자 도구의 애플리케이션에서 쿠키를 확인해보면, 이름, 값이 적혀있는 걸 알 수 있다.  
+해당 쿠키 Value가, 터미널의 콘솔에서도 마찬가지로 동일하게 나오는 것을 볼 수 있다.
+
+시크릿 모드로 접속해보면, 새로운 쿠키 값을 받고, 서버에는 2개의 세션을 볼 수 있다.
+
+```
+[Object: null prototype] {
+  pTGFu2EnVUOQ1eRr0dBkBKY6mZjUVfA6: {
+    cookie: { originalMaxAge: null, expires: null, httpOnly: true, path: '/' }
+  },
+  HizGTiTsk1eAezqIyZFEXeUokEIj1frD: {
+    cookie: { originalMaxAge: null, expires: null, httpOnly: true, path: '/' }
+  }
+}
+```
+
+: 콜론 앞 ID가 백엔드가 기억하는 유저이다.
+
+1. 브라우저 서버에 접근한다.
+2. 서버에서 브라우저에게 텍스트가 담긴 쿠키를 준다.
+3. 브라우저가 서버에 다시 접근하면 쿠키를 건네준다
+4. 서버는 쿠키를 통해서 브라우저를 구분할 수 있다.
+
+현재 문제는, 서버를 재시작하면 세션이 모두 사라진다. 메모리에만 저장 되어 있기 때문이다.  
+그러면 쿠키를 보고 누구인지 알 수 없다.

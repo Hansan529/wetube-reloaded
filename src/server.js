@@ -27,6 +27,11 @@ app.use((req, res, next) => {
     next();
   });
 });
+
+app.use("/add-one", (req, res, next) => {
+  req.session.scs += 1;
+  return res.send(`${req.session.id}\n${req.session.scs}`);
+});
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

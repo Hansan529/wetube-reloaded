@@ -1,6 +1,3 @@
-// babel node를 사용하기 전에 express를 사용하는 법
-// const express = require("express");
-
 import express from "express";
 import morgan from "morgan";
 import rootRouter from "./routers/rootRouter";

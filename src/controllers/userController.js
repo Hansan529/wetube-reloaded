@@ -7,7 +7,6 @@ export const postJoin = async (req, res) => {
   const {
     body: { name, username, password, email, location },
   } = req;
-  console.log(req.body);
   try {
     await User.create({
       name,

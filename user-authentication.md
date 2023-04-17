@@ -244,3 +244,57 @@ if (exists) {
 ```
 
 팝업이 나오지 않도록 하는 이유도 있지만. 4xx 코드를 브라우저에서 받는다면, 해당 URL은 히스토리에 남기지 않는다. 그래서 알맞은 status 를 작성해주는게 좋다.
+
+<br>
+
+## Login
+
+username, password가 일치하면 로그인에 성공하는 단계이다.  
+입력받은 비밀번호에다가, hash를 5번 하고, 대입한 뒤에 비교해보자 하고 코딩을 했다.
+
+```js
+import bcrypt from "bcrypt";
+
+export const postLogin = async (req, res) => {
+  const pageTitle = "로그인";
+  const { username } = req.body;
+  let { password } = req.body;
+  password = bcrypt.hash(password, 5);
+
+  const exists = await User.exists({
+    $and: [{ username }, { password }],
+  });
+};
+```
+
+아쉽지만 실패했다. brpy.hash는 매번 실행 할 때마다 결과가 다른 hash값을 생성하기 때문에,  
+compare 함수로 변경해서 사용해야했다.
+
+```js
+export const postLogin = async (req, res) => {
+  const pageTitle = "로그인";
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user) {
+    return res.status(400).render("login", {
+      pageTitle,
+      errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
+    });
+  }
+  const ok = await bcrypt.compare(password, user.password);
+  if (!ok) {
+    return res.status(400).render("login", {
+      pageTitle,
+      errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
+    });
+  }
+  return res.render("login", {
+    pageTitle,
+    errorMessage: "??",
+  });
+};
+```
+
+**User** Collection에서, 입력받은 username을 찾고, 해당 배열을 user에 저장한다.  
+user가 null이라면, 에러를 표시하고, user.password로 해당 배열의 비밀번호 해시값과 입력받은  
+password를 비교하여, true, false로 나온다 그래서 ok가 false라면 에러 페이지, true라면 정상 render

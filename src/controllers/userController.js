@@ -70,7 +70,6 @@ export const postLogin = async (req, res) => {
   }
   return res.render("login", {
     pageTitle,
-    errorMessage: "??",
   });
 };
 

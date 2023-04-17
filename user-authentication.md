@@ -114,8 +114,12 @@ import mongoose from "mongoose";
 const userSchema...
 
 userSchema.pre('save', async function(){
-  this.password = await bcrypt.hash(password, 5);
+  this.password = await bcrypt.hash(this.password, 5);
 })
 ```
 
-context, function 안에서 this는 create 되는 것들을 나타낸다.
+context, function 안에서 this는 create 되는 것들을 나타낸다. **.pre**를 이용해 'save' 하기 전에 실행되도록  
+middleware를 생성해준다.
+
+해당 미들웨어에는 this, 생성되기 전이니까 input에서 받은 req.body 값들로 User.create 하는 요소를 선택한다.  
+**this.password** 해당 데이터베이스 요소의 패스워드를 가져와서, bcrpyt로 해싱을 5번 진행한 해싱값을 대입한다.

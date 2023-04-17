@@ -68,9 +68,9 @@ export const postLogin = async (req, res) => {
       errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
     });
   }
-  return res.render("login", {
-    pageTitle,
-  });
+  req.session.loggedIn = true;
+  req.session.user = user;
+  return res.redirect("/");
 };
 
 export const logout = (req, res) => res.send("Logout");

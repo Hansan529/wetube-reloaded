@@ -5,21 +5,22 @@ export const getJoin = (req, res) => {
 };
 export const postJoin = async (req, res) => {
   const {
-    body: { name, username, password, email, location },
+    body: { name, username, password, password2, email, location },
   } = req;
   const pageTitle = "회원가입";
-  const userExists = await User.exists({ username });
-  if (userExists) {
+  if (password !== password2) {
     return res.render("join", {
       pageTitle,
-      errorMessage: "이미 사용중인 아이디입니다.",
+      errorMessage: "비밀번호가 일치하지 않습니다.",
     });
   }
-  const emailExists = await User.exists({ email });
-  if (emailExists) {
+  const exists = await User.exists({
+    $or: [{ username }, { email }],
+  });
+  if (exists) {
     return res.render("join", {
       pageTitle,
-      errorMessage: "이미 사용중인 이메일입니다",
+      errorMessage: "이미 사용중인 아이디/이메일입니다.",
     });
   }
   try {

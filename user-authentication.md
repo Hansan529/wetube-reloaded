@@ -199,3 +199,17 @@ if (exists) {
 ```
 
 만약, 데이터베이스에서 확인했을 때, exists에서 true라면, 에러메시지를 보내며 이후 코드를 실행하지 않도록 한다.
+
+비밀번호는 오기 할 수 있기 때문에, 확인차 하나의 input을 더 생성하고, 확인해주어야한다.  
+그래서, password와 passoword2로 지정하고 Controller에서 비교를 한다.
+
+```js
+if (password !== password2) {
+  return res.render("join", {
+    pageTitle,
+    errorMessage: "비밀번호가 일치하지 않습니다",
+  });
+}
+```
+
+!== 연산자로, 일치하지 않을 경우 실행하도록 한다. return을 통해, 종료시킨다.

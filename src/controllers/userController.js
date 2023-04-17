@@ -7,6 +7,21 @@ export const postJoin = async (req, res) => {
   const {
     body: { name, username, password, email, location },
   } = req;
+  const pageTitle = "회원가입";
+  const userExists = await User.exists({ username });
+  if (userExists) {
+    return res.render("join", {
+      pageTitle,
+      errorMessage: "이미 사용중인 아이디입니다.",
+    });
+  }
+  const emailExists = await User.exists({ email });
+  if (emailExists) {
+    return res.render("join", {
+      pageTitle,
+      errorMessage: "이미 사용중인 이메일입니다",
+    });
+  }
   try {
     await User.create({
       name,
@@ -18,7 +33,7 @@ export const postJoin = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.render("join", {
-      pageTitle: "회원가입",
+      pageTitle,
       errorMessage: error._message,
     });
   }

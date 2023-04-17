@@ -159,3 +159,43 @@ password 값이 그대로 데이터베이스에 저장되는 모습이다.
 Video를 생성할 때, static을 사용한 것과 같이 모델을 생성하기 전에 작업을 진행한 것이다.
 
 User.js의 해싱 횟수를 변경하면 같은 입력값이여도 다른 해싱값이 나온다.
+
+---
+
+## Form Vaildation
+
+우리는 input에서 user를 생성하는데, 데이터베이스에서 unique 옵션을 사용해서, 중복이라면 콘솔에서는 에러라고 나오지만,  
+사용자는 알 지 못하기 때문에, 이를 전달해주기 위해서 다음과 같이 작업해준다.
+
+```js
+// userController
+const pageTitle = "회원가입";
+
+const userExists = await User.exists({ username });
+if (userExists) {
+  return res.render("join", {
+    pageTitle,
+    errorMessage: "이미 사용중인 아이디입니다",
+  });
+}
+```
+
+pageTitle은 반복적으로 사용하니, 아예 상수로 선언해서 호출하도록 하고,  
+exits를 사용해서, 데이터베이스의 username이 post 한 값과 일치한다면 errorMessage 값을 전달한다.
+
+이메일도 마찬가지인데, 이걸 $or 을 사용해서 하나의 코드로 작성할 수 있다.
+
+```js
+const exists = await User.exists({
+  $or: [{ username }, { email }],
+});
+
+if (exists) {
+  return res.render("join", {
+    pageTitle,
+    errorMessage: "이미 사용중인 아이디/이메일 입니다.",
+  });
+}
+```
+
+만약, 데이터베이스에서 확인했을 때, exists에서 true라면, 에러메시지를 보내며 이후 코드를 실행하지 않도록 한다.

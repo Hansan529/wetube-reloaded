@@ -352,6 +352,10 @@ app.use((req, res, next) => {
 });
 ```
 
+백엔드가 기억하고 있는 모든 사람을 콘솔에 띄우는 명령이다.
+
+<br>
+
 쿠키를 유저에게 전송해준다.
 
 주소에 접속해보고, 개발자 도구의 애플리케이션에서 쿠키를 확인해보면, 이름, 값이 적혀있는 걸 알 수 있다.  
@@ -386,3 +390,49 @@ app.use((req, res, next) => {
 해당 세션에 별도의 정보를 넣을 수 있다.
 
 정리해서, 우리 집(서버)에 오는 사람들에게 ID 카드(쿠키)를 주고, 다음에도 오려면 ID 카드를 들고 오라고 하는 것과 같다.
+
+<br>
+
+## Logged In User
+
+postLogin에 session 값을 추가한다.
+
+```js
+req.session.loggedIn = true;
+req.session.user = user;
+return res.redirect("/");
+```
+
+post를 하면, console에서는 cookie: {@@@}, loggedIn: true, user: {@@@} 가 저장된다.
+
+세션에 쿠키, 로그인유무, 유저 정보가 담겨있다.
+
+pug에서 if !req.session.loggedIn 로 함수를 지정해도, pug는 세션을 찾을 수 없다.  
+하지만 pug는 locals object를 기본적으로 가져다가 쓸 수 있다.  
+결국에는 locals object는 모든 pug에 import 되어 있는 것이다.
+
+```pug
+//- base
+title #{pageTitle} | #{siteName}
+```
+
+base에서 siteName 이라는 변수를 사용하는데,  
+`res.locals.siteName = "Wetube";` 로 지정하면, base에 siteName에 Wetube가 적용된다.
+
+```js
+// middlewares
+export const localsMiddleware = (req, res, next) => {
+  console.log(req.session);
+  res.locals.loggedIn = Boolean(req.session.loggedIn);
+  res.locals.siteName = "Wetube";
+  console.log(res.locals);
+  next();
+};
+```
+
+locals 값을 지정하는 미들웨어를 별도의 파일로 지정했다.
+
+실행되면 `req.session` 세션에 있는 내용을 확인해보고, locals.loggedIn이라는 내용을 추가하는데, req.session에 있는 loggedIn 내용을 추가한다.
+
+그런 다음 Login을 한 다음 터미널에 res.locals를 확인해보면, 다음과 같다
+`[Object: null prototype] { loggedIn: true, siteName: 'Wetube' }`

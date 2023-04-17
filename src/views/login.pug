@@ -1,0 +1,13 @@
+extends base
+
+block content
+  if errorMessage
+    span=errorMessage
+  form(method="POST")
+    input(name="username", placeholder="아이디", required, unique, type="text", minlength="4")
+    input(name="password", placeholder="비밀번호", required, type="password" pattern="^[a-zA-Z0-9`~!@#$%^&*()\\-+{}|\;':", minlength="4")
+    input(type="submit", value="로그인")
+  hr
+  div 
+    span 계정이 없으십니까? 
+    a(href="/join") 회원가입 &rarr;

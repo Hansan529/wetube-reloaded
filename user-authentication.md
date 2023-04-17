@@ -114,6 +114,8 @@ import mongoose from "mongoose";
 const userSchema...
 
 userSchema.pre('save', async function(){
-  this.password = await bcrypt.hash(password, 5, function(err, hash){})
+  this.password = await bcrypt.hash(password, 5);
 })
 ```
+
+context, function 안에서 this는 create 되는 것들을 나타낸다.

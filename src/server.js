@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
+import { connectUrl } from "./db";
 
 import { localsMiddleware } from "./middlewares";
 import rootRouter from "./routers/rootRouter";
@@ -20,6 +22,7 @@ app.use(
     secret: "Hello",
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: connectUrl }),
   })
 );
 

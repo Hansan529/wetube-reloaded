@@ -612,3 +612,138 @@ import "dotenv/config";
 2번 방식은 환경변수를 preload 하여 미리 불러오고, 다른 모든 파일에서도 사용이 가능하다.
 
 <br>
+
+## Github Login
+
+oauth로 소셜네트워크 로그인을 구현한다.
+
+깃허브로 로그인 하는 방법은, 요청하면 깃허브 정보 입력 페이지로 이동하고, 입력을 마치면 정보 공유하는 것에 대해 승인을 구하고,  
+수락한다면 유저를 우리 웹사이트로 token와 함께 redirect 시킨다. 토큰은 매우 빠르게 만료된다.
+
+---
+
+깃허브에 접속하여, 설정에 개발자 설정 &rarr; oAuth application &rarr; 새로 만들기
+
+- Application name \*
+
+  - 이름 설정
+
+- Hompage URL \*
+
+  - 홈페이지 링크
+
+- Application description - 설명
+
+- Authorization callback URL \*
+  - 어떠한 주소로 해도 상관 없지만, 사용해야하기에 기억하기
+
+생성을 완료 한 후, login 페이지에 가서 깃허브로 이동해서, 로그인하는 과정을 진행한다.
+
+주소는 `https://github.com/login/oauth/authorize` 가 기본이고, 그 뒤에, client_id 속성으로 뒤에는 아까 생성한 페이지에 보면  
+client ID 라고 있다. 복사해서 붙여넣기 하면 성공
+
+```pug
+a(href="https://github.com/login/oauth/authorize?client_id=28943eecad729ee6f5ba") 깃허브 로그인
+```
+
+[깃허브 로그인 &rarr;](https://github.com/login/oauth/authorize?client_id=28943eecad729ee6f5ba)
+
+다만, 전달하는 정보가 ID, 프로필 사진 등등 너무 적다. 그래서 추가적으로 작성해야 할 것이 있다.
+
+scope로 추가적으로 사용자에게 얻고자 하는 정보들을 넣을 수 있고. allow_signup으로 깃허브 계정이 없다면 생성할 수 있는 옵션이다.
+
+매게 변수의 종류는 많다
+
+1. client_id - 등록시 받은 아이디
+2. redirect_url - 공유하고 이동할 URL
+3. login - 앱에 로그인하고 권한을 부여하는데 사용할 특정 계정 제안
+4. scope - 권한 범위 목록
+5. state - 임의 문자열, 교차 사이트 요청 위조 공격 보호
+6. allow_signup - 깃헙 회원가입 사항
+
+---
+
+웹주소를 짧게 만들어 보면
+
+```js
+export const startGithubLogin = (req, res) => {
+  const config = {
+    clientID: "28943eecad729ee6f5ba",
+    allow_signup: false,
+    scope: "read:user user:email",
+  };
+  const params = new
+};
+```
+
+config 안에 있는 내용들을 new URLSearchParams(config).toString() 하면, 안에 있던 요소들이 String으로 풀리면서 나열된다.
+
+```js
+const baseUrl = "https://github.com/login/oauth/authorize";
+const config = {
+  client_id: "28943eecad729ee6f5ba",
+  allow_signup: false,
+  scope: "read:user user:email",
+};
+const params = new URLSearchParams(config).toString();
+const reDirectUrl = `${baseUrl}?${params}`;
+return res.redirect(reDirectUrl);
+```
+
+경로를 분리해서 하나로 합친다. 페이지에서 요청하는 권한을 허락하면 redirect된다.  
+아까 설정한 callback URL로, `https://hxan.net/users/github/callback` 한번 수락하면, 다시 접속할 때 물어보지 않고  
+토큰이 포함된 값을 전송한다.
+
+쿼리값이 있는 상태로 받는데, 여기서 client secret을 사용한다.
+
+환경변수에 **GH_CLIENT=클라이언트 아이디, GH_SECRETS=클라이언트 비밀 값**을 입력한다.
+
+callback 되는 주소에 POST된 값이 들어와서 해당 값을 입력해주어야한다.
+
+```js
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = `https://github.com/login/oauth/access_token`;
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const data = await fetch(finalUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const json = await data.json();
+  res.send(JSON.stringify(json));
+};
+```
+
+callback &rarr; finish  
+/github/finish 경로로 정보를 받기로 했고, finish 경로로 이동하면, finishGithubLogin 함수가 실행된다.
+
+베이스 url에 config 내용을 붙여넣고, fetch를 사용하여 가져오는데, nodejs에서는 fetch의 사용이 어렵기 때문에 다음과 같은  
+패키지를 설치해주어야 한다.
+
+```bash
+$ npm i node-fetch
+$ yarn add node-fetch
+```
+
+단, NodeJS 18.0.0 버전부터는 fetch 기능이 탑재되어있다.
+
+```json
+{
+  "access_token": "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",
+  "token_type": "bearer",
+  "scope": "read:user,user:email"
+}
+```
+
+깃허브 로그인을 시도하면, 다음과 같이 POST 값을 받을 수 있다.
+
+code &rarr; access token &rarr; github API를통해 user의 정보를 가져올 수 있다.
+
+access_token은, scpoe에서 지정한 정보만 가져올 수 있다.

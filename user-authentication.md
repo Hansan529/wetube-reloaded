@@ -455,3 +455,67 @@ login을 하면, req.session의 loggedIn 값을 true로 지정하는데, 이게 
 session은 object이기 때문에 가능하다
 
 <br>
+
+## MongoStore
+
+sessionStore를 DB에 저장하기 위해서, 패키지를 설치한다. (npm -> yarn 변경)
+
+```bash
+$ yarm add connect-mongo
+```
+
+**server** 파일에서 import 하고, MongoStore의 함수를 살펴보면, 기본 store 말고, 별도의 store도 가능하다는 사실을 알 수 있다.
+
+```js
+app.use(
+  session({
+    secret: "Hello",
+    resave: true,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: connectUrl }),
+  })
+);
+```
+
+collections를 추가하여, `db.sessions.find()` 를 통해 \_id 값, expires, session 속 cookie 가 저장된 걸 볼 수 있다. 이제 서버를 재시작 해도, 데이터베이스에 정보가 저장되어 있기 때문에 잊어버리지 않는다
+
+로그인을 해보면, 해당 값들이 db에 저장이 된다.
+
+<br>
+
+## Uninitialized Session
+
+<small>모바일에서는 Token을 사용하지만 웹에서는 통상적으로 Cookie를 사용한다. 물론 token도 사용 가능하다</small>
+
+현재는 웹페이지에 방문하는 모든 브라우저에게 쿠키를 주고, 해당 쿠키를 DB에 모조리 저장하고 있다. 결코 좋지 않은 상황이다.
+
+우리는 로그인을 한 사람에게만 쿠키를 주어서, 재 로그인 할 필요 없도록 하는 로그인 유지 시스템을 만들도록 할 것이다.
+
+```js
+// server
+app.use(
+  session({
+    secret: "Hello",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: connectUrl }),
+  })
+);
+```
+
+resave, saveUninitialized를 true &rarr; false 변경해준다. 저장한 다음, 브라우저에서 쿠키를 제거하고 새로고침을 해보면  
+쿠키가 생기지 않는다.
+
+resave는 모든 요청마다 세션의 변경사항이 있든 없든 세션을 다시 저장한다.  
+true: 스토어에서 세션 만료일자를 업데이트 해주는 기능이 따로 없으면 true로 설정하며 매 요청마다 세선을 업데이트 해주게 한다.  
+false: 변경사항이 없음에도 세션을 저장하면 비효율적이므로 동작 효율을 높이기 위해 사용한다.  
+각각 다른 변경사항을 요구하는 두 가지 요청을 동시에 처리할때 세션을 저장하는 과정에서 충돌이 발생할 수 있는데, 이를 방지하기 위해 사용한다.
+
+Uninitialized는, 요청에 의해 세션이 새로 만들어지고, 수정된 적 없을 때를 뜻한다.  
+true: 클라이언트들이 서버에 방문한 총 횟수를 알고자 할 때 사용한다.  
+false: unintialized 상태인 세션을 강제로 저장하면 내용도 없는 빈 세션이 스토리지에 계속 쌓일 수 있어 방지 및 저장공간을 아끼기 위해 사용한다.
+
+**Controllers** 에서 req.session을 통해 세션을 initialized 상태로 만든다.  
+정리하면, 세션을 수정할 때만 세션을 DB에 저장하고, 쿠키를 넘겨주는 일을 한다.
+
+세션이 변경되려면, 로그인을 해야 하니까, 로그인 후 데이터베이스를 확인하면 loggedIn, user, user 속 쿠키가 생성되었다.

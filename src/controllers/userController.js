@@ -1,5 +1,6 @@
-import bcrypt from "bcrypt";
 import User from "../models/User";
+import bcrypt from "bcrypt";
+import fetch from "node-fetch";
 
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "회원가입" });
@@ -81,12 +82,44 @@ export const startGithubLogin = (req, res) => {
     scope: "read:user user:email",
   };
   const params = new URLSearchParams(config).toString();
-  const redirectUrl = `${baseUrl}?${params}`;
-  return res.redirect(redirectUrl);
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
 };
 
-export const finishGithubLogin = (req, res) => {
-  res.end();
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = `https://github.com/login/oauth/access_token`;
+  /* Github에서 보낸 값은 GET 값이기에 query에 저장된다. query의 매개변수라 참조한다. */
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+
+  /* config의 프로퍼티들을 일렬로 병합한다. */
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    const { access_token } = tokenRequest;
+    const apiUrl = "https://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+  } else {
+    return res.redirect("/login");
+  }
 };
 
 export const logout = (req, res) => {

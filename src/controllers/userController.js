@@ -73,9 +73,23 @@ export const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 
+export const startGithubLogin = (req, res) => {
+  const baseUrl = `https://github.com/login/oauth/authorize`;
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    allow_signup: false,
+    scope: "read:user user:email",
+  };
+  const params = new URLSearchParams(config).toString();
+  const redirectUrl = `${baseUrl}?${params}`;
+  return res.redirect(redirectUrl);
+};
+
+export const finishGithubLogin = (req, res) => {
+  res.end();
+};
+
 export const logout = (req, res) => {
-  req.session.loggedIn = false;
-  req.session.user = "";
   return res.redirect("/");
 };
 

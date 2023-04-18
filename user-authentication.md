@@ -519,3 +519,96 @@ false: unintialized 상태인 세션을 강제로 저장하면 내용도 없는 
 정리하면, 세션을 수정할 때만 세션을 DB에 저장하고, 쿠키를 넘겨주는 일을 한다.
 
 세션이 변경되려면, 로그인을 해야 하니까, 로그인 후 데이터베이스를 확인하면 loggedIn, user, user 속 쿠키가 생성되었다.
+
+> 로그인 전 새로고침을 계속 해보면, 세선 ID가 계속해서 변경한다. 서버에 저장되지 않아서 계속해서 새로운 ID를 생성하는 것이다.
+>
+> 로그인을 하고 새로고침을 해보면, sessionID가 같은 값을 나타낸다.
+
+<br>
+
+## Expiration and Secrets
+
+### 쿠키에는 어떠한 정보들이 있는지 알아보는 섹션
+
+- secret
+
+  - 쿠키에 sign 할 때 사용하는 string 이다. secret이 왜 있냐면, 백엔드가 쿠키를 줬다는걸 보여주기 위함이다.
+  - 해당 이유는 **session hijack** 라는 공격 유형이 있기 때문에 존재한다.
+
+- Domain
+
+  - 쿠키를 만든 백엔드가 누구인지 알려준다.
+  - hxan.net에서는 **hxan.net**이 Domain 값으로 들어있다.
+  - github 페이지에서 로그인을 한 뒤, 쿠키를 살펴보면 Domain에 github.com이 있다.
+  - 요청을 하면 쿠키가 Domain 주소로 전송된다.
+
+- Path
+
+  - 단순 URL이다
+
+- Expires
+  - **Session** 이라고 적혀있고, 만료 날짜가 적혀있지 않다.
+  - session cookie는 만료되는데, 만료 날짜가 없다면 session cookie로 설정한다.
+  - 사용자가 닫으면 session cookie는 종료된다. 즉 사라진다
+  - 데이터베이스에서 expires를 확인할 수 있는데, 웹 브라우저와 달리, 만료되는 날짜가 정해져있다.
+
+```js
+app.use(
+  session({
+    secret: "abc",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 10000,
+    },
+    store: MongoStore.create({ mongoUrl: connectUrl }),
+  })
+);
+```
+
+cookie의 만료 시간을 정해줄 수 있다.. maxAge로 1/1000 m/s 초로, 즉 10초 이후에는 쿠키가 사라진다.
+
+<br>
+
+우리는 API Key, secret, DB Url 과 같은 민감한 정보는, 공유하면 안되기 때문에, 환경변수라는 것을 사용할 것이다.
+
+**.env** 파일을 생성하고, **.gitignore** 에서 .env를 추가해준다. 분리해놓고 env파일을 업로드하면 안되니까.
+
+```env
+COOKIE_SECRET=asdsad
+DB_URL=url
+```
+
+다음과 같이 값을 넣어주고, 서버, db 파일에 대입해준다. 이름은 대문자로 하는 것이 규칙
+
+환경 변수값을 사용하기 위해 패키지가 필요하다.
+
+```bash
+$ npm i dotenv
+$ yarn add dotenv
+```
+
+dotenv는 최상단에 선언해야한다. 그래야 환경변수에 대한 값을 불러올 수 있기 때문이다.
+
+사용법은 다음과 같다.
+
+```js
+require("dotenv").config();
+```
+
+문제가 있는데, 호출한 파일 말고, 다른 파일에서는 환경변수 값을 찾을 수 없다. 그래서 모든 파일에 해당 코드를 입력해야한다.  
+하지만 다른 방법이 있는데 import를 하는 방법이 있는데, 이 방법을 사용한다.
+
+```js
+import dotenv from "dotenv";
+dotenv.config();
+
+//
+
+import "dotenv/config";
+```
+
+1번 방식은 환경변수를 참조하는 파일이 적을 경우 사용하면 좋다. 왜냐하냐면 환경변수를 사용하는 파일마다 모두 선언해주어야 하기 떄문이다.  
+2번 방식은 환경변수를 preload 하여 미리 불러오고, 다른 모든 파일에서도 사용이 가능하다.
+
+<br>

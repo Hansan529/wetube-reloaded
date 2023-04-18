@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://admin:123@0.0.0.0:27017/wetube");
+export const connectUrl = "mongodb://admin:123@0.0.0.0:27017/wetube";
+
+mongoose.connect(connectUrl);
 
 const db = mongoose.connection;
 

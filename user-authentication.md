@@ -747,3 +747,147 @@ $ yarn add node-fetch
 code &rarr; access token &rarr; github API를통해 user의 정보를 가져올 수 있다.
 
 access_token은, scpoe에서 지정한 정보만 가져올 수 있다.
+
+<br>
+
+fetch를 한 이후, .json() 사용하여 짧게 사용이 가능하다.
+
+```js
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = `https://github.com/login/oauth/access_token`;
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    const { access_token } = tokenRequest;
+    const apiUrl = "https://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(emailData);
+  } else {
+    return res.redirect("/login");
+  }
+
+  const emailObj = emailData.find(
+    (email) => email.primary === true && email.verified === true
+  );
+  if (!emailObj) {
+    return res.redirect("/login");
+  }
+};
+```
+
+정말.. 복잡하다.
+
+1. 프로퍼티를 변환해서 URL로 만들어서 해당 URL에 POST 요청을 해서 access_token 값을 json 형태로 얻는다.
+2. 서버에서 받은 정보를 json 파일로 저장한다. 해당 json 파일에서 access_token 프로퍼티가 있는지 체크한다.
+3. access_token 이라는 상수에 access_token의 값을 저장한다.
+4. 유저 데이터를 찾기 위해 fetch를 통해, headers라는 객체에 Authorization 프로퍼티 값을 얻고, 해당 정보를 json으로 저장한다.
+5. 이메일 데이터도 마찬가지 방법으로 fetch 경로만 수정해서 동일하게 요청한다.
+6. 이메일 데이터에서 primary와 verified 값이 모두 true인 값만 찾는다.
+7. 만약 이메일이 없다면 로그인 실패 시킨다.
+
+기존에 생성한 계정이 있을 때, 소셜네트워크로 접속하면 생기는 일들에 대해 설정할 수 있다.
+
+- 깃허브에서 이메일을 불러왔는데, 데이터베이스에도 일치하는 게 있네? &rarr; 접속 허락할게
+- 이미 아이디와 비밀번호가 있어, 그러면 아이디와 비밀번호를 입력해서 접속해
+- 이메일로 접속하려는데 너는 비밀번호를 생성하지 않았어, 깃허브에서 접속하도록 해
+
+password가 있거나, Github의 email이 verified가 되면 이메일의 주인이니까 로그인을 시킨다.
+
+```json
+{
+  "email": "hansan0529@gmail.com",
+  "primary": true,
+  "verified": true,
+  "visibility": "private"
+}
+```
+
+email에 본인 이메일을 확인 할 수 있고, primary에서 Developer settings의 tokens를 활성화 하면 true로 나온다.
+verified는 깃허브가 이메일 인증이 완료된 계정에만 true를 부여하기 때문에, 거의 true이다.
+visibility는 해당 토큰이 public에만 접근 가능한지, private에도 접근이 가능한지에 대한 권한을 알려준다.
+
+primary의 기본값은 true지만, API를 사용하려면 token 생성이 필요하다.
+
+만약에 계정이 없다면 생성하도록 해야하니까 create문을 다시 사용한다.  
+우리는 userData에서 깃허브 정보를 얻을 수 있으니 다음과 같이 작성한다.
+
+```js
+const existingUser = await User.findOne({ email: emailObj.email });
+if (existingUser) {
+  req.session.loggedIn = true;
+  req.session.user = existingUser;
+  return res.redirect("/");
+} else {
+  const user = await User.create({
+    name: userData.name,
+    username: userData.login,
+    password: "",
+    email: emailObj.email,
+    socialOnly: true,
+    location: userData.location,
+  });
+  return res.redirect("/join");
+}
+```
+
+데이터베이스의 이메일과, 깃허브 email 이메일이 일치하는 것을 찾는다.
+
+- 일치할 경우
+
+1. 일치하는 요소는 loggedIn = true, user 데이터도 옮겨준다.
+2. 홈 화면으로 이동한다.
+
+- 불일치할 경우
+
+1. User 데이터베이스에 새로 추가한다.
+2. githubAPI를 통해 얻은 정보를 저장한 userData에서 정보들을 추출한다.
+3. socialOnly라고, Boolean 값을 추가한다.
+4. settsion에 loggedIn값, user 값을 추가한다
+5. 홈 화면으로 이동한다
+
+password가 필수값이여서 소셜 로그인을 할 때에도 패스워드를 지정해야하는데, 소셜 로그인은 이메일과 아이디를 사용해서 생성하기에  
+User 스키마를 수정했다.
+
+```js
+  name: { type: String, required: true, unique: true, minLength: 2 },
+  socialLogin: { type: Boolean, default: false },
+  username: { type: String, required: true, unique: true, minlength: 4 },
+  password: {
+    type: String,
+    required: function () {
+      return !this.socialLogin;
+    },
+  },
+  email: { type: String, required: true, unique: true },
+  location: { type: String, required: true },
+```
+
+password의 required 값을 socialLogin이 없다면 true, 있다면 false를 반환한다.

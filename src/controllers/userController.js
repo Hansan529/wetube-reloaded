@@ -1,6 +1,5 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import fetch from "node-fetch";
 
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "회원가입" });
@@ -46,13 +45,16 @@ export const edit = (req, res) => res.send("Edit User");
 
 export const remove = (req, res) => res.send("Delete User");
 
-export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "로그인" });
+export const getLogin = (req, res) => {
+  const { errorMessage } = req.session;
+  req.session.errorMessage = "";
+  return res.render("login", { pageTitle: "로그인", errorMessage });
+};
 
 export const postLogin = async (req, res) => {
   const pageTitle = "로그인";
   const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, socialLogin: false });
 
   // 존재하지 않은 아이디를 입력했을 경우
   if (!user) {
@@ -146,16 +148,14 @@ export const finishGithubLogin = async (req, res) => {
     /* 유저 데이터베이스에 email이 primary,verified가 true인 배열과 일치하는 배열만 찾기 */
     const existingUser = await User.findOne({ email: emailObj.email });
     /* 유저 데이터베이스에 name이 깃허브 로그인 아이디와 같은지 체크 */
-    const existingUserName = await Boolean(
-      User.exists({ username: userData.login })
-    );
+    const existingUserName = await User.exists({ username: userData.login });
     console.log("existingUserName: ", existingUserName);
     /* 일치하는 이메일이 있다면, login 성공 */
     if (existingUser) {
       req.session.loggedIn = true;
       req.session.user = existingUser;
       return res.redirect("/");
-    } else if (!existingUserName) {
+    } else if (existingUserName === null) {
       /* 일치하는 이메일과 아이디가 없다면 새로 생성하기 */
       const user = await User.create({
         name: userData.name,
@@ -168,10 +168,10 @@ export const finishGithubLogin = async (req, res) => {
       req.session.user = user;
       return res.redirect("/");
     } else {
-      return res.render("login", {
-        pageTitle: "로그인",
-        errorMessage: "중복되는 아이디가 있습니다.",
-      });
+      /* 중복된 아이디로 생성 불가 */
+      req.session.errorMessage =
+        "계정이 없어 계정을 생성하려고 했지만, 중복되는 아이디가 있습니다.";
+      return res.redirect("/login");
     }
   } else {
     /* access_token이 없을 경우 */

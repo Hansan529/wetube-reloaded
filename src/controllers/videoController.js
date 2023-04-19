@@ -12,7 +12,7 @@ export const watch = async (req, res) => {
   const video = await Video.findById(id);
   if (!video) {
     return res
-      .status(400)
+      .status(404)
       .render("404", { pageTitle: "동영상을 찾을 수 없음" });
   }
   return res.render("watch", { pageTitle: video.title, video });

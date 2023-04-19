@@ -46,14 +46,16 @@ export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
 
 export const getLogin = (req, res) => {
-  const { errorMessage } = req.session;
-  req.session.errorMessage = "";
-  return res.render("login", { pageTitle: "로그인", errorMessage });
+  // const { errorMessage } = req.session;
+  // req.session.errorMessage = "";
+  return res.render("login", { pageTitle: "로그인" });
 };
 
 export const postLogin = async (req, res) => {
   const pageTitle = "로그인";
   const { username, password } = req.body;
+
+  /* 아이디, socialLogin이 false인 배열 찾기 */
   const user = await User.findOne({ username, socialLogin: false });
 
   // 존재하지 않은 아이디를 입력했을 경우
@@ -141,24 +143,30 @@ export const finishGithubLogin = async (req, res) => {
     const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
+
     /** 만약 email이 없다면, 오류 메시지와 함께 로그인으로 이동시킴 */
     if (!emailObj) {
       return res.redirect("/login");
     }
+
     /* 유저 데이터베이스에 email이 primary,verified가 true인 배열과 일치하는 배열만 찾기 */
-    const existingUser = await User.findOne({ email: emailObj.email });
+    const user = await User.findOne({ email: emailObj.email });
+
     /* 유저 데이터베이스에 name이 깃허브 로그인 아이디와 같은지 체크 */
-    const existingUserName = await User.exists({ username: userData.login });
-    console.log("existingUserName: ", existingUserName);
+    const userName = await User.exists({ username: userData.login });
+    console.log("userName: ", userName);
     /* 일치하는 이메일이 있다면, login 성공 */
-    if (existingUser) {
+    if (user) {
       req.session.loggedIn = true;
-      req.session.user = existingUser;
+      req.session.user = user;
       return res.redirect("/");
-    } else if (existingUserName === null) {
+    }
+
+    if (!userName) {
       /* 일치하는 이메일과 아이디가 없다면 새로 생성하기 */
       const user = await User.create({
         name: userData.name,
+        avatarUrl: userData.avatar_url,
         socialLogin: true,
         username: userData.login,
         email: emailObj.email,
@@ -169,9 +177,11 @@ export const finishGithubLogin = async (req, res) => {
       return res.redirect("/");
     } else {
       /* 중복된 아이디로 생성 불가 */
-      req.session.errorMessage =
-        "계정이 없어 계정을 생성하려고 했지만, 중복되는 아이디가 있습니다.";
-      return res.redirect("/login");
+      return res.render("/login", {
+        pageTitle: "로그인",
+        errorMessage:
+          "계정이 없어 계정을 생성하려고 했지만, 중복되는 아이디가 있습니다.",
+      });
     }
   } else {
     /* access_token이 없을 경우 */
@@ -180,6 +190,10 @@ export const finishGithubLogin = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+  req.session.destroy();
+
+  /* 백엔드에서는 제거되었지만, 브라우저에서도 제거함 */
+  res.clearCookie("connect.sid");
   return res.redirect("/");
 };
 

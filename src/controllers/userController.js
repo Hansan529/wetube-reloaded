@@ -1,5 +1,6 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
 
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "회원가입" });
@@ -46,8 +47,6 @@ export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
 
 export const getLogin = (req, res) => {
-  // const { errorMessage } = req.session;
-  // req.session.errorMessage = "";
   return res.render("login", { pageTitle: "로그인" });
 };
 
@@ -150,38 +149,45 @@ export const finishGithubLogin = async (req, res) => {
     }
 
     /* 유저 데이터베이스에 email이 primary,verified가 true인 배열과 일치하는 배열만 찾기 */
-    const user = await User.findOne({ email: emailObj.email });
+    const userAlready = await User.findOne({ email: emailObj.email });
 
-    /* 유저 데이터베이스에 name이 깃허브 로그인 아이디와 같은지 체크 */
-    const userName = await User.exists({ username: userData.login });
-    console.log("userName: ", userName);
     /* 일치하는 이메일이 있다면, login 성공 */
-    if (user) {
+    if (userAlready) {
       req.session.loggedIn = true;
-      req.session.user = user;
+      req.session.user = userAlready;
       return res.redirect("/");
-    }
+    } else {
+      const userNameExists = await User.exists({ username: userData.login });
+      const nameExists = await User.exists({ name: userData.name });
+      console.log("userNameExists: ", userNameExists);
+      console.log("nameExists: ", nameExists);
+      let username = userData.login;
+      let name = userData.name;
 
-    if (!userName) {
-      /* 일치하는 이메일과 아이디가 없다면 새로 생성하기 */
+      /* 일치하는 아이디가 있으면 랜덤 아이디로 지정 */
+      if (userNameExists) {
+        username = nanoid(10);
+      }
+
+      /* 일치하는 닉네임이 있으면 랜덤 닉네임으로 지정 */
+      if (nameExists) {
+        name = nanoid(10);
+      }
+
+      /* 유저 생성 */
       const user = await User.create({
-        name: userData.name,
+        name,
         avatarUrl: userData.avatar_url,
         socialLogin: true,
-        username: userData.login,
+        username,
         email: emailObj.email,
         location: userData.location,
       });
+
+      /* login 처리 */
       req.session.loggedIn = true;
       req.session.user = user;
       return res.redirect("/");
-    } else {
-      /* 중복된 아이디로 생성 불가 */
-      return res.render("/login", {
-        pageTitle: "로그인",
-        errorMessage:
-          "계정이 없어 계정을 생성하려고 했지만, 중복되는 아이디가 있습니다.",
-      });
     }
   } else {
     /* access_token이 없을 경우 */

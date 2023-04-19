@@ -165,14 +165,10 @@ export const finishGithubLogin = async (req, res) => {
       let name = userData.name;
 
       /* 일치하는 아이디가 있으면 랜덤 아이디로 지정 */
-      if (userNameExists) {
-        username = nanoid(10);
-      }
+      userNameExists ? (username = nanoid(10)) : username;
 
       /* 일치하는 닉네임이 있으면 랜덤 닉네임으로 지정 */
-      if (nameExists) {
-        name = nanoid(10);
-      }
+      nameExists ? (name = nanoid(10)) : name;
 
       /* 유저 생성 */
       const user = await User.create({

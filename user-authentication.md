@@ -848,10 +848,9 @@ if (existingUser) {
 } else {
   const user = await User.create({
     name: userData.name,
-    username: userData.login,
-    password: "",
-    email: emailObj.email,
     socialOnly: true,
+    username: userData.login,
+    email: emailObj.email,
     location: userData.location,
   });
   return res.redirect("/join");
@@ -891,3 +890,75 @@ User 스키마를 수정했다.
 ```
 
 password의 required 값을 socialLogin이 없다면 true, 있다면 false를 반환한다.
+
+```js
+/* 유저 데이터베이스에 email이 primary,verified가 true인 배열과 일치하는 배열만 찾기 */
+const userAlready = await User.findOne({ email: emailObj.email });
+
+/* 일치하는 이메일이 있다면, login 성공 */
+if (userAlready) {
+  req.session.loggedIn = true;
+  req.session.user = userAlready;
+  return res.redirect("/");
+} else {
+  const userNameExists = await User.exists({ username: userData.login });
+  const nameExists = await User.exists({ name: userData.name });
+  console.log("userNameExists: ", userNameExists);
+  console.log("nameExists: ", nameExists);
+  let username = userData.login;
+  let name = userData.name;
+
+  /* 일치하는 아이디가 있으면 랜덤 아이디로 지정 */
+  if (userNameExists) {
+    username = nanoid(10);
+  }
+
+  /* 일치하는 닉네임이 있으면 랜덤 닉네임으로 지정 */
+  if (nameExists) {
+    name = nanoid(10);
+  }
+
+  /* 유저 생성 */
+  const user = await User.create({
+    name,
+    avatarUrl: userData.avatar_url,
+    socialLogin: true,
+    username,
+    email: emailObj.email,
+    location: userData.location,
+  });
+
+  /* login 처리 */
+  req.session.loggedIn = true;
+  req.session.user = user;
+  return res.redirect("/");
+}
+```
+
+emailObj에서 구한 배열을 데이터베이스에서 찾아서 출력한다.
+
+존재한다면 세션에 로그인 상태와, 유저 정보를 넣어준다. 그 후 메인으로 이동시킨다.
+
+만약 이메일이 맞지 않은 경우 계정을 생성하도록 한다.
+
+먼저 name과 username은 **unique** 이기 때문에 중복되면 안되니까, 각각 체크를 해 주기 위해서  
+exists를 사용해 true라면 변경해서 적용하도록 했다.
+
+변수 선언으로 username, name을 지정하고 true, false 값을 갖고 if를 사용해서 변수의 값을 변경해준다.
+
+값 변경을 마쳤으면 데이터베이스에 새로운 계정을 추가하고 로그인처리를 한다.
+
+<br>
+
+session에 저장된 로그인 처리를 제거하기 위해 로그아웃을 구성한다.
+
+```js
+export const logout = (req, res) => {
+  req.session.destroy();
+  res.clearCookie("connect.sid");
+  return res.redirect("/");
+};
+```
+
+logout 페이지로 이동했으니, 다시 루트로 이동하도록 하고, session에 있는 모든 데이터를 삭제하고,  
+사용자의 브라우저에서는 아무 작업도 하지 않지만 동기화를 위해 삭제한다.

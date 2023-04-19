@@ -88,16 +88,18 @@ export const startGithubLogin = (req, res) => {
 
 export const finishGithubLogin = async (req, res) => {
   const baseUrl = `https://github.com/login/oauth/access_token`;
-  /* Github에서 보낸 값은 GET 값이기에 query에 저장된다. query의 매개변수라 참조한다. */
+  /** Github에서 보낸 값은 GET 값이기에 query에 저장된다. query의 매개변수라 참조한다. */
   const config = {
     client_id: process.env.GH_CLIENT,
     client_secret: process.env.GH_SECRET,
     code: req.query.code,
   };
 
-  /* config의 프로퍼티들을 일렬로 병합한다. */
+  /** config의 프로퍼티들을 일렬로 병합한다. */
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
+
+  /** fetch로 POST하여 서버에서 JSON 형태로 정보를 받고, tokenRequest를 JSON으로 저장한다. */
   const tokenRequest = await (
     await fetch(finalUrl, {
       method: "POST",
@@ -106,9 +108,17 @@ export const finishGithubLogin = async (req, res) => {
       },
     })
   ).json();
+
+  /** tokenRequest.json 안에 access_token이 있는지 체크 */
   if ("access_token" in tokenRequest) {
+    /** access_token:value를 access_token에 저장하고, tokenRequest의 access_token 프로퍼티에
+    값을 access_token에 저장한다 */
     const { access_token } = tokenRequest;
     const apiUrl = "https://api.github.com";
+
+    /** api.github.com/user 에서 headers 객체를 가져오는데 Authorization의 값을 token ${access_token}으로 변경해서 불러온다.
+     *  그 후, json으로 저장한다.
+     */
     const userData = await (
       await fetch(`${apiUrl}/user`, {
         headers: {
@@ -117,7 +127,54 @@ export const finishGithubLogin = async (req, res) => {
       })
     ).json();
     console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(emailData);
+    /** 이메일 배열에서 primary와 verified가 모두 true 인 배열만 찾기 */
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    /** 만약 email이 없다면, 오류 메시지와 함께 로그인으로 이동시킴 */
+    if (!emailObj) {
+      return res.redirect("/login");
+    }
+    /* 유저 데이터베이스에 email이 primary,verified가 true인 배열과 일치하는 배열만 찾기 */
+    const existingUser = await User.findOne({ email: emailObj.email });
+    /* 유저 데이터베이스에 name이 깃허브 로그인 아이디와 같은지 체크 */
+    const existingUserName = await Boolean(
+      User.exists({ username: userData.login })
+    );
+    console.log("existingUserName: ", existingUserName);
+    /* 일치하는 이메일이 있다면, login 성공 */
+    if (existingUser) {
+      req.session.loggedIn = true;
+      req.session.user = existingUser;
+      return res.redirect("/");
+    } else if (!existingUserName) {
+      /* 일치하는 이메일과 아이디가 없다면 새로 생성하기 */
+      const user = await User.create({
+        name: userData.name,
+        socialLogin: true,
+        username: userData.login,
+        email: emailObj.email,
+        location: userData.location,
+      });
+      req.session.loggedIn = true;
+      req.session.user = user;
+      return res.redirect("/");
+    } else {
+      return res.render("login", {
+        pageTitle: "로그인",
+        errorMessage: "중복되는 아이디가 있습니다.",
+      });
+    }
   } else {
+    /* access_token이 없을 경우 */
     return res.redirect("/login");
   }
 };

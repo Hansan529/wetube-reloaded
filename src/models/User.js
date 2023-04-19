@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true, minLength: 2 },
   socialLogin: { type: Boolean, default: false },
+  avatarUrl: String,
   username: { type: String, required: true, unique: true, minlength: 4 },
   password: {
     type: String,

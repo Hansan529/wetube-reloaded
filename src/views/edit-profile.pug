@@ -1,0 +1,11 @@
+extends base
+
+block content
+  form(method="POST")
+    if loggedInUser.socialLogin 
+      input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
+    else 
+      input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
+    input(name="name", placeholder="별명", value=`${loggedInUser.name}` required, uniquem type="text" minlength="2")
+    input(name="email", placeholder="이메일", value=`${loggedInUser.email}` required, type="email") 
+    input(name="location", placeholder="지역", value=`${loggedInUser.location}` required, type="text")

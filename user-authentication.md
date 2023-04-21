@@ -572,6 +572,13 @@ cookie의 만료 시간을 정해줄 수 있다.. maxAge로 1/1000 m/s 초로, �
 
 우리는 API Key, secret, DB Url 과 같은 민감한 정보는, 공유하면 안되기 때문에, 환경변수라는 것을 사용할 것이다.
 
+```bash
+$ npm i dotenv@16.0.3
+$ yarn add dotenv@16.0.3
+```
+
+버전 오류로 특정 버전을 설치한다.
+
 **.env** 파일을 생성하고, **.gitignore** 에서 .env를 추가해준다. 분리해놓고 env파일을 업로드하면 안되니까.
 
 ```env

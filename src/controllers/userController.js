@@ -42,7 +42,11 @@ export const postJoin = async (req, res) => {
   return res.redirect("/");
 };
 
-export const edit = (req, res) => res.send("Edit User");
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "사용자 수정" });
+};
+
+export const postEdit = (req, res) => res.send("post");
 
 export const remove = (req, res) => res.send("Delete User");
 

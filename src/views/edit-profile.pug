@@ -6,13 +6,13 @@ block content
       label 아이디: 
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
       label 비밀번호:
-        input(name="name" placeholder="비밀번호" required type="password" minlength="4" disabled)
+        input(name="name" placeholder="********" required type="password" minlength="4" disabled)
       p 비밀번호 변경하기
     else 
       label 아이디:
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
       label 비밀번호:
-        input(name="name" placeholder="비밀번호" required type="password" minlength="4" disabled)
+        input(name="name" placeholder="********" required type="password" minlength="4" disabled)
       p 비밀변고 변경하기
     label 별명
       input(name="name" placeholder="별명" value=`${loggedInUser.name}` required unique type="text" minlength="2")

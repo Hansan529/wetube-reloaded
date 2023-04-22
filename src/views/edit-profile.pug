@@ -3,9 +3,20 @@ extends base
 block content
   form(method="POST")
     if loggedInUser.socialLogin 
-      input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
+      label 아이디: 
+        input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
+      label 비밀번호:
+        input(name="name" placeholder="비밀번호" required type="password" minlength="4" disabled)
+      p 비밀번호 변경하기
     else 
-      input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
-    input(name="name", placeholder="별명", value=`${loggedInUser.name}` required, uniquem type="text" minlength="2")
-    input(name="email", placeholder="이메일", value=`${loggedInUser.email}` required, type="email") 
-    input(name="location", placeholder="지역", value=`${loggedInUser.location}` required, type="text")
+      label 아이디:
+        input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
+      label 비밀번호:
+        input(name="name" placeholder="비밀번호" required type="password" minlength="4" disabled)
+      p 비밀변고 변경하기
+    label 별명
+      input(name="name" placeholder="별명" value=`${loggedInUser.name}` required unique type="text" minlength="2")
+    label 이메일
+      input(name="email" placeholder="이메일" value=`${loggedInUser.email}` required type="email") 
+    label 지역
+      input(name="location" placeholder="지역" value=`${loggedInUser.location}` required type="text")

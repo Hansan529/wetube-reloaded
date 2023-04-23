@@ -22,7 +22,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 10000,
+      maxAge: 1000000,
     },
     store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })

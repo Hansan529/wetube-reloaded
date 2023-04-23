@@ -14,7 +14,7 @@ const userRouter = express.Router();
 
 userRouter.get("/logout", protectorMiddleware, logout);
 userRouter.route("/edit").all(protectorMiddleware).get(getEdit).post(postEdit);
-userRouter.get("/remove", remove);
+userRouter.get("/remove", protectorMiddleware, remove);
 userRouter.get("/github/start", startGithubLogin);
 userRouter.get("/github/finish", finishGithubLogin);
 userRouter.get(":id", see);

@@ -49,10 +49,34 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id },
+      user: {
+        _id,
+        name: sessionName,
+        email: sessionEmail,
+        username: sessionUsername,
+      },
     },
     body: { name, email, username, location },
   } = req;
+  let searchParams = [];
+  if (name !== sessionName) {
+    searchParams.push({ name });
+  }
+  if (email !== sessionEmail) {
+    searchParams.push({ email });
+  }
+  if (username !== sessionUsername) {
+    searchParams.push({ username });
+  }
+  if (searchParams.length > 0) {
+    const findUser = await User.findOne({ $or: searchParams });
+    if (findUser && findUser._id.toString() !== _id) {
+      return res.status(400).render("edit-profile", {
+        pageTitle: "edit Profile",
+        errorMessage: "이미 존재하는 아이디, 이메일, 별명입니다.",
+      });
+    }
+  }
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {

@@ -68,3 +68,13 @@ userRouter.get("/remove", protectorMiddleware, remove);
 
 미들웨어를 불러온 뒤에, 먼저 적용한다. get과 post에 대한 route에 동시에 부여하기 위해서 간편하게 all() 를 사용해서 적용해준다.  
 all은 get,post, put, delete 등 모든 http method에 적용된다.
+
+---
+
+## Edit Profile POST
+
+edit 페이지에서 변경할 요소를 form에 입력하고 post를 하면 변경이 되지 않는다.  
+데이터베이스를 확인해보면, 데이터베이스상에서는 업데이트가 되었다.  
+하지만 loggedInUser는 req.session.user가 되는데, **req.session.user**는 로그인할 때 갱신된다.
+
+그러므로, 수정을 한 다음에도 req.session.user를 업데이트를 해주어야 정상적으로 form에서도 변경된 값이 나올 것이다.

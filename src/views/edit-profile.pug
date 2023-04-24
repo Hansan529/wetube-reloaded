@@ -13,7 +13,7 @@ block content
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
       label 비밀번호:
         input(name="name" placeholder="********" required type="password" minlength="4" disabled)
-      p 비밀변고 변경하기
+      p 비밀번호 변경하기
     label 별명
       input(name="name" placeholder="별명" value=`${loggedInUser.name}` required unique type="text" minlength="2")
     label 이메일

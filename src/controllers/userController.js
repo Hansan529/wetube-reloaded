@@ -91,6 +91,15 @@ export const postEdit = async (req, res) => {
   return res.redirect("/users/edit");
 };
 
+export const getChangePassword = (req, res) => {
+  return res.render("change-password", {
+    pageTitle: "비밀번호 변경",
+  });
+};
+export const postChangePassword = (req, res) => {
+  return res.redirect("/users");
+};
+
 export const remove = (req, res) => res.send("Delete User");
 
 export const getLogin = (req, res) => {

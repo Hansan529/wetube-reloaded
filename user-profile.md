@@ -46,7 +46,7 @@ export const protectorMiddleware = (req, res, next) => {
 };
 
 export const publicOnlyMiddleware = (req, res, next) => {
-  if ((!req, session.loggedIn)) {
+  if (!req.session.loggedIn) {
     return next();
   } else {
     return res.redirect("/");
@@ -56,3 +56,15 @@ export const publicOnlyMiddleware = (req, res, next) => {
 
 만약, 로그인이 되어있다면, 다음으로 router로 이동하는 protectorMiddleware와,  
 로그인이 안되어 있다면, 다음 router로 이동하는, 로그인 한 유저는 사용할 수 없도록 하는 publicOnlyMiddleware를 생성했다.
+
+```js
+// userRouter
+import { protectorMiddleware } from "../middlewares";
+
+userRouter.get("/logout", protectorMiddleware, logout);
+userRouter.route("/edit").all(protectorMiddleware).get(getEdit).post(postEdit);
+userRouter.get("/remove", protectorMiddleware, remove);
+```
+
+미들웨어를 불러온 뒤에, 먼저 적용한다. get과 post에 대한 route에 동시에 부여하기 위해서 간편하게 all() 를 사용해서 적용해준다.  
+all은 get,post, put, delete 등 모든 http method에 적용된다.

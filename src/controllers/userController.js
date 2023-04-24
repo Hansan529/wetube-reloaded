@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
 export const getJoin = (req, res) => {
-  return res.render("join", { pageTitle: "회원가입" });
+  return res.render("users/join", { pageTitle: "회원가입" });
 };
 export const postJoin = async (req, res) => {
   const {
@@ -11,7 +11,7 @@ export const postJoin = async (req, res) => {
   } = req;
   const pageTitle = "회원가입";
   if (password !== password2) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle,
       errorMessage: "비밀번호가 일치하지 않습니다.",
     });
@@ -20,7 +20,7 @@ export const postJoin = async (req, res) => {
     $or: [{ username }, { email }],
   });
   if (exists) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle,
       errorMessage: "이미 사용중인 아이디/이메일입니다.",
     });
@@ -34,7 +34,7 @@ export const postJoin = async (req, res) => {
       location,
     });
   } catch (error) {
-    return res.status(400).render("join", {
+    return res.status(400).render("users/join", {
       pageTitle,
       errorMessage: error._message,
     });
@@ -43,7 +43,7 @@ export const postJoin = async (req, res) => {
 };
 
 export const getEdit = (req, res) => {
-  return res.render("edit-profile", { pageTitle: "사용자 수정" });
+  return res.render("users/edit-profile", { pageTitle: "사용자 수정" });
 };
 
 export const postEdit = async (req, res) => {
@@ -71,7 +71,7 @@ export const postEdit = async (req, res) => {
   if (searchParams.length > 0) {
     const findUser = await User.findOne({ $or: searchParams });
     if (findUser && findUser._id.toString() !== _id) {
-      return res.status(400).render("edit-profile", {
+      return res.status(400).render("users/edit-profile", {
         pageTitle: "edit Profile",
         errorMessage: "이미 존재하는 아이디, 이메일, 별명입니다.",
       });
@@ -88,11 +88,11 @@ export const postEdit = async (req, res) => {
     { new: true }
   );
   req.session.user = updatedUser;
-  return res.redirect("/users/edit");
+  return res.redirect("/edit");
 };
 
 export const getChangePassword = (req, res) => {
-  return res.render("change-password", {
+  return res.render("users/change-password", {
     pageTitle: "비밀번호 변경",
   });
 };
@@ -103,7 +103,7 @@ export const postChangePassword = (req, res) => {
 export const remove = (req, res) => res.send("Delete User");
 
 export const getLogin = (req, res) => {
-  return res.render("login", { pageTitle: "로그인" });
+  return res.render("users/login", { pageTitle: "로그인" });
 };
 
 export const postLogin = async (req, res) => {
@@ -115,7 +115,7 @@ export const postLogin = async (req, res) => {
 
   // 존재하지 않은 아이디를 입력했을 경우
   if (!user) {
-    return res.status(400).render("login", {
+    return res.status(400).render("users/login", {
       pageTitle,
       errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
     });
@@ -123,7 +123,7 @@ export const postLogin = async (req, res) => {
   const ok = await bcrypt.compare(password, user.password);
   /* 비밀번호가 입력한 것과 일치하지 않을 경우 */
   if (!ok) {
-    return res.status(400).render("login", {
+    return res.status(400).render("users/login", {
       pageTitle,
       errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
     });
@@ -185,7 +185,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -193,7 +192,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(emailData);
     /** 이메일 배열에서 primary와 verified가 모두 true 인 배열만 찾기 */
     const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true

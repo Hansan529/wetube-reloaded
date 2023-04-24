@@ -78,3 +78,60 @@ edit 페이지에서 변경할 요소를 form에 입력하고 post를 하면 변
 하지만 loggedInUser는 req.session.user가 되는데, **req.session.user**는 로그인할 때 갱신된다.
 
 그러므로, 수정을 한 다음에도 req.session.user를 업데이트를 해주어야 정상적으로 form에서도 변경된 값이 나올 것이다.
+
+findByIdAndUpdate 옵션에는 new 가 있는데, 기본은 업데이트 하기 전의 데이터베이스 정보를 갖고오는 것이라,  
+**new: true**를 해주면 가장 최근에 업데이트한 값을 가져온다.
+
+<br>
+
+```js
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: {
+        _id,
+        name: sessionName,
+        email: sessionEmail,
+        username: sessionUsername,
+      },
+    },
+    body: { name, email, username, location },
+  } = req;
+  let searchParams = [];
+  if (name !== sessionName) {
+    searchParams.push({ name });
+  }
+  if (email !== sessionEmail) {
+    searchParams.push({ email });
+  }
+  if (username !== sessionUsername) {
+    searchParams.push({ username });
+  }
+  if (searchParams.length > 0) {
+    const findUser = await User.findOne({ $or: searchParams });
+    if (findUser && findUser._id.toString() !== _id) {
+      return res.status(400).render("edit-profile", {
+        pageTitle: "edit Profile",
+        errorMessage: "이미 존재하는 아이디, 이메일, 별명입니다.",
+      });
+    }
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.redirect("/users/edit");
+};
+```
+
+세션에서 기존 데이터베이스에 존재하는 값을 찾고, 폼의 데이터와 일치하지 않는다면 (중복체크, 변경하려고 함) 데이터베이스에서 내가 변경하고자 하는 데이터를 갖고 있는  
+데이터베이스를 찾는다. 만약 있다면 unique 사항때문에, 실패를 렌더링, 다만 id가 같다면 통과, id가 다르면 오류
+
+업데이트하는 코드는 그대로 두고, 실패를 먼저 계산하고 오류가 발생하면 코드 진행을 멈추어서 업데이트 코드가 실행되지 않도록 함

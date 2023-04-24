@@ -46,7 +46,21 @@ export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "사용자 수정" });
 };
 
-export const postEdit = (req, res) => res.send("post");
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+  await User.findByIdAndUpdate(_id, {
+    name,
+    email,
+    username,
+    location,
+  });
+  return res.render("edit-profile");
+};
 
 export const remove = (req, res) => res.send("Delete User");
 

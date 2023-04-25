@@ -7,14 +7,14 @@ block content
     if loggedInUser.socialLogin 
       label 아이디: 
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
-      label 비밀번호:
+      label 비밀번호 추가하기:
         input(name="name" placeholder="********" required type="password" minlength="4" disabled)
     else 
       label 아이디:
-        input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}` disabled)
+        input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
       label 비밀번호:
         input(name="name" placeholder="********" required type="password" minlength="4" disabled)
-    a(href="change-password") 비밀번호 변경하기 &rarr;
+      a(href="change-password") 비밀번호 변경하기 &rarr;
     label 별명
       input(name="name" placeholder="별명" value=`${loggedInUser.name}` required unique type="text" minlength="2")
     label 이메일

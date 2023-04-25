@@ -99,12 +99,13 @@ export const getChangePassword = (req, res) => {
 export const postChangePassword = async (req, res) => {
   const {
     session: {
-      user: { _id, password },
+      user: { _id },
     },
     body: { oldPassword, newPassword, newPassword1 },
   } = req;
   const pageTitle = "비밀번호 변경";
-  const passwordExists = await bcrypt.compare(oldPassword, password);
+  const user = await User.findById(_id);
+  const passwordExists = await bcrypt.compare(oldPassword, user.password);
   if (!passwordExists) {
     return res.status(400).render("users/change-password", {
       pageTitle,
@@ -117,9 +118,7 @@ export const postChangePassword = async (req, res) => {
       errorMessage: "변경하고자 하는 비밀번호가 일치하지 않습니다.",
     });
   }
-  const user = await User.findById(_id);
   user.password = newPassword;
-  req.session.user.password = newPassword;
   user.save();
   req.session.destroy();
 };

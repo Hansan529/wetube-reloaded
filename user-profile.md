@@ -255,16 +255,70 @@ export const postEdit = (req, res) => {
 그렇게 되면, req.file를 사용할 수 있다. req.file를 console에서 확인해보면
 
 ```
-{
+file:  {
   fieldname: 'avatarUrl',
-  originalname: 'img.jpeg',
-  encoding: '7Bit',
+  originalname: 'payment__appleCard.jpg',
+  encoding: '7bit',
   mimetype: 'image/jpeg',
-  destination: 'uplaods/',
-  filename: 'asdzxcasdzxc123123',
-  path: 'uploads/asdzxcasdzxc123123',
-  size: 56825
+  destination: 'uploads/',
+  filename: '2d9dea7f53c167f0f0ac5e8122b5ffc4',
+  path: 'uploads/2d9dea7f53c167f0f0ac5e8122b5ffc4',
+  size: 50193
 }
 ```
 
-이름, 원본 이름, 저장이름, 저장경로 등등 값들이 저장되어있다.
+이름, 원본 이름, 저장이름, 저장경로 등등 값들이 저장되어있다. 작업파일에 uploads 폴더에  
+**2d9dea7f53c167f0f0ac5e8122b5ffc4** 라는 파일 명으로 저장되어있다.
+
+특이하게 이미지 확장자가 없는 걸 알 수 있다.
+
+Controller에서 path값을 사용해서 업데이트를 하면 될 것 같다.
+
+`file: { path } = req;` 잘 되는거 같지만 문제가 있다.
+
+만약에 유저가 이미지를 변경하지 않는다면? 즉 파일을 업로드하지 않는다면?  
+서버에서 에러가 발생하게 될 것이다.
+
+그래서 결국 `file`만 불러오도록 한 뒤, 업데이트하는 코드에 삼항연산자를 사용한다.
+
+```js
+const {
+  session: {
+    user: {
+      _id,
+      avatarUrl,
+      name: sessionName,
+      email: sessionEmail,
+      username: sessionUsername,
+    },
+  },
+  body: { name, email, username, location },
+  file,
+} = req;
+
+const updatedUser = await User.findByIdAndUpdate(
+  _id,
+  {
+    avatarUrl: file ? file.path : avatarUrl,
+    name,
+    email,
+    username,
+    location,
+  },
+  { new: true }
+);
+```
+
+file 값이 undefiend가 아니라면 path값을 입력하고, undefiend일 경우 avatarUrl을 그대로 업데이트한다.
+
+session.user에 avatarUrl이 업데이트되어, pug에서 img 태그로 확인해보려고 하면,  
+보이지 않는다. 브라우저가 서버의 어떠한 폴더라도 접근이 가능하면 보안상 취약해지기 때문에
+
+static을 사용한다. 해당 폴더는 브라우저에게 노출되어 접근이 가능하다.
+
+```js
+// server
+app.use("/uploads", express.static("uploads"));
+```
+
+static()에는 노출할 폴더명을 입력하면 된다.

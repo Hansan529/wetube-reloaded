@@ -3,8 +3,12 @@ extends ../base
 block content
   div
     video(src=`/${video.fileUrl}`, controls) 
+    h2 
+      img(src=owner.avatarUrl)
+      | #{owner.name}
     p=video.description
     small=video.createdAt
-  a(href=`${video.id}/edit`) Edit Video &rarr;
-  br
-  a(href=`${video.id}/delete`) Delete Video &rarr;
+  if String(video.owner) === String(loggedInUser._id)
+    a(href=`${video.id}/edit`) Edit Video &rarr;
+    br
+    a(href=`${video.id}/delete`) Delete Video &rarr;

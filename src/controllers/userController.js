@@ -293,4 +293,11 @@ export const logout = (req, res) => {
   return res.redirect("/");
 };
 
-export const see = (req, res) => res.send("See User");
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  return res.render("users/profile", {
+    pageTitle: `${user.name}의 프로필`,
+    user,
+  });
+};

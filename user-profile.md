@@ -322,3 +322,59 @@ app.use("/uploads", express.static("uploads"));
 ```
 
 static()에는 노출할 폴더명을 입력하면 된다.
+
+DB에는 경로를 저장하고, 파일은 별도로 저장해야한다.
+
+```js
+// middlewares
+export const avatarUpload = multer({
+  dest: "uploads/avatars/",
+  limits: {
+    fileSize: 1000000,
+  },
+});
+
+export const videoUpload = multer({
+  dest: "uploads/videos/",
+  limits: {
+    fileSize: 10000000,
+  },
+});
+```
+
+fileSize의 단위는 byte로 **1000000**, 1MB로 설정했다. 만약 해당 파일보다 큰 이미지 혹은 비디오를 업로드하면  
+`File too large` 라는 오류가 난다.
+
+속성은 여러가지가 있다.
+
+| 키            | 설명                                                                          | 기본값    |
+| ------------- | ----------------------------------------------------------------------------- | --------- |
+| fieldNameSize | Max field name size                                                           | 100 bytes |
+| fieldSize     | Max field value size (in byte)                                                | 1MB       |
+| fields        | Maa number of non-file fields                                                 | Infinity  |
+| fileSize      | For multipart forms, the max file size (in bytes)                             | Infinity  |
+| files         | For multipart forms, the max number of file fields                            | Infinity  |
+| parts         | For multipart forms, the max number of parts(fields + files)                  | Infinity  |
+| headerPairs   | For multipart forms, the max number of <br>header key => value pairs to parse | 2000      |
+
+<br>
+
+해당 미들웨어를 적용시켜준다.
+
+```js
+// videoRouter
+videoRouter
+  .route("/upload")
+  .all(protectorMiddleware)
+  .get(getUpload)
+  .post(videoUpload.single("video"), postUpload);
+
+// userRouter
+userRouter
+  .route("/edit")
+  .all(protectorMiddleware)
+  .get(getEdit)
+  .post(avatarUpload.single("avatarUrl"), postEdit);
+```
+
+post에 추가해주어 미들웨어의 역할을 적용한다.

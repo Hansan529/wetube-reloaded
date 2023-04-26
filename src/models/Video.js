@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "./User";
 
 const videoSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true, maxLength: 50 },
@@ -6,6 +7,7 @@ const videoSchema = new mongoose.Schema({
   description: { type: String, trim: true, maxLength: 140 },
   createdAt: { type: Date, default: Date.now },
   hashtags: [{ type: String, trim: true }],
+  owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
   meta: {
     views: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },

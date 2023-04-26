@@ -57,7 +57,9 @@ export const postEdit = async (req, res) => {
       },
     },
     body: { name, email, username, location },
+    file,
   } = req;
+  console.log("file: ", file);
   let searchParams = [];
   if (name !== sessionName) {
     searchParams.push({ name });

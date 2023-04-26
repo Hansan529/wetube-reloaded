@@ -1,9 +1,11 @@
-extends base
+extends ../base
 
 block content 
   if errorMessage 
     span=errorMessage
   form(method="POST")
+    label 동영상 파일
+      input(name="video" type="file" accept="video/*")
     input(name="title" placeholder="제목" type="text" maxlength=50)
     input(name="description" placeholder="설명" type="text" maxlength=140)
     input(name="hashtags" placeholder="태그" type="text")

@@ -296,8 +296,15 @@ export const logout = (req, res) => {
 export const see = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).render("404", {
+      pageTitle: "404",
+      errorMessage: "존재하지 않는 유저입니다.",
+    });
+  }
+  const pageTitle = `${user.name}의 프로필`;
   return res.render("users/profile", {
-    pageTitle: `${user.name}의 프로필`,
+    pageTitle,
     user,
   });
 };

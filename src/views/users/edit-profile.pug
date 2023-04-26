@@ -3,6 +3,7 @@ extends ../base
 block content
   if errorMessage 
     span=errorMessage
+  img(src=`/${loggedInUser.avatarUrl}`, alt="")
   form(method="POST" enctype="multipart/form-data")
     label 프로필 사진 
       input(name="avatarUrl" type="file" accept="image/*")

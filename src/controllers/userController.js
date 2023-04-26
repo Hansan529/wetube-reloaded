@@ -51,6 +51,7 @@ export const postEdit = async (req, res) => {
     session: {
       user: {
         _id,
+        avatarUrl,
         name: sessionName,
         email: sessionEmail,
         username: sessionUsername,
@@ -59,7 +60,6 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location },
     file,
   } = req;
-  console.log("file: ", file);
   let searchParams = [];
   if (name !== sessionName) {
     searchParams.push({ name });
@@ -82,6 +82,7 @@ export const postEdit = async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -90,7 +91,7 @@ export const postEdit = async (req, res) => {
     { new: true }
   );
   req.session.user = updatedUser;
-  return res.redirect("/edit");
+  return res.redirect("edit");
 };
 
 export const getChangePassword = (req, res) => {

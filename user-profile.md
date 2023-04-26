@@ -378,3 +378,43 @@ userRouter
 ```
 
 post에 추가해주어 미들웨어의 역할을 적용한다.
+
+---
+
+<br>
+
+## Video Upload
+
+```pug
+//- upload
+form(method="post" enctype="multipart/form-data")
+  input(name="video" type="file" accept="video/*")
+```
+
+파일을 업로드할 수 있도록 enctype 설정을 해준다.
+
+```pug
+//- watch
+video(src=`/${{video.fileUrl}}` controls)
+```
+
+video를 해당 경로에서 찾아서 출력한다.
+
+```js
+// postUpload
+const {
+  file: { path: fileUrl },
+} = req;
+
+await Video.create({
+  title,
+  fileUrl,
+  description,
+  hashtags: Video.formatHashtags(hashtags),
+});
+```
+
+postUpload에서 multer를 통해 file 값을 사용할 수 있으므로, file 의 path 값을 fileUrl에 저장하고,  
+Video를 생성할 때, fileUrl(path값)을 저장한다.
+
+uploads/videos에 저장된 걸 볼 수 있다.

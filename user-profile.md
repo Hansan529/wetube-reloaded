@@ -135,3 +135,136 @@ export const postEdit = async (req, res) => {
 데이터베이스를 찾는다. 만약 있다면 unique 사항때문에, 실패를 렌더링, 다만 id가 같다면 통과, id가 다르면 오류
 
 업데이트하는 코드는 그대로 두고, 실패를 먼저 계산하고 오류가 발생하면 코드 진행을 멈추어서 업데이트 코드가 실행되지 않도록 함
+
+<br>
+
+---
+
+## Change Password
+
+```js
+const {
+  session: {
+    user: { _id },
+  },
+  body: { oldPassword, newPassword, newPassword1 },
+} = req;
+const pageTitle = "비밀번호 변경";
+const user = await User.findById(_id);
+
+/* 비밀번호가 일치하는지 체크 */
+const passwordExists = await bcrypt.compare(oldPassword, user.password);
+if (!passwordExists) {
+  return res.status(400).render("users/change-password", {
+    pageTitle,
+    errorMessage: "기존 비밀번호가 일치하지 않습니다.",
+  });
+}
+
+/* 변경하고자 하는 비밀번호 체크 */
+if (newPassword !== newPassword1) {
+  return res.status(400).render("users/change-password", {
+    pageTitle,
+    errorMessage: "변경하고자 하는 비밀번호가 일치하지 않습니다.",
+  });
+}
+
+/* 기존 비밀번호와 동일한지 체크 */
+if (oldPassword === newPassword) {
+  return res.status(400).render("users/change-password", {
+    pageTitle,
+    errorMessage: "기존의 비밀번호와 동일한 비밀번호입니다",
+  });
+}
+
+/* 비밀번호 업데이트 */
+user.password = newPassword;
+user.save();
+return res.redirect("logout");
+```
+
+현재 접속중인 유저의 id값을 불러와서, 데이터베이스에서 해당 id를 찾고, password를 업데이트하는 방식이다.
+
+만약 기존 비밀번호가 일치하지 않거나, 기존과 변경하고자하는 비밀번호가 같거나, 비밀번호와 비밀번호 확인이 일치하지 않는다면  
+오류 메세지를 갖고 재렌더링함.
+
+<br>
+
+## File Uploads
+
+```pug
+input(name="avatarUrl" type="file" accept="image/*")
+```
+
+이미지 타입만 업로드할 수 있도록 지정
+
+```bash
+$ npm i multer
+$ yarn add multer
+```
+
+파일을 업로드할 수 있도록 하는 middleware 패키지이다.
+
+`form(method="POST" enctype="multipart/form-data")` encode하여 업로드가 가능하기 때문에,
+
+즉 multer는 enctype을 지정해주어야만 해당 폼에 대해 업로드를 한다.
+
+```js
+// middlewares
+import multer from "multer";
+
+export const uploadFile = multer({ dest: "uploads/" });
+```
+
+하드 드라이브에 직접 업로드한 파일을 저장하는 방법이다.
+
+```js
+// userRouter
+import { uplaodFile } from "../middelwares";
+
+userRouter
+  .route("/edit")
+  .all(protectorMiddleware)
+  .get(getEdit)
+  .post(uploadFile.single("avatarUrl"), postEdit);
+```
+
+any, array, fiels, none, single 가 있는데, 업로드할 파일의 개수에 대한 메소드이다.  
+단일만 받을거니까 single로 설정하고, input의 name을 String으로 입력한다.
+
+uploadFile의 역할은 template의 input 요소에서 오는 avatarUrl 파일을 가지고 uploads 파일에 저장한 뒤,  
+postEdit에 파일 정보를 전달하는 역할을 한다.
+
+```js
+export const postEdit = (req, res) => {
+  const {
+    session: {
+      user: {
+        _id,
+        name: sessionName,
+        email: sessionEmail,
+        username: sessionUsername,
+      },
+    },
+    body: { name, email, username, location },
+    file,
+  } = req;
+};
+```
+
+그렇게 되면, req.file를 사용할 수 있다. req.file를 console에서 확인해보면
+
+```
+{
+  fieldname: 'avatarUrl',
+  originalname: 'img.jpeg',
+  encoding: '7Bit',
+  mimetype: 'image/jpeg',
+  destination: 'uplaods/',
+  filename: 'asdzxcasdzxc123123',
+  path: 'uploads/asdzxcasdzxc123123',
+  size: 56825
+}
+```
+
+이름, 원본 이름, 저장이름, 저장경로 등등 값들이 저장되어있다.

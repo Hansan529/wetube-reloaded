@@ -24,7 +24,6 @@ export const getEdit = async (req, res) => {
     params: { id },
   } = req;
   const video = await Video.findById(id);
-  console.log("video: ", video);
   if (!video) {
     return res
       .status(404)
@@ -77,7 +76,6 @@ export const postUpload = async (req, res) => {
     user.save();
     return res.redirect("/");
   } catch (error) {
-    console.log(error);
     return res.status(400).render("videos/upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,

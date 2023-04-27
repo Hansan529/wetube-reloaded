@@ -254,8 +254,6 @@ export const finishGithubLogin = async (req, res) => {
     } else {
       const userNameExists = await User.exists({ username: userData.login });
       const nameExists = await User.exists({ name: userData.name });
-      console.log("userNameExists: ", userNameExists);
-      console.log("nameExists: ", nameExists);
       let username = userData.login;
       let name = userData.name;
 
@@ -299,7 +297,6 @@ export const see = async (req, res) => {
 
   /* User 객체에서 videos 객체를 가져옴 */
   const user = await User.findById(id).populate("videos");
-  console.log("user: ", user);
   if (!user) {
     return res.status(404).render("404", {
       pageTitle: "404",

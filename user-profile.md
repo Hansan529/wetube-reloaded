@@ -480,7 +480,7 @@ export const watch = async (req, res) => {
 };
 ```
 
-**populate**는 objectId 부분을 실제 User 데이터로 채워준다. relaationship으로 스키마에 작성된 이름을 넣어준다.
+**populate**는 objectId 부분을 실제 **User 데이터**로 채워준다. 즉 다른 컬렉션의 문서를 참조할 수 있는 메소드이다. relaationship으로 컬렉션 속 스키마에 작성된 이름을 넣어준다.
 
 Before
 
@@ -565,3 +565,44 @@ block content
 ```
 
 해당 값을 profile.pug에서 비디오들을 불러낸다.
+
+User 객체와 Video 객체 모두 각각 id로 찾는 방법 말고 다른 방법도 있는데, 해당 방법이 효율적이므로 코드를 교체한다.
+
+```js
+export const see = async (req, res) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id).populate("videos");
+  ...
+}
+```
+
+videos에 ObjectId를 갖고, videos에서 해당 Objectid를 찾고 맞는 객체를 도출한다.
+
+```
+{
+  _id: new ObjectId("644a2dc2db6c415620ade2fc"),
+  name: 'saan',
+  socialLogin: true,
+  avatarUrl: 'https://avatars.githubusercontent.com/u/115819770?v=4',
+  username: 'Hansan529',
+  email: 'hansan0529@gmail.com',
+  location: 'Republic of Korea',
+  videos: [
+    {
+      meta: [Object],
+      _id: new ObjectId("644a2df4db6c415620ade2ff"),
+      title: 'a',
+      fileUrl: 'uploads/videos/54a523fa46e45584c446936b4d4eeb1a',
+      description: 'a',
+      hashtags: [Array],
+      owner: new ObjectId("644a2dc2db6c415620ade2fc"),
+      createdAt: 2023-04-27T08:10:28.670Z,
+      __v: 0
+    }
+  ],
+  __v: 1
+}
+```
+
+User객체에 videos 객체가 들어온 모습을 볼 수 있다.

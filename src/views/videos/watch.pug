@@ -4,8 +4,9 @@ block content
   div
     video(src=`/${video.fileUrl}`, controls) 
     h2 
-      img(src=video.owner.avatarUrl)
-      | #{video.owner.name}
+      a(href=`/users/${video.owner._id}`) 
+        img(src=video.owner.avatarUrl)
+        | #{video.owner.name}
     p=video.description
     small=video.createdAt
   if String(video.owner._id) === String(loggedInUser._id)

@@ -296,8 +296,10 @@ export const logout = (req, res) => {
 
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
-  const videos = await Video.find({ owner: id });
+
+  /* User 객체에서 videos 객체를 가져옴 */
+  const user = await User.findById(id).populate("videos");
+  console.log("user: ", user);
   if (!user) {
     return res.status(404).render("404", {
       pageTitle: "404",
@@ -308,6 +310,5 @@ export const see = async (req, res) => {
   return res.render("users/profile", {
     pageTitle,
     user,
-    videos,
   });
 };

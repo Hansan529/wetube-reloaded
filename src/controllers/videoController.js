@@ -10,14 +10,13 @@ export const watch = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const video = await Video.findById(id);
-  const owner = await User.findById(video.owner);
+  const video = await Video.findById(id).populate("owner");
   if (!video) {
     return res
       .status(404)
       .render("404", { pageTitle: "동영상을 찾을 수 없음" });
   }
-  return res.render("videos/watch", { pageTitle: video.title, video, owner });
+  return res.render("videos/watch", { pageTitle: video.title, video });
 };
 
 export const getEdit = async (req, res) => {

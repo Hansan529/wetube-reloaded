@@ -377,7 +377,7 @@ userRouter
   .post(avatarUpload.single("avatarUrl"), postEdit);
 ```
 
-post에 추가해주어 미들웨어의 역할을 적용한다.
+post에 추가해주어 input의 name을 ()에 적어주어 미들웨어의 역할을 적용한다.
 
 ---
 
@@ -460,3 +460,68 @@ export const watch = async (req, res) => {
 ```
 
 video 객체에 owner의 유저 아이디가 있기 때문에, User 객체에서 해당 ID를 찾고, 정보를 페이지에 전달한다.
+
+근데 우리는 Video에서 ref를 통해 ObjectId가 User에서 가져온걸 아는데 한번 더 찾아야할까?
+
+mongoose를 활용해서 다음과 같이 변경해주었다.
+
+```js
+export const watch = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const video = await Video.findById(id).populate("owner");
+  if (!video) {
+    return res
+      .status(404)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  return res.render("videos/watch", { pageTitle: video.title, video });
+};
+```
+
+**populate**는 objectId 부분을 실제 User 데이터로 채워준다. relaationship으로 스키마에 작성된 이름을 넣어준다.
+
+Before
+
+```
+video:  {
+  meta: { views: 0, rating: 0 },
+  _id: new ObjectId("64493ce45160ecfc1b3711ce"),
+  title: 's',
+  fileUrl: 'uploads/videos/5ad7537b0f282b4c3d9bf8cafccbf6ce',
+  description: 's',
+  hashtags: [ '#s' ],
+  owner: '64493c38aa89132d1a730f4d'
+  createdAt: 2023-04-26T15:01:56.842Z,
+  __v: 0
+}
+```
+
+After
+
+```
+video:  {
+  meta: { views: 0, rating: 0 },
+  _id: new ObjectId("64493ce45160ecfc1b3711ce"),
+  title: 's',
+  fileUrl: 'uploads/videos/5ad7537b0f282b4c3d9bf8cafccbf6ce',
+  description: 's',
+  hashtags: [ '#s' ],
+  owner: {
+    _id: new ObjectId("64493c38aa89132d1a730f4d"),
+    name: 'saan',
+    socialLogin: true,
+    avatarUrl: 'https://avatars.githubusercontent.com/u/115819770?v=4',
+    username: 'Hansan529',
+    email: 'hansan0529@gmail.com',
+    location: 'Republic of Korea',
+    __v: 0
+  },
+  createdAt: 2023-04-26T15:01:56.842Z,
+  __v: 0
+}
+```
+
+owner 부분에 user 데이터가 적용된 걸 볼 수 있다!!
+

@@ -1,6 +1,7 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
+import Video from "../models/Video";
 
 export const getJoin = (req, res) => {
   return res.render("users/join", { pageTitle: "회원가입" });
@@ -296,6 +297,7 @@ export const logout = (req, res) => {
 export const see = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
+  const videos = await Video.find({ owner: id });
   if (!user) {
     return res.status(404).render("404", {
       pageTitle: "404",
@@ -306,5 +308,6 @@ export const see = async (req, res) => {
   return res.render("users/profile", {
     pageTitle,
     user,
+    videos,
   });
 };

@@ -418,3 +418,45 @@ postUpload에서 multer를 통해 file 값을 사용할 수 있으므로, file �
 Video를 생성할 때, fileUrl(path값)을 저장한다.
 
 uploads/videos에 저장된 걸 볼 수 있다.
+
+<br>
+
+## Video Owner
+
+`owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },` 비디오 모델에 다음과 같이 추가한다.
+
+type: String, Date, Number와 같은 요소는 자바스크립트 내장 객체이고, objectID는 mongoose에서 사용하는 것이기에,  
+mongoose.Schema.Types.ObjectId를 사용해야한다. 그리고 해당 ID가 어디서 참조되는지 모델명을 작성해주어야 한다. **ref: "User"**가 모델이다.
+
+ID를 전송하기 위해서, postUpload에서 session.user값을 불러온다.
+
+```pug
+if String(video.owner) === String(loggedInUser._id)
+    a(href=`${video.id}/edit`) Edit Video &rarr;
+    br
+    a(href=`${video.id}/delete`) Delete Video &rarr;
+```
+
+video에 owner가 추가되었으니, 로그인한 유저의 아이디와 비교해서 같으면 동영상에 대한 편집 버튼을 부여한다.  
+video.owner는 ObjectId이기 때문에, === 타입도 일치하는지 비교하는 연산자에서는 일치하지 않아 같은 타입으로 변환시켜 비교한다.  
+== 연산자로 비교해도 같은 결과를 얻을 수 있다.
+
+video를 생성한 유저의 ID를 video에 추가하므로 유저의 정보를 알 수 있다.
+
+```js
+export const watch = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  const owner = await User.findById(video.owner);
+  if (!video) {
+    return res
+      .status(404)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  return res.render("videos/watch", { pageTitle: video.title, video, owner });
+};
+```
+
+video 객체에 owner의 유저 아이디가 있기 때문에, User 객체에서 해당 ID를 찾고, 정보를 페이지에 전달한다.

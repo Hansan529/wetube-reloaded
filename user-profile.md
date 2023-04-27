@@ -525,3 +525,43 @@ video:  {
 
 owner 부분에 user 데이터가 적용된 걸 볼 수 있다!!
 
+이제 해당 비디오를 올린 사람의 프로필에 들어가면, 해당 유저가 올린 모든 비디오를 볼 수 있도록 해보자.
+
+```js
+// userRouter
+userRouter.get("/:id", see);
+
+// userController
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  const videos = await Video.find({ owner: id });
+  if (!user) {
+    return res.status(404).render("404", {
+      pageTitle: "404",
+      errorMessage: "존재하지 않는 유저입니다",
+    });
+  }
+  const pageTitle = `${user.name}의 프로필`;
+  return res.render("/users/profile", {
+    pageTitle,
+    user,
+    videos,
+  });
+};
+```
+
+해당 유저의 ID값으로 데이터베이스에서 해당 유저를 찾아서 화면에 띄워주고, Video 객체에서 owner가 params의 id와 동일한 데이터 모두를 갖고온다.
+
+```pug
+extends ../base
+include ../mixins/video
+
+block content
+  each video in videos
+    +video(video)
+  else
+    div 어떠한 동영상도 없습니다.
+```
+
+해당 값을 profile.pug에서 비디오들을 불러낸다.

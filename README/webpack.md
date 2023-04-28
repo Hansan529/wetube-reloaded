@@ -76,3 +76,51 @@ hello();
 다음과 같이 압축되어 변경되었다.
 
 **콘솔에는 mode 설정이 안되었다고 오류가 발생한다.**
+
+<br>
+
+webpack에는 rules가 있는데, 우리가 각각의 파일 종류에 따라 어떤 전환을 할 건지 결정하는 것이다.
+
+webpack 용어로 loader이라고 하는 것이 파일을 변환한다.
+
+우리는 js를 babel을 사용할 것이니 babel-loader를 설치하자
+
+```bash
+$ npm i babel-loader -D
+$ yarn add --dev babel-loader
+```
+
+그리고 webpack.config.js를 업데이트한다.
+
+```js
+const path = require("path");
+
+module.exports = {
+  entry: "./src/client/js/main.js",
+  output: {
+    filename: "main.js",
+    path: path.resolve(__dirname, "assets", "js"),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [["@babel/preset-env", { targets: "defaults" }]],
+          },
+        },
+      },
+    ],
+  },
+};
+```
+
+bable-loader를 사용하기 위해 약간의 옵션을 추가한다.
+
+test에 변환하고자 하는 확장자를 작성해준다.
+
+그리고 assets를 실행하면 변환이 된다.
+
+현재는 async, await이 브라우저에서 지원해서 별 다른게 없을 것이다.

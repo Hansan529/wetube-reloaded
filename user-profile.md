@@ -527,6 +527,10 @@ owner 부분에 user 데이터가 적용된 걸 볼 수 있다!!
 
 이제 해당 비디오를 올린 사람의 프로필에 들어가면, 해당 유저가 올린 모든 비디오를 볼 수 있도록 해보자.
 
+<br>
+
+## User's Videos
+
 ```js
 // userRouter
 userRouter.get("/:id", see);
@@ -608,3 +612,37 @@ videos에 ObjectId를 갖고, videos에서 해당 Objectid를 찾고 맞는 객�
 User객체에 videos 객체가 들어온 모습을 볼 수 있다.
 
 ### **스키마에서 ref를 사용해 참조할 객체를 지정하고, 컨트롤러에서 해당 프로퍼티를 입력하면, ref에 있는 객체에서 일치하는 것을 찾아 가져온다.**
+
+---
+
+## BugFix
+
+현재 User 모델에서는 pre 메소드로 저장되기 전에 실행하는 함수가 있는데,
+
+```js
+userSchema.pre("save", async function (next) {
+  if (this.password) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
+  next();
+});
+```
+
+저장되기 전에 비밀번호가 있다면 (소셜 로그인 체크) 해싱하는 함수인데, 문제가 Upload할 때, Video의 id를 User에 저장하는 작업을 해서  
+User 객체가 저장이 된다. 그러면 해당 함수가 실행되서 비밀번호가 또 다시 해싱되는 문제가 발생한다.
+
+그래서 업로드하고 로그아웃 한뒤 다시 동일한 비밀번호로 로그인을 시도해도 이미 해싱되어서 해당 비밀번호로 로그인 할 수 없는 문제가 생긴다.
+
+```js
+userSchema.pre("save", async function (next) {
+  if (this.isNew && this.password) {
+    this.password = await bcrypt.hash(this.password, 5);
+  } else if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
+  next();
+});
+```
+
+isNew를 사용해서, Document가 새로 생기는지 체크 (소셜네트워크 체크) 해서 맞다면 (회원가입) 비밀번호를 해싱하고,  
+password가 변경되면 true, 아닐경우 false를 출력하는 isModified를 사용한다. password가 변경되면 해싱되도록 (비밀번호 변경) 설정했다.

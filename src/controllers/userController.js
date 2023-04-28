@@ -3,9 +3,12 @@ import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import Video from "../models/Video";
 
+// * 회원가입 페이지
 export const getJoin = (req, res) => {
   return res.render("users/join", { pageTitle: "회원가입" });
 };
+
+// * 회원가입
 export const postJoin = async (req, res) => {
   const {
     body: { name, username, password, password2, email, location },
@@ -43,10 +46,12 @@ export const postJoin = async (req, res) => {
   return res.redirect("/");
 };
 
+// * 프로필 수정 페이지
 export const getEdit = (req, res) => {
   return res.render("users/edit-profile", { pageTitle: "사용자 수정" });
 };
 
+// * 프로필 수정
 export const postEdit = async (req, res) => {
   const {
     session: {
@@ -95,11 +100,14 @@ export const postEdit = async (req, res) => {
   return res.redirect("edit");
 };
 
+// * 비밀번호 변경 페이지
 export const getChangePassword = (req, res) => {
   return res.render("users/change-password", {
     pageTitle: "비밀번호 변경",
   });
 };
+
+// * 비밀번호 변경
 export const postChangePassword = async (req, res) => {
   const {
     session: {
@@ -143,10 +151,12 @@ export const postChangePassword = async (req, res) => {
 
 export const remove = (req, res) => res.send("Delete User");
 
+//* 로그인 페이지
 export const getLogin = (req, res) => {
   return res.render("users/login", { pageTitle: "로그인" });
 };
 
+//* 로그인 절차
 export const postLogin = async (req, res) => {
   const pageTitle = "로그인";
   const { username, password } = req.body;
@@ -174,6 +184,7 @@ export const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 
+// * 깃허브 로그인 토큰 발부
 export const startGithubLogin = (req, res) => {
   const baseUrl = `https://github.com/login/oauth/authorize`;
   const config = {
@@ -186,6 +197,7 @@ export const startGithubLogin = (req, res) => {
   return res.redirect(finalUrl);
 };
 
+// * 깃허브 엑세스 토큰을 통해 로그인 및 회원가입
 export const finishGithubLogin = async (req, res) => {
   const baseUrl = `https://github.com/login/oauth/access_token`;
   /** Github에서 보낸 값은 GET 값이기에 query에 저장된다. query의 매개변수라 참조한다. */
@@ -284,7 +296,9 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
+// * 로그아웃
 export const logout = (req, res) => {
+  /* 세션 값 삭제 */
   req.session.destroy();
 
   /* 백엔드에서는 제거되었지만, 브라우저에서도 제거함 */
@@ -292,6 +306,7 @@ export const logout = (req, res) => {
   return res.redirect("/");
 };
 
+// * 유저 업로드 목록 확인
 export const see = async (req, res) => {
   const { id } = req.params;
 

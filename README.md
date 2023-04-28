@@ -330,12 +330,14 @@ app.listen(
 
 <br>
 
-## [Express 기초](https://github.com/Hansan529/wetube-reloaded/blob/main/express.md)
+## [Express 기초](https://github.com/Hansan529/wetube-reloaded/blob/main/README/express.md)
 
-## [Router](http://github.com/Hansan529/wetube-reloaded/blob/main/router.md)
+## [Router](http://github.com/Hansan529/wetube-reloaded/blob/main/README/router.md)
 
-## [Templates](http://github.com/Hansan529/wetube-reloaded/blob/main/templates.md)
+## [Templates](http://github.com/Hansan529/wetube-reloaded/blob/main/README/templates.md)
 
-## [mongoDB](http://github.com/Hansan529/wetube-reloaded/blob/main/mongodb.md)
+## [mongoDB](http://github.com/Hansan529/wetube-reloaded/blob/main/README/mongodb.md)
 
-## [User Authentication](http://github.com/Hansan529/wetube-reloaded/blob/main/user-authentication.md)
+## [User Authentication](http://github.com/Hansan529/wetube-reloaded/blob/main/README/user-authentication.md)
+
+## [User Profile](http://github.com/Hansan529/wetube-reloaded/blob/main/user-profile.md)

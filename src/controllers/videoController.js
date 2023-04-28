@@ -1,5 +1,6 @@
 import User from "../models/User";
 import Video from "../models/Video";
+import fs from "fs";
 
 // * 메인 페이지
 export const home = async (req, res) => {
@@ -120,6 +121,7 @@ export const deleteVideo = async (req, res) => {
     return res.status(403).redirect("/");
   }
   await Video.findByIdAndDelete(id);
+  fs.unlinkSync(video.fileUrl);
   return res.redirect("/");
 };
 

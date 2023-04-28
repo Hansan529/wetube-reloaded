@@ -1,11 +1,13 @@
 import User from "../models/User";
 import Video from "../models/Video";
 
+// * 메인 페이지
 export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" });
   return res.render("home", { pageTitle: "Home", videos });
 };
 
+// * 비디오 페이지
 export const watch = async (req, res) => {
   const {
     params: { id },
@@ -19,6 +21,7 @@ export const watch = async (req, res) => {
   return res.render("videos/watch", { pageTitle: video.title, video });
 };
 
+// * 비디오 수정 페이지
 export const getEdit = async (req, res) => {
   const {
     params: { id },
@@ -32,6 +35,7 @@ export const getEdit = async (req, res) => {
   res.render("videos/edit", { pageTitle: `${video.title} Editing:`, video });
 };
 
+// * 비디오 수정
 export const postEdit = async (req, res) => {
   const {
     params: { id },
@@ -51,10 +55,12 @@ export const postEdit = async (req, res) => {
   return res.redirect(`/videos/${id}`);
 };
 
+// * 업로드 페이지
 export const getUpload = (req, res) => {
   return res.render("videos/upload", { pageTitle: "Upload Video" });
 };
 
+// * 비디오 업로드
 export const postUpload = async (req, res) => {
   const {
     body: { title, description, hashtags },
@@ -83,13 +89,16 @@ export const postUpload = async (req, res) => {
   }
 };
 
+// * 비디오 삭제
 export const deleteVideo = async (req, res) => {
   const { id } = req.params;
   await Video.findByIdAndDelete(id);
   return res.redirect("/");
 };
 
+// * 검색
 export const search = async (req, res) => {
+  const pageTitle = "검색";
   const {
     query: { q },
   } = req;
@@ -102,5 +111,5 @@ export const search = async (req, res) => {
       ],
     });
   }
-  return res.render("videos/search", { pageTitle: " 검색", videos });
+  return res.render("videos/search", { pageTitle, videos });
 };

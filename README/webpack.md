@@ -124,3 +124,58 @@ test에 변환하고자 하는 확장자를 작성해준다.
 그리고 assets를 실행하면 변환이 된다.
 
 현재는 async, await이 브라우저에서 지원해서 별 다른게 없을 것이다.
+
+mode 오류를 해결해보자. 이유는 따로 설정을 하지 않으면 production 모드가 되어, 압축이 되는데, 개발 중에는 압축이 되지 않아야  
+어느 부분인지 확인이 쉽기 때문이다.
+
+```js
+const path = require("path");
+
+module.exports = {
+  entry: "./src/client/js/main.js",
+  mode: "development",
+  output: {
+  ...
+  }
+};
+```
+
+mode를 development로 변경해주고 assets의 main.js를 확인해보면
+
+```js
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => {
+  // webpackBootstrap
+  /******/ var __webpack_modules__ = {
+    /***/ "./src/client/js/main.js":
+      /*!*******************************!*\
+  !*** ./src/client/js/main.js ***!
+  \*******************************/
+      /***/ () => {
+        eval(
+          'const hello = async () => {\n  alert("hi");\n  const x = await fetch("");\n};\nhello();\n\n//# sourceURL=webpack://wetube/./src/client/js/main.js?'
+        );
+
+        /***/
+      },
+
+    /******/
+  };
+  /************************************************************************/
+  /******/
+  /******/ // startup
+  /******/ // Load entry module and return exports
+  /******/ // This entry module can't be inlined because the eval devtool is used.
+  /******/ var __webpack_exports__ = {};
+  /******/ __webpack_modules__["./src/client/js/main.js"]();
+  /******/
+  /******/
+})();
+```

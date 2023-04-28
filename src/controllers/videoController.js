@@ -25,12 +25,18 @@ export const watch = async (req, res) => {
 export const getEdit = async (req, res) => {
   const {
     params: { id },
+    session: {
+      user: { _id },
+    },
   } = req;
   const video = await Video.findById(id);
   if (!video) {
     return res
       .status(404)
       .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  if (String(video.owner) !== String(_id)) {
+    return res.status(403).redirect("/");
   }
   res.render("videos/edit", { pageTitle: `${video.title} Editing:`, video });
 };
@@ -40,12 +46,18 @@ export const postEdit = async (req, res) => {
   const {
     params: { id },
     body: { title, description, hashtags },
+    session: {
+      user: { _id },
+    },
   } = req;
   const video = await Video.exists({ _id: id });
   if (!video) {
     return res
       .status(404)
       .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  if (String(video.owner) !== String(_id)) {
+    return res.status(403).redirect("/");
   }
   await Video.findByIdAndUpdate(id, {
     title,

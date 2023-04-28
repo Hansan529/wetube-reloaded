@@ -646,3 +646,41 @@ userSchema.pre("save", async function (next) {
 
 isNew를 사용해서, Document가 새로 생기는지 체크 (소셜네트워크 체크) 해서 맞다면 (회원가입) 비밀번호를 해싱하고,  
 password가 변경되면 true, 아닐경우 false를 출력하는 isModified를 사용한다. password가 변경되면 해싱되도록 (비밀번호 변경) 설정했다.
+
+그리고, 주인만이 해당 동영상을 수정할 수 있어야하는데 이에 대한 접근을 설정한다.
+
+```js
+export const getEdit = async (req, res) => {
+  const {
+    params: { id },
+    session: {
+      user: { _id },
+    },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res
+      .status(404)
+      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+  }
+  if (String(video.owner) !== String(_id)) {
+    return res.status(403).redirect("/");
+  }
+  res.render("videos/edit", { pageTitle: `${video.title} Editing:`, video });
+};
+```
+
+video.owner는 object이고, \_id는 String이기 때문에, 타입 변환을 한 뒤 비교하고, 영상 주인과 세션 유저가 같지 않다면 접근을 거부시킨다.  
+postEdit에도 마찬가지로 추가해준다.
+
+추가로 deleteVideo에서 front-end 상에서는 보이지 않는 비디오를 아직 uploads/videos에 저장되어 있는데.  
+이를 node.js 내장 모듈인 fs를 사용해서 제거해준다.
+
+```js
+...
+await Video.findByIdNadDelete(id);
+fs.unlinkSync(video.fileUrl);
+return res.redirect("/");
+```
+
+파일 시스템을 다루는 기능을 제공하는 fs를 사용해서, 해당 경로에 있는 파일을 삭제한다.

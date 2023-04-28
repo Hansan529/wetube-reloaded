@@ -4,7 +4,8 @@
   "description": "자바스크립트 서버 구성 라이브러리",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/init.js"
+    "dev": "nodemon --exec babel-node src/init.js",
+    "assets": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",

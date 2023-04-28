@@ -19,9 +19,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
+  /* 새롭게 생성(회원가입) 하는데, 비밀번호가 있다면 해싱 처리 */
   if (this.isNew && this.password) {
     this.password = await bcrypt.hash(this.password, 5);
   } else if (this.isModified("password")) {
+    /* 비밀번호가 변경되면(없으면 false, password 자체가 없으면 무조건 false) 해싱 처리 */
     this.password = await bcrypt.hash(this.password, 5);
   }
   next();

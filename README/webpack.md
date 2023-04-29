@@ -179,3 +179,48 @@ mode를 development로 변경해주고 assets의 main.js를 확인해보면
   /******/
 })();
 ```
+
+변환이 완료 되었고,서버를 실행해보면 **alert**가 실행되는 모습을 볼 수 있다. 브라우저에서 JS가 실행되는 것이다.
+
+css를 적용해보자.
+
+```js
+// main.js
+import "../scss/styles.scss";
+
+console.log("hi");
+```
+
+```scss
+// styles
+@import "./variable";
+
+body {
+  background-color: $black;
+  color: $white;
+}
+```
+
+```scss
+// variable
+$black: #000;
+$white: #fff;
+```
+
+변환을 한다.
+
+```bash
+$ npm run assets
+$ yarn assets
+```
+
+새로고침을 하면 html에서 css가 적용된 모습을 볼 수 있다.
+
+```html
+<style>
+  body {
+    background-color: #000;
+    color: #fff;
+  }
+</style>
+```

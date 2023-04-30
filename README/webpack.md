@@ -224,3 +224,87 @@ $ yarn assets
   }
 </style>
 ```
+
+현재로서 지금과 같이 진행하면, 별도의 분리된 css 파일이 아니라, javascript에서 style 태그를 생성하고, 그 안에 style 요소를 넣는거니까,  
+그만큼 로딩 시간이 오래 걸리고, 보기에 좋지 않으니 style-loader를 사용하지 않을 것이다.
+
+style-loader는 html에 스타일을 붙여넣는 역할인데, 이 대신 miniCssExtractPlugin을 사용한다.
+
+```bash
+$ yarn add -D mini-css-extract-plugin
+```
+
+```js
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+module.exports = {
+  entry: "./src/client/js/main.js",
+  plugins: [new MiniCssExtractPlugin()],
+  mode: "development",
+  output: {
+    filename: "main.js",
+    path: path.resolve(__dirname, "assets", "js"),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [["@babel/preset-env", { targets: "defaults" }]],
+          },
+        },
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+    ],
+  },
+};
+```
+
+style-loader 자리에 MiniCssExtractPlugin이 사용되었다.  
+현재로서 문제는 output에 css파일도 /js/ 폴더에 저장되는 것이 문제다.
+
+그래서 output에 대해 수정이 필요하다.
+
+```js
+new MiniCssExtractPlugin({
+      filename: "css/styles.css",
+    }),
+
+output: {
+    filename: "js/main.js",
+  },
+```
+
+minicssextractplugin에서 저장될 파일 이름을 폴더 안에 저장하는 형식으로 하며, 마찬가지로 js 파일도 동일하게 해준다.
+
+하지만 현재는 yarn assets를 실행하면 1회성으로 한번만 실행되는데, nodemon처럼 반복적으로 실행하도록 하기 위해서,  
+watch라는 속성을 true로 추가해준다.
+
+```js
+module.exports = {
+  entry: "./src/client/js/main.js",
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "css/styles.css",
+    }),
+  ],
+  mode: "development",
+  watch: true,
+  output: {
+    filename: "js/main.js",
+    path: path.resolve(__dirname, "assets"),
+  },
+ ...
+}
+```
+
+현재 main.js의 파일 내용을 변경하고 저장하면, back-end가 재시작 된다. front-end의 내용을 편집해도 back-end는 변함 없이 실행 되도록 원하는데,  
+nodemon이 해당 파일의 변화를 인식하고 재시작하기 때문이다. nodemon을 변경 하기 전에, ouput에서 `clean: true` 옵션을 추가하자.
+
+이전 빌드의 결과물을 삭제하고, 새로운 빌드 결과물을 생성하는 옵션이다.

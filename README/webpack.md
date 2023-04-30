@@ -324,3 +324,13 @@ nodemon에 ignore 를 추가하는 방법은, package 파일에 직접적으로 
 
 exec는 변경이 감지되면 실행할 옵션으로, 파일이 변경되면 babel-node로 src/init.js를 재실행 하도록 하는 것이다.  
 감지될 파일에서 webpack.config.js와, src/client/, assets의 모든 파일이 제외된다.
+
+```json
+"scripts": {
+    "dev": "nodemon",
+    "assets": "webpack"
+  },
+```
+
+nodemon은 기본값으로 nodemon.json에서 설정 파일을 찾고, webpack도 마찬가지로 webpack.config.js 파일을 찾는다. 그래서 기본값대로 사용한다면 다음과 같이 간결한  
+코드를 사용할 수 있다. 만약 별도의 이름을 갖는 config 파일을 생성하려면 `--config <filename>` 을 하면 된다.

@@ -308,3 +308,19 @@ module.exports = {
 nodemon이 해당 파일의 변화를 인식하고 재시작하기 때문이다. nodemon을 변경 하기 전에, ouput에서 `clean: true` 옵션을 추가하자.
 
 이전 빌드의 결과물을 삭제하고, 새로운 빌드 결과물을 생성하는 옵션이다.
+
+---
+
+nodemon에 ignore 를 추가하는 방법은, package 파일에 직접적으로 추가하는 방법과, **nodemon.json** 별도 파일을 생성하는 법이 있는데,  
+하나에 넣는것보다는 분리하는 게 좋으니까 분리하도록 하자.
+
+```json
+// nodemon.json
+{
+  "ignore": ["webpack.config.js", "src/client/*", "assets/*"],
+  "exec": "babel-node src/init.js"
+}
+```
+
+exec는 변경이 감지되면 실행할 옵션으로, 파일이 변경되면 babel-node로 src/init.js를 재실행 하도록 하는 것이다.  
+감지될 파일에서 webpack.config.js와, src/client/, assets의 모든 파일이 제외된다.

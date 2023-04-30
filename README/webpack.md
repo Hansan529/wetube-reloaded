@@ -327,8 +327,8 @@ exec는 변경이 감지되면 실행할 옵션으로, 파일이 변경되면 ba
 
 ```json
 "scripts": {
-    "dev": "nodemon",
-    "assets": "webpack"
+    "dev:server": "nodemon",
+    "dev:assets": "webpack"
   },
 ```
 

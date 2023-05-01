@@ -3,6 +3,7 @@ extends ../base
 block content
   div
     video(src=`/${video.fileUrl}`, controls) 
+//- 
     h2 
       a(href=`/users/${video.owner._id}`) 
         img(src=video.owner.avatarUrl)
@@ -13,3 +14,6 @@ block content
     a(href=`${video.id}/edit`) Edit Video &rarr;
     br
     a(href=`${video.id}/delete`) Delete Video &rarr;
+
+block scripts 
+  script(src="/assets/js/videoPlayer.js") 

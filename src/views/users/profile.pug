@@ -2,7 +2,11 @@ extends ../base
 include ../mixins/video
 
 block content
-  each video in user.videos
-    +video(video)
-  else
-    div 어떠한 동영상도 없습니다.
+    div.profile__data
+        img(src=user.avatarUrl).avatar
+        h3=user.name
+    div.video-grid
+        each video in user.videos
+            +video(video)
+        else
+            span.empty__message 어떠한 동영상도 없습니다.

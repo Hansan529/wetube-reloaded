@@ -4,7 +4,9 @@ import fs from "fs";
 
 // * 메인 페이지
 export const home = async (req, res) => {
-  const videos = await Video.find({}).sort({ createdAt: "desc" });
+  const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner");
   return res.render("home", { pageTitle: "Home", videos });
 };
 
@@ -120,6 +122,7 @@ export const deleteVideo = async (req, res) => {
   if (String(video.owner) !== String(_id)) {
     return res.status(403).redirect("/");
   }
+
   await Video.findByIdAndDelete(id);
   fs.unlinkSync(video.fileUrl);
   return res.redirect("/");
@@ -138,7 +141,7 @@ export const search = async (req, res) => {
         { title: { $regex: new RegExp(q, "i") } },
         { hashtags: { $regex: new RegExp(q, "i") } },
       ],
-    });
+    }).populate("owner");
   }
   return res.render("videos/search", { pageTitle, videos });
 };

@@ -2,9 +2,13 @@ extends ../base
 include ../mixins/video
 
 block content 
-  form
-    input(name="q", placehodler="검색 할 제목을 입력하세요", type="search")
-    input(type="submit", value="검색하기")
+  form.search__form 
+    input(name="q", placeholder="검색 할 제목을 입력하세요", type="search")
+    button
+      i.fas.fa-search
 
-  each video in videos 
-    +video(video)
+  .video-grid
+    each video in videos 
+      +video(video)
+    else
+      span.empty__message 아무것도 찾지 못했습니다.

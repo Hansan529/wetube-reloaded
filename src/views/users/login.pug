@@ -7,9 +7,10 @@ block content
     input(name="username", placeholder="아이디", required, unique, type="text", minlength="4")
     input(name="password", placeholder="비밀번호", required, type="password" pattern="^[a-zA-Z0-9`~!@#$%^&*()\\-+{}|\;':", minlength="4")
     input(type="submit", value="로그인")
-    br
-    a(href="/users/github/start") 깃허브 로그인 &rarr;
+    include ../partials/social-login
   hr
-  div 
+  div.auth-switch
     span 계정이 없으십니까? 
     a(href="/join") 회원가입 &rarr;
+
+

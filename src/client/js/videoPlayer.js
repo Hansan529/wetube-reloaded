@@ -138,11 +138,9 @@ const handleKeydown = (e) => {
 };
 
 const handleEnded = () => {
-  const {
-    dataset: { id },
-  } = videoContainer;
+  const { id } = videoContainer.dataset;
   fetch(`/api/videos/${id}/view`, {
-    methhod: "POST",
+    method: "POST",
   });
 };
 

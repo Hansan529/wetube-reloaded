@@ -79,7 +79,7 @@ const handleFullScreen = () => {
   } else {
     videoContainer.requestFullscreen();
   }
-  fullScreenBtn.innerText = fullscreen ? "Full Screen" : "Exit Full Screen";
+  fullScreenBtn.classList = fullscreen ? "fas fa-" : "Exit Full Screen";
 };
 
 let controlsMovementTimeout = null;
@@ -103,6 +103,13 @@ const handleMouseLeave = () => {
   hideControls();
 };
 
+const handleKeydown = (e) => {
+  if (e.code == "Space") {
+    return handlePlayClick();
+  }
+  return;
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -110,5 +117,6 @@ video.addEventListener("loadedmetadata", handleLoadedMetadata);
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
-video.addEventListener("mousemove", handleMouseMove);
-video.addEventListener("mouseleave", handleMouseLeave);
+videoContainer.addEventListener("mousemove", handleMouseMove);
+videoContainer.addEventListener("mouseleave", handleMouseLeave);
+document.addEventListener("keydown", handleKeydown);

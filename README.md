@@ -340,4 +340,44 @@ app.listen(
 
 ## [User Authentication](http://github.com/Hansan529/wetube-reloaded/blob/main/README/user-authentication.md)
 
-## [User Profile](http://github.com/Hansan529/wetube-reloaded/blob/main/user-profile.md)
+## [User Profile](http://github.com/Hansan529/wetube-reloaded/blob/main/README/user-profile.md)
+
+## [Webpack](http://github.com/Hansan529/wetube-reloaded/blob/main/README/webpack.md)
+
+## [Video Player](http://github.com/Hansan529/wetube-reloaded/blob/main/README/video-player.md)
+
+## Views Api
+
+api는 back-end가 템플릿을 렌더링하지 않을 때 front-end와 통신하는 방법이다.
+기존에 pug를 사용해서 템플릿을 back-end에서 렌더링하고 백엔드가 일을 하기 위해서는 URL를 변경함에 따라 변경됐는데,
+
+api를 사용해서 URL 변경 없이 요청하는 방법이다.
+
+```js
+export const registerView = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  video.meta.views = video.meta.views + 1;
+  await video.save();
+  return res.sendStatus(200);
+};
+```
+
+```js
+const handleEnded = async () => {
+  const { id } = videoContainer.dataset;
+  await fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+video.addEventListener("ended", handleEnded);
+```
+
+기타 Router는 제외한 코드인데, video가 종료되면 handleEnded가 실행되고, fetch로 POST 요청을 해서 meta views를 늘린다.
+
+그리고 `res.sendStatus(200)` re.status(200) 과는 다른 점이, 상태코드를 보내고 연결을 끝내는 것이라 이 점이 다르다.

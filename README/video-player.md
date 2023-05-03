@@ -256,3 +256,50 @@ handleMouseMove가 실행되면 3초뒤 실행하는 함수를 취소시킨다.
 이로서 마우스를 가만히 두면 실행하고, 움직이면 삭제하고 3초뒤 실행하는 갱신형으로 변경된다.
 
 비디오에서 마우스가 벗어나면 즉시 숨기고, 예정된 함수를 취소시킨다.
+
+timeout은 id가 있기 때문에, 해당 id와 일치시키는 cleartimeout에 id를 넣으면 timeout이 취소가 되는 방식이다.
+
+---
+
+## Keydown
+
+```js
+const ArrowLeft = () => {
+  let { currentTime } = video;
+  currentTime = currentTime < 1 ? 0 : currentTime - 1;
+  video.currentTime = currentTime;
+};
+const ArrowRight = () => {
+  let { currentTime } = video;
+  currentTime =
+    currentTime > video.max ? video.max : Math.floor(currentTime + 1);
+  video.currentTime = currentTime;
+};
+const KeyM = () => {
+  handleMute();
+};
+const KeyF = () => {
+  handleFullScreen();
+};
+
+const keyFunctions = {
+  Space: handlePlayClick,
+  ArrowLeft,
+  ArrowRight,
+  KeyM,
+  KeyF,
+};
+
+const handleKeydown = (e) => {
+  const keyFunction = keyFunctions[e.code];
+  if (keyFunction) {
+    keyFunction();
+  }
+  return;
+};
+
+document.addEventListener("keydown", handleKeydown);
+```
+
+keyFunctions 객체에 Space,ArrowLeft... 프로퍼티를 추가하고 (ES6문을 활용해서 코드를 정리했다.)  
+해당 함수를 keydown 이벤트 발생시 keyFunctions에서 찾아서 일치하면 실행하도록 설정해주면 된다.

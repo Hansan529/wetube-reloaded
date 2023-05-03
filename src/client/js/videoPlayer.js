@@ -103,9 +103,36 @@ const handleMouseLeave = () => {
   hideControls();
 };
 
+const ArrowLeft = () => {
+  let { currentTime } = video;
+  currentTime = currentTime < 1 ? 0 : currentTime - 1;
+  video.currentTime = currentTime;
+};
+const ArrowRight = () => {
+  let { currentTime } = video;
+  currentTime =
+    currentTime > video.max ? video.max : Math.floor(currentTime + 1);
+  video.currentTime = currentTime;
+};
+const KeyM = () => {
+  handleMute();
+};
+const KeyF = () => {
+  handleFullScreen();
+};
+
+const keyFunctions = {
+  Space: handlePlayClick,
+  ArrowLeft,
+  ArrowRight,
+  KeyM,
+  KeyF,
+};
+
 const handleKeydown = (e) => {
-  if (e.code == "Space") {
-    return handlePlayClick();
+  const keyFunction = keyFunctions[e.code];
+  if (keyFunction) {
+    keyFunction();
   }
   return;
 };

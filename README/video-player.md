@@ -167,3 +167,26 @@ const handleTimeUpdate = () => {
 시간을 불러와서 포멧팅해주었다.
 
 ---
+
+## Timeline
+
+```js
+const handleLoadedMetadata = () => {
+  timeline.max = Math.floor(video.duration);
+  totalTime.innerText = formatTime(Math.floor(video.duration));
+  return;
+};
+
+const handleTimeUpdate = () => {
+  currenTime.innerText = formatTime(Math.floor(video.currentTime));
+  timeline.value = Math.floor(video.currentTime);
+  return;
+};
+```
+
+비디오의 타임라인 input을 추가하고, 해당 input에 input 이벤트를 사용해서 값이 변할때마다 실행하도록 한다.  
+timeline의 최대 값 (영상 시간)을 video의 길이로 동기화해준다.
+
+비디오가 실행되면서 timeupdate가 되면, timeline의 value가 currentTime 값으로 동기화된다.
+
+timeupdate 이벤트는 시간이 변할 때 마다 발동하고, input 이벤트는 값이 변하는 중에 발동한다.

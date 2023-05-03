@@ -3,18 +3,22 @@ extends ../base
 block content
   #videoContainer
     video(src=`/${video.fileUrl}`) 
-    #videoControls
-      button#play Play 
-      button#mute Mute
-      div 
-        span#currenTime 00:00
-        span  / 
-        span#totalTime 00:00
+    #videoControls.videoControls
+      .videoControls__play
+        span#play.vidoControls__playBtn
+          i.fas.fa-play
+        .videoControls__time
+          span#currenTime 00:00
+          span  / 
+          span#totalTime 00:00
+    input(type="range",step="1" value="0"  min="0")#timeline
+    .videoControls__volume 
       input(type="range",step="0.1" value="1"  min="0" max="1")#volume
-      div
-        input(type="range",step="1" value="0"  min="0")#timeline
-      div 
-        button#fullScreen Full Screen
+      span#mute
+        i.fas.fa-volume-up
+    div 
+      span#fullScreen
+        i.fas.fa-expand
   //- 
       h2 
         a(href=`/users/${video.owner._id}`) 

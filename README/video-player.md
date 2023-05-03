@@ -199,3 +199,30 @@ const handleTimelineChange = (e) => {
   video.currentTime = value;
 };
 ```
+
+---
+
+## Fullscreen
+
+`element.requestFullscreen()` 메소드 하나면 전체화면이 가능하다.
+
+문제는 해당 element만 fullscreen이 되기 때문에 대부분 video에 설정하니까 controls들은 함께 fullscreen이 되지 않는다.
+
+그래서 video와 관련된 모듈들을 div로 감싸고, element를 택하고 fullscreen을 하면 컨트롤러도 포함한 채 전체화면이 된다.
+
+```js
+const handleFullScreen = () => {
+  const fullscreen = document.fullscreenElement;
+  if (fullscreen) {
+    document.exitFullscreen();
+  } else {
+    videoContainer.requestFullscreen();
+  }
+  fullScreenBtn.innerText = fullscreen ? "Full Screen" : "Exit Full Screen";
+};
+
+fullScreenBtn.addEventListener("click", handleFullScreen);
+```
+
+전체화면이 아니라면 videoContainer를 전체화면으로 변경하고, 버튼 텍스트가 전체화면에서 나가기 텍스트로 변경한다.  
+전체화면이라면 전체화면에서 벗어난다

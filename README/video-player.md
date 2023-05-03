@@ -147,3 +147,23 @@ new Date(5 \* 1000).toISOString() 을 하면, '1970-01-01T00:00:05.000Z' 값을 
 이전에는 한국 기준이여서 +9hr인데,지금은 영국을 기준으로 시작한다.
 
 해당 시각을 특정 위치부터 자르기 위해 `substring`을 사용한다. 속성은 시작 위치, 종료 위치이다.
+
+```js
+const format = (seconds) => {
+  new Date(seconds * 1000).toISOString().substring(11, 19);
+};
+
+const handleLoadedMetadata = () => {
+  totalTime.innerText = formatTime(Math.floor(video.duration));
+  return;
+};
+
+const handleTimeUpdate = () => {
+  timeline.value = Math.floor(video.currentTime);
+  return;
+};
+```
+
+시간을 불러와서 포멧팅해주었다.
+
+---

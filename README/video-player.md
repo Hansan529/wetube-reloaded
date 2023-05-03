@@ -226,3 +226,33 @@ fullScreenBtn.addEventListener("click", handleFullScreen);
 
 전체화면이 아니라면 videoContainer를 전체화면으로 변경하고, 버튼 텍스트가 전체화면에서 나가기 텍스트로 변경한다.  
 전체화면이라면 전체화면에서 벗어난다
+
+```js
+let controlsMovementTimeout = null;
+
+const hideControls = () => videoControls.classList.remove("showing");
+const timeoutCancle = () => {
+  clearTimeout(controlsMovementTimeout);
+  controlsMovementTimeout = null;
+};
+
+const handleMouseMove = () => {
+  if (controlsMovementTimeout) {
+    timeoutCancle();
+  }
+  videoControls.classList.add("showing");
+  controlsMovementTimeout = setTimeout(hideControls, 3000);
+};
+
+const handleMouseLeave = () => {
+  timeoutCancle();
+  hideControls();
+};
+```
+
+video 안에서 마우스가 움직이면 3초뒤 showing 클래스를 제거하는 함수를 실행한다. 근데, 만약에 실행되었을 때, 다시 한번  
+handleMouseMove가 실행되면 3초뒤 실행하는 함수를 취소시킨다.
+
+이로서 마우스를 가만히 두면 실행하고, 움직이면 삭제하고 3초뒤 실행하는 갱신형으로 변경된다.
+
+비디오에서 마우스가 벗어나면 즉시 숨기고, 예정된 함수를 취소시킨다.

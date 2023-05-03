@@ -1,28 +1,31 @@
 extends ../base
 
 block content
-  video(src=`/${video.fileUrl}`) 
-  div 
-    button#play Play 
-    button#mute Mute
+  #videoContainer
+    video(src=`/${video.fileUrl}`) 
     div 
-      span#currenTime 00:00
-      span  / 
-      span#totalTime 00:00
-    input(type="range",step="0.1" value="1"  min="0" max="1")#volume
-    div
-      input(type="range",step="1" value="0"  min="0")#timeline
-//- 
-    h2 
-      a(href=`/users/${video.owner._id}`) 
+      button#play Play 
+      button#mute Mute
+      div 
+        span#currenTime 00:00
+        span  / 
+        span#totalTime 00:00
+      input(type="range",step="0.1" value="1"  min="0" max="1")#volume
+      div
+        input(type="range",step="1" value="0"  min="0")#timeline
+      div 
+        button#fullScreen Full Screen
+  //- 
+      h2 
+        a(href=`/users/${video.owner._id}`) 
         img(src=video.owner.avatarUrl)
         | #{video.owner.name}
     p=video.description
     small=video.createdAt
-  if String(video.owner._id) === String(loggedInUser._id)
-    a(href=`${video.id}/edit`) Edit Video &rarr;
-    br
-    a(href=`${video.id}/delete`) Delete Video &rarr;
+    if String(video.owner._id) === String(loggedInUser._id)
+      a(href=`${video.id}/edit`) Edit Video &rarr;
+      br
+      a(href=`${video.id}/delete`) Delete Video &rarr;
 
 block scripts 
   script(src="/assets/js/videoPlayer.js") 

@@ -190,3 +190,12 @@ timeline의 최대 값 (영상 시간)을 video의 길이로 동기화해준다.
 비디오가 실행되면서 timeupdate가 되면, timeline의 value가 currentTime 값으로 동기화된다.
 
 timeupdate 이벤트는 시간이 변할 때 마다 발동하고, input 이벤트는 값이 변하는 중에 발동한다.
+
+```js
+const handleTimelineChange = (e) => {
+  const {
+    target: { value },
+  } = e;
+  video.currentTime = value;
+};
+```

@@ -15,19 +15,15 @@ export const postJoin = async (req, res) => {
   } = req;
   const pageTitle = "회원가입";
   if (password !== password2) {
-    return res.status(400).render("users/join", {
-      pageTitle,
-      errorMessage: "비밀번호가 일치하지 않습니다.",
-    });
+    req.flash("error", "비밀번호가 일치하지 않습니다.");
+    return res.status(400).render("users/join", { pageTitle });
   }
   const exists = await User.exists({
     $or: [{ username }, { email }],
   });
   if (exists) {
-    return res.status(400).render("users/join", {
-      pageTitle,
-      errorMessage: "이미 사용중인 아이디/이메일입니다.",
-    });
+    req.flash("error", "이미 사용중인 아이디/이메일입니다.");
+    return res.status(400).render("users/join", { pageTitle });
   }
   try {
     await User.create({
@@ -38,10 +34,8 @@ export const postJoin = async (req, res) => {
       location,
     });
   } catch (error) {
-    return res.status(400).render("users/join", {
-      pageTitle,
-      errorMessage: error._message,
-    });
+    req.flash("error", error._message);
+    return res.status(400).render("users/join", { pageTitle });
   }
   return res.redirect("/");
 };
@@ -79,10 +73,10 @@ export const postEdit = async (req, res) => {
   if (searchParams.length > 0) {
     const findUser = await User.findOne({ $or: searchParams });
     if (findUser && findUser._id.toString() !== _id) {
-      return res.status(400).render("users/edit-profile", {
-        pageTitle: "edit Profile",
-        errorMessage: "이미 존재하는 아이디, 이메일, 별명입니다.",
-      });
+      req.flash("error", "이미 존재하는 아이디, 이메일, 별명입니다.");
+      return res
+        .status(400)
+        .render("users/edit-profile", { pageTitle: "edit Profile" });
     }
   }
   const updatedUser = await User.findByIdAndUpdate(
@@ -121,26 +115,20 @@ export const postChangePassword = async (req, res) => {
   /* 비밀번호가 일치하는지 체크 */
   const passwordExists = await bcrypt.compare(oldPassword, user.password);
   if (!passwordExists) {
-    return res.status(400).render("users/change-password", {
-      pageTitle,
-      errorMessage: "기존 비밀번호가 일치하지 않습니다.",
-    });
+    req.flash("error", "기존 비밀번호가 일치하지 않습니다.");
+    return res.status(400).render("users/change-password", { pageTitle });
   }
 
   /* 변경하고자 하는 비밀번호 체크 */
   if (newPassword !== newPassword1) {
-    return res.status(400).render("users/change-password", {
-      pageTitle,
-      errorMessage: "변경하고자 하는 비밀번호가 일치하지 않습니다.",
-    });
+    req.flash("error", "변경하고자 하는 비밀번호가 일치하지 않습니다.");
+    return res.status(400).render("users/change-password", { pageTitle });
   }
 
   /* 기존 비밀번호와 동일한지 체크 */
   if (oldPassword === newPassword) {
-    return res.status(400).render("users/change-password", {
-      pageTitle,
-      errorMessage: "기존의 비밀번호와 동일한 비밀번호입니다",
-    });
+    req.flash("error", "기존의 비밀번호와 동일한 비밀번호입니다");
+    return res.status(400).render("users/change-password", { pageTitle });
   }
 
   /* 비밀번호 업데이트 */
@@ -166,18 +154,14 @@ export const postLogin = async (req, res) => {
 
   // 존재하지 않은 아이디를 입력했을 경우
   if (!user) {
-    return res.status(400).render("users/login", {
-      pageTitle,
-      errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
-    });
+    req.flash("error", "존재하지 않는 유저입니다.");
+    return res.status(400).render("users/login", { pageTitle });
   }
   const ok = await bcrypt.compare(password, user.password);
   /* 비밀번호가 입력한 것과 일치하지 않을 경우 */
   if (!ok) {
-    return res.status(400).render("users/login", {
-      pageTitle,
-      errorMessage: " 아이디 또는 비밀번호를 잘못 입력했습니다.",
-    });
+    req.flash("error", "아디이 혹은 비밀번호가 일치하지 않습니다.");
+    return res.status(400).render("users/login", { pageTitle });
   }
   req.session.loggedIn = true;
   req.session.user = user;
@@ -313,10 +297,8 @@ export const see = async (req, res) => {
   /* User 객체에서 videos 객체를 가져옴 */
   const user = await User.findById(id).populate("videos");
   if (!user) {
-    return res.status(404).render("404", {
-      pageTitle: "404",
-      errorMessage: "존재하지 않는 유저입니다.",
-    });
+    req.flash("error", "존재하지 않는 유저입니다.");
+    return res.status(404).render("404", { pageTitle: "404" });
   }
   const pageTitle = `${user.name}의 프로필`;
   return res.render("users/profile", {

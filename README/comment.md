@@ -30,3 +30,20 @@ app.use(localsMiddleware);
 **[ '존재하지 않는 유저입니다.' ]** 라고 확인이 된다.
 
 pug에서 `messages.타입` 을 통해 호출이 가능하다.
+
+```pug
+//- message
+mixin message(kind, text)
+  div.message(class=kind)
+    span=text
+
+//- base
+if messages.error
+  +message("error", messages.error)
+if messages.info
+  +message("info", messages.info)
+if messages.success
+  +message("success", messages.success)
+```
+
+알림들을 스타일링 할 수 있도록 mixin으로 분리해줄 수 있다.

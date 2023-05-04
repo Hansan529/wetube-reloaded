@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   email: { type: String, required: true, unique: true },
   location: { type: String, required: true },
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 });
 

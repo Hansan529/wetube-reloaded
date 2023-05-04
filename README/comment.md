@@ -47,3 +47,39 @@ if messages.success
 ```
 
 알림들을 스타일링 할 수 있도록 mixin으로 분리해줄 수 있다.
+
+---
+
+## Comment Models
+
+```js
+import mongoose from "mongoose";
+
+const commentSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  video: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Video" },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Comment = mongoose.model("Comment", commentSchema);
+
+export default Comment;
+```
+
+```js
+// Video.js
+...
+comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+```
+
+```js
+// User.js
+...
+comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+```
+
+기존 모델에서 comments에 대해 참조하도록 추가,
+
+하나의 Video에 여러개의 Comment가 있을 수 있으니 [] 배열 형식으로 생성해준다.  
+마찬가지로 User에서도 한 명의 유저가 여러개의 Comment를 남길 수 있으니 배열로 생성한다.

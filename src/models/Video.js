@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import User from "./User";
 
 const videoSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true, maxLength: 50 },
@@ -12,6 +11,9 @@ const videoSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
   },
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, requried: true, ref: "Comment" },
+  ],
 });
 
 videoSchema.static("formatHashtags", function (hashtags) {

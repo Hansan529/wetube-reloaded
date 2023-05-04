@@ -11,6 +11,7 @@ const fullScreenBtn = document.getElementById("fullScreen");
 const fullScreenBtnIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
+const form = document.getElementById("commentForm");
 
 let volumeValue = 1;
 video.volume = volumeValue;
@@ -130,11 +131,13 @@ const keyFunctions = {
 };
 
 const handleKeydown = (e) => {
-  const keyFunction = keyFunctions[e.code];
-  if (keyFunction) {
-    keyFunction();
+  if (!"TEXTAREA".includes(e.target.tagName)) {
+    const keyFunction = keyFunctions[e.code];
+    if (keyFunction) {
+      keyFunction();
+    }
+    return;
   }
-  return;
 };
 
 const handleEnded = () => {

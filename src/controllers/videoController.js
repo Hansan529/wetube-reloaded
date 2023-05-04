@@ -97,9 +97,9 @@ export const postUpload = async (req, res) => {
     user.save();
     return res.redirect("/");
   } catch (error) {
+    req.flash("error", `${error._message} 업로드에 실패했습니다.`);
     return res.status(400).render("videos/upload", {
       pageTitle: "Upload Video",
-      errorMessage: error._message,
     });
   }
 };

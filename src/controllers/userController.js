@@ -134,6 +134,7 @@ export const postChangePassword = async (req, res) => {
   /* 비밀번호 업데이트 */
   user.password = newPassword;
   user.save();
+  req.flash("success", "비밀번호 변경에 성공했습니다.");
   return res.redirect("logout");
 };
 

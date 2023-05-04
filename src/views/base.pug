@@ -1,3 +1,5 @@
+include mixins/message
+
 doctype html
 html(lang="ko")
   head
@@ -9,6 +11,12 @@ html(lang="ko")
     title #{pageTitle} | #{siteName}
   body 
     include partials/header
+    if messages.error
+      +message("error", messages.error)
+    if messages.info
+      +message("info", messages.info)
+    if messages.success
+      +message("succss", messages.success)
     main
       block content
     include partials/footer

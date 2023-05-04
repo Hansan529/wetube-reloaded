@@ -83,3 +83,37 @@ comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
 
 하나의 Video에 여러개의 Comment가 있을 수 있으니 [] 배열 형식으로 생성해준다.  
 마찬가지로 User에서도 한 명의 유저가 여러개의 Comment를 남길 수 있으니 배열로 생성한다.
+
+---
+
+## Comment Box
+
+```pug
+//- watch
+if loggedIn
+    .video__comments
+      form.video__comments-form#commentForm
+        textarea(cols="30", rows="10")
+        button 작성하기
+```
+
+로그인한 유저만 form 을 볼 수 있도록 한다.
+
+```js
+const form = document.getElementById("commentForm");
+const textarea = form.querySelector("textarea");
+const btn = form.querySelector("button");
+const videoContainer = document.getElementById("videoContainer");
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const text = textarea.value;
+  const video = videoContainer.dataset.id;
+};
+
+form.addEventListener("submit", handleSubmit);
+```
+
+form 요소의 버튼을 클릭하면 제출을 하게 되는데 기본 동작 요소를 정지시켜준다.  
+로그인한 상태라면 오류가 없지만 로그인을 하지 않은 상태에서 해당 watch 페이지를 렌더링하면  
+textarea, btn 상수가 null 이라 오류가 발생 한 다.

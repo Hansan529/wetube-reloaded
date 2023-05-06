@@ -6,14 +6,14 @@ import "./models/User";
 import "./models/Comment";
 import app from "./server";
 
-const PORT = 80;
+const PORT = 3000;
 
 const handleListening = () => {
   console.log(
     `[localhost           ] 🐤 http://localhost:${PORT} 포트에서 listening 하고 있습니다.`
   );
   console.log(
-    `[hyeonServer - ip    ] 🐤 http://192.168.1.57:${PORT} 포트에서 listening 하고 있습니다.`
+    `[hyeonServer - ip    ] 🐤 http://192.168.10.57:${PORT} 포트에서 listening 하고 있습니다.`
   );
   console.log(
     `[hyeonServer - http  ] 🐤 http://hxan.net:${PORT} 포트에서 listening 하고 있습니다.`

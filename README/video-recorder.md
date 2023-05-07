@@ -56,3 +56,73 @@ MediaStream, MediaSource, Blob, File
 ## Recording Video
 
 MediaRecorder를 사용해 녹화를 할 수 있게 한다.
+
+```js
+const handleStart = () => {
+  startBtn.innerText = "녹화 중지";
+  startBtn.removeEventListener("click", handleStart);
+  startBtn.addEventListener("click", handleStop);
+
+  const recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (e) => {
+    console.log("녹화종료");
+    console.log(e);
+    console.log(e.data);
+  };
+  console.log(recorder);
+  recorder.start();
+  console.log(recorder);
+  setTimeout(() => {
+    recorder.stop();
+  }, 10000);
+};
+```
+
+녹화 시작을 누르면,stream이 `state: inactive` &rarr; `state: recording` 으로 변한다  
+10초 뒤에, 녹화 종료와 BlobEvent 값이 나온다.
+
+ondataavailable에 브라우저 상의 메모리로 생성하는 URL을 만들 것이다.
+
+```js
+recorder.ondataavailable = (e) => {
+  const video = URL.createObjectUrl(e.data);
+  console.log(video);
+};
+```
+
+콘솔에 `blob:https://wetube.hxan.net/a5966683-4fe8-49ce-a122-214f0afda783` 과 같이 경로가 생기는데, 접근하면 해당 파일은 없다.  
+파일은 브라우저의 메모리 상에 있다.
+
+```js
+const handleStart = () => {
+  startBtn.innerText = "녹화 중지";
+  startBtn.removeEventListener("click", handleStart);
+  startBtn.addEventListener("click", handleStop);
+
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (e) => {
+    const videoFile = URL.createObjectURL(e.data);
+    video.srcObject = null;
+    video.src = videoFile;
+    video.play();
+  };
+  recorder.start();
+};
+```
+
+기존의 preview의 stream을 제거하고, 브라우저 메모리에 저장된 비디오로 변경한다.
+
+`<video id="preview" src="blob:https://wetube.hxan.net/2cad908f-935e-4a73-b2c2-1e7676990207"></video>` 라는 파일로 변경된다.
+
+우리 웹 사이트에서 호스팅하는 것 같지만, 브라우저의 메모리에서 가져온 비디오이다. 다운로드 시키기 위해 a 태그를 생성하고, href에 videoFile을 적용시킨 뒤,  
+download 속성을 사용해 링크로 이동이 아닌, 다운로드 형식으로 변경했다.
+
+```js
+const handleDownload = () => {
+  const a = document.createElement("a");
+  a.href = videoFile;
+  a.download = "MyRecording";
+  document.body.appendChild(a);
+  a.click();
+};
+```

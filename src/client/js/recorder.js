@@ -11,6 +11,7 @@ const handleDownload = () => {
   a.download = "MyRecording";
   document.body.appendChild(a);
   a.click();
+  a.remove();
 };
 
 const handleStop = () => {

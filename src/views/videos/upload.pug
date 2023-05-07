@@ -1,6 +1,9 @@
 extends ../base
 
 block content 
+  div 
+    video#preview
+    button#startBtn 녹화 시작
   form(method="POST" enctype="multipart/form-data")
     input(name="title" placeholder="제목" type="text" maxlength=50)
     label 동영상 파일

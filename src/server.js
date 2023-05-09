@@ -3,6 +3,7 @@ import morgan from "morgan";
 import session from "express-session";
 import flash from "express-flash";
 import MongoStore from "connect-mongo";
+import cors from "cors";
 
 import { localsMiddleware } from "./middlewares";
 import rootRouter from "./routers/rootRouter";
@@ -12,6 +13,10 @@ import apiRouter from "./routers/apiRouter";
 
 const app = express(); // express 어플리케이션
 const logger = morgan("dev"); // morgan 미들웨어
+
+const corsOptions = {
+  origin: "https://wetbue.hxan.net",
+};
 
 app.disable("x-powered-by");
 app.set("view engine", "pug");
@@ -35,6 +40,7 @@ app.use((req, res, next) => {
   res.header("Cross-Origin-Opener-Policy", "same-origin");
   next();
 });
+app.use(cors(corsOptions));
 app.use(flash());
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads"));

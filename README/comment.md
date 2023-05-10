@@ -117,3 +117,33 @@ form.addEventListener("submit", handleSubmit);
 form 요소의 버튼을 클릭하면 제출을 하게 되는데 기본 동작 요소를 정지시켜준다.  
 로그인한 상태라면 오류가 없지만 로그인을 하지 않은 상태에서 해당 watch 페이지를 렌더링하면  
 textarea, btn 상수가 null 이라 오류가 발생 한 다.
+
+그래서 아예 form이 있을 경우에만 실행하도록 변경한다.
+
+```pug
+block content
+  if loggedIn
+    script(src="/assets/js/commentSection.js")
+```
+
+```js
+const videoContainer = document.getElementById("videoContainer");
+const form = document.getElementById("commentForm");
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const textarea = form.querySelector("textarea");
+  const text = textarea.value;
+};
+
+if (form) {
+  form.addEventListener("submit", handleSubmit);
+}
+```
+
+pug에서 애초에 로그인일 경우에만 스크립트를 불러오도록 하며, form이 있을 경우에만 handleSubmit 함수를 실행하도록 설정한다.  
+그렇게 되면 로그인을 하지 않았을 경우에도 watch page에 접속했을 때 오류가 발생하지 않는다.
+
+<br>
+
+---

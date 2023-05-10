@@ -106,6 +106,25 @@ thumbA.click();
 
 - 영상의 1초 후 사진을 사용하기 떄문에, 1초보다 작다면 오류가 발생한다는 점
 
+브라우저에 계속 남아 있으면 속도가 느려지니 제거해준다.
+
+```js
+...
+
+ffmpeg.FS("unlink", "recording.webm");
+ffmpeg.FS("unlink", "output.mp4");
+ffmpeg.FS("unlink", "thumbnail.jpg");
+```
+
+브라우저에는 mp4Url, thumbUrl이 존재하니 소스파일인 recording.webm 파일도 제거한다.
+
+```js
+URL.revokeObjectURL(mp4Url);
+URL.revokeObjectURL(thumbUrl);
+```
+
+URL 객체를 메모리에서 지우기 위해 revoke를 사용해준다.
+
 <br>
 
 ### cors

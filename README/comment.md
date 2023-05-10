@@ -147,3 +147,44 @@ pug에서 애초에 로그인일 경우에만 스크립트를 불러오도록 �
 <br>
 
 ---
+
+## API Router
+
+textarea에 작성한 value 들을 back-end로 전송해야하는데, 이 단계에서 api를 이용한다.
+
+```js
+...
+await fetch(`/api/videos/${videoId}/comment`, {
+  method: "POST",
+  body: {
+    text,
+  },
+});
+```
+
+해당 경로에 POST 형식으로 body에 text를 포함한 채 호출한다.
+
+req.params 를 확인해보면 정상적으로 출력이 되는데, req.body에서는 아무런 정보도 나오지 않는다.
+
+Payload를 확인해보면 Request Payload [object Object] 라고, 텍스트가 아닌 object를 보내고 있다.  
+url을 받을 수 있도록 express.urlencoded({ extended: true })와 마찬가지로  
+express.text()를 추가해준다.
+
+```js
+app.use(express.text());
+```
+
+모든 text를 받아서 req.body에 넣어주는 역할을 해준다. 웹사이트에 request로 들어오는 text를 이해 할 수 있다.
+
+```js
+const text = textarea.value;
+
+await fetch(`/api/videos/${videoId}/comment`, {
+  method: "POST",
+  body: text,
+});
+```
+
+body { text } &rarr; body : text 로 변경해서, body : "textassdasd" 가 되어 Payload에서도 확인이 가능하다.
+
+문제는, 한 가지 이상을 전송하려면 object를 사용해야 한다는 것이다.

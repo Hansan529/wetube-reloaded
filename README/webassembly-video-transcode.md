@@ -163,9 +163,30 @@ app.use(
 ```
 
 Network에서 보면, `Access-Control-Allow-Origin: *`이 보인다.  
-쿠키 값을 보내려면 credentials 옵션을 설정해주어야한다.
+ 쿠키 값을 보내려면 credentials 옵션을 설정해주어야한다.
 
-단 Origin을 *로 할 경우 credentials은 에러가 발생한다. *이 아닌 직접 명시해주어야 한다.
+단 Origin을 \*로 할 경우 credentials은 에러가 발생한다. \*이 아닌 직접 명시해주어야 한다.
 
 - 요청이 들어오면 app.use(cors()) 를 통해 CORS 설정을 적용한다.
 - 서버에서 클라이언트로 Access-Control-Allow-Origin 헤더를 res.header에서 설정해, 허용 여부를 결정한다.
+
+---
+
+이렇게 되면, thumbnail 파일까지 총 video, thumbnail 2개의 파일을 업로드하는데, router에서는 single("video") 만 설정했다.  
+2개 이상의 파일을 받아야 할 때는 fileds 를 사용한다.
+
+```js
+videoUpload.fields([
+  {
+    name: "video",
+    maxCount: 1,
+  },
+  {
+    name: "thumb",
+    maxCount: 1,
+  },
+]);
+```
+
+다음과 같이 변경하면 postUpload에서 오류가 발생한다. 왜냐하냐면 single은 req.file을 사용하는데, fields는 req.files를 보내기 때문에  
+postUpload를 변경해주어야 한다.

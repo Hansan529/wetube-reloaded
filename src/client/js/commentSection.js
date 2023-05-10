@@ -17,6 +17,7 @@ const handleSubmit = async (e) => {
     body: JSON.stringify({ text }),
     credentials: "same-origin",
   });
+  textarea.value = "";
 };
 
 if (form) {

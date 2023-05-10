@@ -21,12 +21,12 @@ const handleDownload = async () => {
 
   const mp4Url = URL.createObjectURL(mp4Blob);
 
-  const a = document.createElement("a");
-  a.href = mp4Url;
-  a.download = "MyRecording.mp4";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  const mp4A = document.createElement("a");
+  mp4A.href = mp4Url;
+  mp4A.download = "MyRecording.mp4";
+  document.body.appendChild(mp4A);
+  mp4A.click();
+  mp4A.remove();
 };
 
 const handleStop = () => {

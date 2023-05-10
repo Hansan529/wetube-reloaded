@@ -5,9 +5,11 @@ block content
     video#preview
     button#actionBtn 녹화 시작
   form(method="POST" enctype="multipart/form-data")
-    input(name="title" placeholder="제목" type="text" maxlength=50)
     label 동영상 파일
       input(name="video" type="file" accept="video/*" required)
+    label 미리보기 이미지
+      input(name="thumb" type="file" accept="image /*" required)
+    input(name="title" placeholder="제목" type="text" maxlength=50)
     input(name="description" placeholder="설명" type="text" maxlength=140)
     input(name="hashtags" placeholder="태그" type="text")
     input(type="submit" value="Upload Video")

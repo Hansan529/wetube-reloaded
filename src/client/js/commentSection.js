@@ -8,9 +8,7 @@ const handleSubmit = async (e) => {
   const videoId = videoContainer.dataset.id;
   await fetch(`/api/videos/${videoId}/comment`, {
     method: "POST",
-    body: {
-      text,
-    },
+    body: text,
   });
 };
 

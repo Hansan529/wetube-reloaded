@@ -81,3 +81,54 @@ blob은 자바스크립트 세계의 파일과 같다. 파일과 같은 객체�
 `Uint8Array`와 `ArrayBuffer`에서 Uint8Array는 마음대로 변경이 가능하다.
 
 ArrayBuffer는 raw data = binary data, 즉 실제 파일에 접근하려면 buffer를 사용해야한다.
+
+---
+
+## Thumbnail
+
+`await ffmpeg.run("-i","recoding.webm", "-ss", "00:00:01", "-frames:v", "1", "thumbnail.jpg");`
+
+-ss는 특정 시간대로 이동하는 속성이며, -frames:v, 1는 1초에 있는 장면을 저장하는 것이다.
+
+**현재 문제가, 비디오, 오디오 권한을 얻기 위해 사이트가 https로 변경되어서, 다른 링크에 있는 자료를 가져오기 위해서는 CORS를 허용해주어야 한다.**
+
+### cors
+
+직접 다음과 같은 코드를 입력해도 되지만, 미들웨어 패키지로 쉽게 사용하는 것이 편하다.
+
+```js
+res.setHeader("Access-Control-Allow-origin", "*");
+res.setHeader("Access-Control-Allow-Credentials", "true");
+
+res.end();
+```
+
+```bash
+$ yarn add cors
+```
+
+```js
+import express from "express";
+import cors from "cors";
+
+const app = express();
+
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+```
+
+Network에서 보면, `Access-Control-Allow-Origin: *`이 보인다.  
+쿠키 값을 보내려면 credentials 옵션을 설정해주어야한다.
+
+단 Origin을 *로 할 경우 credentials은 에러가 발생한다. *이 아닌 직접 명시해주어야 한다.
+
+- 요청이 들어오면 app.use(cors()) 를 통해 CORS 설정을 적용한다.
+- 서버에서 클라이언트로 Access-Control-Allow-Origin 헤더를 res.header에서 설정해, 허용 여부를 결정한다.

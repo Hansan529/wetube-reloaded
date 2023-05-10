@@ -187,4 +187,35 @@ await fetch(`/api/videos/${videoId}/comment`, {
 
 body { text } &rarr; body : text 로 변경해서, body : "textassdasd" 가 되어 Payload에서도 확인이 가능하다.
 
-문제는, 한 가지 이상을 전송하려면 object를 사용해야 한다는 것이다.
+문제는, 한 가지 이상을 전송하려면 object를 사용해야 한다는 것이다.  
+그래서 JSON.stringify를 사용해서 이 문제를 해결할 것이다.
+
+```js
+JSON.stringify({ text: "abc", text2: "zxc" });
+```
+
+다음과 같이 변환된다.
+
+```json
+"{\"text\":\"abc\",\"text2\":\"zxc\"}"
+```
+
+JS object가 아니기 때문에, `req.body.text`, `req.body.rating` 과 같이 불러올 수 없다.
+
+JSON을 JS object로 변경을 해주기 위해 미들웨어를 `.text` &rarr; `.json`으로 수정해준다.
+.json이 하는 일은 `JSON.parse({},{})` 을 해주어 JS object로 변환해준다.
+
+근데 변경하고 다시 확인해보면 변한 게 없다... 왜냐면 Express가 text를 보낸다고 생각하기 때문에 원하는 답이 나오지 않았다.  
+json으로 보낸다고 말해주어야 한다.
+
+```js
+await fetch(`/api/videos/${videoId}/comment`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ text }),
+});
+```
+
+request에 headers 설정에 json으로 요청을 하면 Express는 json으로 요청이 들어온다고 알게 된다.

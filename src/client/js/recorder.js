@@ -12,6 +12,15 @@ const files = {
   thumb: "thumbnail.jpg",
 };
 
+const downloadFile = (fileUrl, fileName) => {
+  const a = document.createElement("a");
+  a.href = fileUrl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
 const handleDownload = async () => {
   const ffmpeg = createFFmpeg({ log: true });
   await ffmpeg.load();
@@ -38,19 +47,8 @@ const handleDownload = async () => {
   const mp4Url = URL.createObjectURL(mp4Blob);
   const thumbUrl = URL.createObjectURL(thumbBlob);
 
-  const mp4A = document.createElement("a");
-  mp4A.href = mp4Url;
-  mp4A.download = "MyRecording.mp4";
-  document.body.appendChild(mp4A);
-  mp4A.click();
-  mp4A.remove();
-
-  const thumbA = document.createElement("a");
-  thumbA.href = thumbUrl;
-  thumbA.download = "MyThumbnail.jpg";
-  document.body.appendChild(thumbA);
-  thumbA.click();
-  thumbA.remove();
+  downloadFile(mp4Url, "MyRecording.mp4");
+  downloadFile(thumbUrl, "MyThumbnail.jpg");
 
   ffmpeg.FS("unlink", files.input);
   ffmpeg.FS("unlink", files.output);

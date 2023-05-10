@@ -90,9 +90,27 @@ ArrayBuffer는 raw data = binary data, 즉 실제 파일에 접근하려면 buff
 
 -ss는 특정 시간대로 이동하는 속성이며, -frames:v, 1는 1초에 있는 장면을 저장하는 것이다.
 
-**현재 문제가, 비디오, 오디오 권한을 얻기 위해 사이트가 https로 변경되어서, 다른 링크에 있는 자료를 가져오기 위해서는 CORS를 허용해주어야 한다.**
+video와 마찬가지로 Blob를 생성하고 연결해준다.
+
+```js
+const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+const thumbBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
+const thumbUrl = URL.createObjectURL(thumbBlob);
+
+const thumbA = document.createElement("a");
+thumbA.href = thumbUrl;
+thumbA.download = "MyThumbnail.jpg";
+document.body.appendChild("thumbA");
+thumbA.click();
+```
+
+- 영상의 1초 후 사진을 사용하기 떄문에, 1초보다 작다면 오류가 발생한다는 점
+
+<br>
 
 ### cors
+
+**현재 문제가, 비디오, 오디오 권한을 얻기 위해 사이트가 https로 변경되어서, 다른 링크에 있는 자료를 가져오기 위해서는 CORS를 허용해주어야 한다.**
 
 직접 다음과 같은 코드를 입력해도 되지만, 미들웨어 패키지로 쉽게 사용하는 것이 편하다.
 

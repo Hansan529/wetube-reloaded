@@ -219,3 +219,44 @@ await fetch(`/api/videos/${videoId}/comment`, {
 ```
 
 request에 headers 설정에 json으로 요청을 하면 Express는 json으로 요청이 들어온다고 알게 된다.
+
+<br>
+
+---
+
+## Commenting
+
+fetch를 통해 요청하면 credentials가 "same-origin" 이 기본값인데, Origin이 동일한 경우 쿠키를 전송한다는 의미다. "include" 로 설정하면 모든 쿠키를 전송한다.
+
+HTTP 요청과는 정 반대이다. HTTP 요청은 credentials: "omit" 로 절대 쿠키를 전송하지 않는 설정이 기본값이다.
+
+그래서 전달받은 쿠키로는 세션을 알 수 있고, **세션으로 사용자를 알 수 있다.**
+
+해당 정보를 통해 데이터베이스에 정보를 저장할 수 있다.
+
+```js
+// videoController.js
+export const creatEcomment = async (req, res) => {
+  const {
+    params: { id },
+    body: { text },
+    session: { user },
+  } = req;
+
+  const video = await Video.findById(id);
+
+  if (!video) {
+    return res.sendStatus(404);
+  }
+
+  const comment = await Comment.create({
+    text,
+    owner: user._id,
+    video: id,
+  });
+  res.sendStatus(201);
+};
+```
+
+params: id, body: text, session: user 값을 가져오고, Video를 찾은 뒤,  
+comment에 body에서 받은 text 값을 넣어 Comment를 생성한다.

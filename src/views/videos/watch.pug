@@ -34,10 +34,16 @@ block content
     p=video.description
 
   if loggedIn
-    .video__comments 
+    .video__add-comments 
       form.video__comments-form#commentForm
         textarea(cols="30", rows="10") 
         button 작성하기
+  .video__comments 
+    ul 
+      each comment in video.comments.reverse()
+        li.video__comment
+          img(src=`${comment.owner.avatarUrl}`, crossorigin="anonymous", alt="").video__comment-owner
+          span #{comment.text}
 
 block scripts 
   script(src="/assets/js/videoPlayer.js") 

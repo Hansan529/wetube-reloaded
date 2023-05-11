@@ -192,6 +192,9 @@ export const createComment = async (req, res) => {
 export const commentProfile = async (req, res) => {
   const {
     params: { id },
+    session: {
+      user: { socialLogin },
+    },
   } = req;
   const video = await Video.findById(id).populate({
     path: "comments",
@@ -199,5 +202,5 @@ export const commentProfile = async (req, res) => {
   });
   const avatarUrls = video.comments.map((comment) => comment.owner.avatarUrl);
 
-  res.status(200).json({ avatarUrls });
+  return res.status(200).json({ socialLogin, avatarUrls });
 };

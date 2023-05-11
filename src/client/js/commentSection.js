@@ -7,18 +7,34 @@ const addComment = async (text) => {
   const newComment = document.createElement("li");
   newComment.className = "video__comment";
 
+  const span = document.createElement("span");
+  span.innerText = text;
+
   const img = document.createElement("img");
   img.className = "video__comment-owner";
   const response = await fetch(`/api/videos/${videoId}/profile`, {
     method: "POST",
   });
   const data = await response.json();
+  console.log("data: ", data);
   const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
-  img.src = avatarUrl;
-  img.crossOrigin = "anonymous";
+  console.log("avatarUrl: ", avatarUrl);
+  const socialLogin = data.socialLogin;
 
-  const span = document.createElement("span");
-  span.innerText = text;
+  if (!avatarUrl) {
+    const imgSpan = document.createElement("span");
+    imgSpan.className = "video__comment-owner";
+    imgSpan.innerText = "😀";
+    newComment.appendChild(imgSpan);
+    newComment.appendChild(span);
+    videoComments.prepend(newComment);
+    console.log("check");
+    return;
+  } else {
+  }
+  console.log("csss");
+  socialLogin ? (img.src = avatarUrl) : (img.src = `/${avatarUrl}`);
+  socialLogin ? (img.crossOrigin = "anonymous") : (img.crossOrigin = null);
 
   newComment.appendChild(img);
   newComment.appendChild(span);

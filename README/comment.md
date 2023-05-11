@@ -260,3 +260,121 @@ export const creatEcomment = async (req, res) => {
 
 params: id, body: text, session: user 값을 가져오고, Video를 찾은 뒤,  
 comment에 body에서 받은 text 값을 넣어 Comment를 생성한다.
+
+---
+
+## Realtime Comments
+
+fetch에서 약간 수정해준다.
+
+```js
+const { status } = await fetch(`/api/videos/${videoId}/comment`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ text }),
+  credentials: "same-origin",
+});
+textarea.value = "";
+```
+
+fetch는 Promise를 받는데, 시간이 걸려서 await으로 기다리고, response를 받는데, response에는 여러 값이 있다.
+
+> Response {type: 'basic', url: 'https://wetube.hxan.net/api/videos/645b2299329090c8596cf6f2/comment', redirected: false, status: 201, ok: true, …}  
+> body : (...)  
+> bodyUsed : false  
+> headers : Headers {}  
+> ok : true  
+> redirected : false  
+> status : 201  
+> statusText : ""  
+> type : "basic"  
+> url : "https://wetube.hxan.net/api/videos/645b2299329090c8596cf6f2/comment"  
+> [[Prototype]] : Response
+
+우리는 status를 사용할 것이다.
+
+```js
+console.log(status);
+if (status === 201) {
+  console.log("가짜 댓글");
+}
+```
+
+```
+201
+가짜 댓글
+```
+
+status가 201이여서 console.log가 실행되는 모습이다.
+
+현재 댓글은 pug에서 comments의 목록을 가져와서 작성하는데, JS를 이용해서 실시간 댓글처럼 보이도록 할 것이다.
+
+```js
+const addComment = async (text) => {
+  // 추가할 ul을 선택
+  const videoComments = document.querySelector(".video__comments ul");
+
+  // li 생성 및 클래스 이름 지정
+  const newComment = document.createElement("li");
+  newComment.className = "video__comment";
+
+  // img 생성 및 클래스 이름 지정
+  const img = document.createElement("img");
+  img.className = "video__comment-owner";
+  // img 경로를 얻기 위해 api 호출
+  const response = await fetch(`/api/videos/${videoId}/profile`, {
+    method: "POST",
+  });
+  // 결과 값을 json으로 받음
+  const data = await response.json();
+
+  // avatarUrl의 마지막 배열을 선택함 (최근 submit한 목록)
+  const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
+  img.src = avatarUrl;
+
+  // CORS 정책 허용
+  img.crossOrigin = "anonymous";
+
+  // span 생성 및 매개변수로 받은 text 추가
+  const span = document.createElement("span");
+  span.innerText = text;
+
+  // li에 마지막 위치에 img 태그 추가
+  newComment.appendChild(img);
+  // li에 마지막 위치에 span 태그 추가
+  newComment.appendChild(span);
+  // ul의 첫번째에 li 추가
+  videoComments.prepend(newComment);
+};
+```
+
+back-end code
+
+```js
+export const commentProfile = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  // video 찾은 뒤, comments 목록 불러오기
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
+
+  // video.comments 배열을 반복문을 돌려 owner.avatarUrl 값을 avatarUrls에 저장함
+  const avatarUrls = video.comments.map((comment) => comment.owner.avatarUrl);
+
+  // json 형태로 avatarUrls를 반환함
+  res.status(200).json({ avatarUrls });
+};
+```
+
+back-end에서 `.json({ avatarUrls })`로 json으로 내보내고, front-end에서 `await response.json()` json 형태로 받고,  
+배열의 마지막의 avatarUrl을 얻어 img에 적용하고
+
+`if (status === 201)` 에서 받은 `addComment(text)` 매개 변수를 span에 대입하고 append, prepend하여 front-end에서 볼 수 있다.
+
+새로고침하면 사라지지만, pug에서 데이터베이스에 생긴 값을 바탕으로 생성하기 때문에 문제없다.

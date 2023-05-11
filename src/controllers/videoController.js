@@ -16,7 +16,12 @@ export const watch = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const video = await Video.findById(id).populate("owner");
+  const video = await Video.findById(id)
+    .populate("owner")
+    .populate({
+      path: "comments",
+      populate: { path: "owner" },
+    });
   if (!video) {
     return res
       .status(404)
@@ -179,5 +184,20 @@ export const createComment = async (req, res) => {
     owner: user._id,
     video: id,
   });
+  video.comments.push(comment._id);
+  video.save();
   res.sendStatus(201);
+};
+
+export const commentProfile = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
+  const avatarUrls = video.comments.map((comment) => comment.owner.avatarUrl);
+
+  res.status(200).json({ avatarUrls });
 };

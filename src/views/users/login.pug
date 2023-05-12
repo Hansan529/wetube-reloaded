@@ -3,7 +3,8 @@ extends ../base
 block content
   form(method="POST")
     input(name="username", placeholder="아이디", required, unique, type="text", minlength="4")
-    input(name="password", placeholder="비밀번호", required, type="password" pattern="^[a-zA-Z0-9`~!@#$%^&*()\\-+{}|\;':", minlength="4")
+    input(name="password", placeholder="비밀번호", required, type="password" pattern="^[a-zA-Z0-9`~!@#$%^&*()\\-+{}|;':/]+"
+, minlength="4")
     input(type="submit", value="로그인")
     include ../partials/social-login
   hr

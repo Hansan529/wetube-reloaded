@@ -22,15 +22,16 @@ block content
 
   .video__data
     p.video__title=video.title
-    small.video__owner 유저
+    small.video__owner
       a(href=`/users/${video.owner._id}`) 
-        img(src=video.owner.avatarUrl, crossorigin="anonymous")
+        img(src=video.owner.avatarUrl, crossorigin="anonymous").video__comment-owner
         | #{video.owner.name}
-    small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
     if String(video.owner._id) === String(loggedInUser._id)
       a(href=`${video.id}/edit`) Edit Video &rarr;
       br
       a(href=`${video.id}/delete`) Delete Video &rarr;
+    p 조회수 #{video.meta.views}회
+    small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
     p=video.description
 
   if loggedIn

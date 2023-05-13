@@ -173,6 +173,11 @@ export const createComment = async (req, res) => {
     session: { user },
   } = req;
 
+  // 로그인하지 않은 유저인 경우 오류 상태코드 전송
+  if (!user) {
+    return res.sendStatus(401);
+  }
+
   const video = await Video.findById(id);
 
   if (!video) {

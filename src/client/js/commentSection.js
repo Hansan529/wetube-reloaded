@@ -65,8 +65,11 @@ if (form) {
   form.addEventListener("submit", handleSubmit);
 }
 
-const removeComment = () => {
-  console.log("ok");
+const removeComment = async () => {
+  const test = await fetch(`/api/videos/${videoId}/comment-delete`, {
+    method: "POST",
+  });
+  console.log("test: ", test);
 };
 
 deleteBtn.forEach((btn) => {

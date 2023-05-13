@@ -192,7 +192,10 @@ export const createComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   const {
     params: { id },
-    body: { text, index },
+    session: {
+      user: { _id: loginUser },
+    },
+    body: { index },
   } = req;
 
   const video = await Video.findById(id).populate({
@@ -206,6 +209,10 @@ export const deleteComment = async (req, res) => {
   }));
 
   const comment = comments[comments.length - 1 - index];
+
+  if (String(loginUser) !== String(comment.owner._id)) {
+    return res.sendStatus(401);
+  }
 
   await Video.findOneAndUpdate(
     { _id: id },

@@ -45,6 +45,7 @@ block content
         li.video__comment
           img(src=`${comment.owner.avatarUrl}`, crossorigin="anonymous", alt="").video__comment-owner
           span #{comment.text}
+          span.video__comment-delete ❌
 
 block scripts 
   script(src="/assets/js/videoPlayer.js") 

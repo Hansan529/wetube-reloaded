@@ -64,10 +64,8 @@ if (form) {
 
 const removeComment = async (e) => {
   const target = e.currentTarget;
-  const text = target.previousElementSibling.innerText;
   const li = target.closest(".video__comment");
   const ul = li.parentNode;
-  console.log("ul: ", ul);
   const index = Array.prototype.indexOf.call(ul.children, li);
 
   const response = await fetch(`/api/videos/${videoId}/comment-delete`, {
@@ -75,7 +73,7 @@ const removeComment = async (e) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text, index }),
+    body: JSON.stringify({ index }),
   });
   console.log("response: ", response);
 };

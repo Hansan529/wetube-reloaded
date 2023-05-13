@@ -192,10 +192,26 @@ export const createComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   const {
     params: { id },
-    session: { user },
+    body: { text, index },
   } = req;
 
-  const video = await Video.findById(id).populate("comments.owner");
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
+  const comments = video.comments.map((comment) => ({
+    _id: comment._id,
+    text: comment.text,
+    owner: comment.owner,
+  }));
+
+  const comment = comments[comments.length - 1 - index];
+
+  await Video.findOneAndUpdate(
+    { _id: id },
+    { $pull: { comments: comment._id } },
+    { new: true }
+  );
 };
 
 export const commentProfile = async (req, res) => {

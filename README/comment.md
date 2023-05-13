@@ -446,3 +446,8 @@ front-end에서 이미 로그인한 유저만 접근 할 수 있지만, back-end
 그 다음, $pull 연산자를 사용해 일치하는 요소를 배열에서 제거하고, 업데이트한 요소를 갖고 오기 위해 new를 사용한다.
 
 그러면 댓글 제거 성공
+
+---
+
+`span.video__comment-text`에 dataset.id로 해당 comments id를 설정하는 방법도 있다.  
+해당 방법이 관리하기 더 좋은 것 같다.

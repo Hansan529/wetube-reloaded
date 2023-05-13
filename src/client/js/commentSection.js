@@ -9,6 +9,7 @@ const addComment = async (text) => {
   newComment.className = "video__comment";
 
   const span = document.createElement("span");
+  span.className = "video__comment-text";
   span.innerText = text.trim();
 
   const img = document.createElement("img");
@@ -72,7 +73,7 @@ const removeComment = async (e) => {
   const index = Array.prototype.indexOf.call(videoComments.children, li);
 
   const response = await fetch(`/api/videos/${videoId}/comment-delete`, {
-    method: "POST",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },

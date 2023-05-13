@@ -9,7 +9,7 @@ const addComment = async (text) => {
   newComment.className = "video__comment";
 
   const span = document.createElement("span");
-  span.innerText = text;
+  span.innerText = text.trim();
 
   const img = document.createElement("img");
   img.className = "video__comment-owner";
@@ -27,11 +27,8 @@ const addComment = async (text) => {
     newComment.appendChild(imgSpan);
     newComment.appendChild(span);
     videoComments.prepend(newComment);
-    console.log("check");
     return;
-  } else {
   }
-  console.log("csss");
   socialLogin ? (img.src = avatarUrl) : (img.src = `/${avatarUrl}`);
   socialLogin ? (img.crossOrigin = "anonymous") : (img.crossOrigin = null);
 
@@ -65,11 +62,17 @@ if (form) {
   form.addEventListener("submit", handleSubmit);
 }
 
-const removeComment = async () => {
-  const test = await fetch(`/api/videos/${videoId}/comment-delete`, {
+const removeComment = async (e) => {
+  const target = e.currentTarget;
+  const text = target.previousElementSibling.innerText;
+  const parent = target.closest(".video__comment");
+  const response = await fetch(`/api/videos/${videoId}/comment-delete`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ text }),
   });
-  console.log("test: ", test);
 };
 
 deleteBtn.forEach((btn) => {

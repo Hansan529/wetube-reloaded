@@ -20,20 +20,24 @@ const addComment = async (text) => {
   const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
   const socialLogin = data.socialLogin;
 
+  const deleteBtn = document.createElement("span");
+  deleteBtn.className = "video__comment-delete";
+  deleteBtn.innerText = "❌";
+  deleteBtn.addEventListener("click", removeComment);
+
   if (!avatarUrl) {
     const imgSpan = document.createElement("span");
     imgSpan.className = "video__comment-owner";
     imgSpan.innerText = "😀";
     newComment.appendChild(imgSpan);
-    newComment.appendChild(span);
-    videoComments.prepend(newComment);
-    return;
+  } else {
+    socialLogin ? (img.src = avatarUrl) : (img.src = `/${avatarUrl}`);
+    socialLogin ? (img.crossOrigin = "anonymous") : (img.crossOrigin = null);
+    newComment.appendChild(img);
   }
-  socialLogin ? (img.src = avatarUrl) : (img.src = `/${avatarUrl}`);
-  socialLogin ? (img.crossOrigin = "anonymous") : (img.crossOrigin = null);
 
-  newComment.appendChild(img);
   newComment.appendChild(span);
+  newComment.appendChild(deleteBtn);
   videoComments.prepend(newComment);
 };
 
@@ -65,8 +69,7 @@ if (form) {
 const removeComment = async (e) => {
   const target = e.currentTarget;
   const li = target.closest(".video__comment");
-  const ul = li.parentNode;
-  const index = Array.prototype.indexOf.call(ul.children, li);
+  const index = Array.prototype.indexOf.call(videoComments.children, li);
 
   const response = await fetch(`/api/videos/${videoId}/comment-delete`, {
     method: "POST",
@@ -75,10 +78,11 @@ const removeComment = async (e) => {
     },
     body: JSON.stringify({ index }),
   });
-  console.log("response: ", response);
+
+  const deleteLi = videoComments.children[index];
+  videoComments.removeChild(deleteLi);
 };
 
 deleteBtn.forEach((btn) => {
-  console.log(btn);
   btn.addEventListener("click", removeComment);
 });

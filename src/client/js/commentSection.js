@@ -1,5 +1,6 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
+const deleteBtn = document.querySelectorAll(".video__comment-delete");
 const videoId = videoContainer.dataset.id;
 
 const addComment = async (text) => {
@@ -16,9 +17,7 @@ const addComment = async (text) => {
     method: "POST",
   });
   const data = await response.json();
-  console.log("data: ", data);
   const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
-  console.log("avatarUrl: ", avatarUrl);
   const socialLogin = data.socialLogin;
 
   if (!avatarUrl) {
@@ -66,4 +65,11 @@ if (form) {
   form.addEventListener("submit", handleSubmit);
 }
 
-// TODO: 코멘트 삭제
+const removeComment = () => {
+  console.log("ok");
+};
+
+deleteBtn.forEach((btn) => {
+  console.log(btn);
+  btn.addEventListener("click", removeComment);
+});

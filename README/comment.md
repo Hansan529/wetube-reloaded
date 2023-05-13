@@ -378,3 +378,71 @@ back-end에서 `.json({ avatarUrls })`로 json으로 내보내고, front-end에�
 `if (status === 201)` 에서 받은 `addComment(text)` 매개 변수를 span에 대입하고 append, prepend하여 front-end에서 볼 수 있다.
 
 새로고침하면 사라지지만, pug에서 데이터베이스에 생긴 값을 바탕으로 생성하기 때문에 문제없다.
+
+---
+
+## Comment Ids
+
+댓글을 작성했으면 삭제도 해야하는 법
+
+```pug
+if String(loggedInUser._id) === String(comment.owner._id)
+  span.video__comment-delete ❌
+```
+
+일단, 댓글 작성자와 로그인한 유저가 동일할 경우만 target 보이도록 설정하고,
+
+```js
+// apiRouter
+apiRouter.post("/videos/:id([0-9a-f]{24})/comment-delete", deleteComment);
+```
+
+front-end에서 back-end로 정보를 업데이트할 것이기 때문에, api를 사용하기 위해 router 생성 및 연결을 해준다.
+
+```js
+export const deleteComment = async (req, res) => {
+  const {
+    params: { id },
+    session: {
+      user: { _id: loginUser },
+    },
+    body: { index },
+  } = req;
+
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
+  const comments = video.comments.map((comment) => ({
+    _id: comment._id,
+    text: comment.text,
+    owner: comment.owner,
+  }));
+
+  const comment = comments[comments.length - 1 - index];
+
+  if (String(loginUser) !== String(comment.owner._id)) {
+    return res.sendStatus(401);
+  }
+
+  await Video.findOneAndUpdate(
+    { _id: id },
+    { $pull: { comments: comment._id } },
+    { new: true }
+  );
+
+  return res.sendStatus(200);
+};
+```
+
+Video의 comments 정보 모두를 가져올 필요는 없으니, id와 텍스트, 작성자에 대한 정보만 가져온다.
+
+pug에서 반복문으로 데이터베이스의 역순으로 나열하기 때문에, 0 -> 마지막 배열이 되어서 선택자를 바꿔야한다.  
+그래서, comments의 개수에서 0부터 시작하니 -1, 그리고 index가 커질수록 줄어들어야 하기 때문에 index도 빼주면 된다.
+
+front-end에서 이미 로그인한 유저만 접근 할 수 있지만, back-end에서도 이중 체크를 해준다.  
+로그인한 유저와 owner가 같은지 체크하고, 일치하지 않는다면 오류 코드를 반환시킨다.
+
+그 다음, $pull 연산자를 사용해 일치하는 요소를 배열에서 제거하고, 업데이트한 요소를 갖고 오기 위해 new를 사용한다.
+
+그러면 댓글 제거 성공

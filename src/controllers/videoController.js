@@ -189,6 +189,15 @@ export const createComment = async (req, res) => {
   res.sendStatus(201);
 };
 
+export const deleteComment = async (req, res) => {
+  const {
+    params: { id },
+    session: { user },
+  } = req;
+
+  const video = await Video.findById(id).populate("comments.owner");
+};
+
 export const commentProfile = async (req, res) => {
   const {
     params: { id },

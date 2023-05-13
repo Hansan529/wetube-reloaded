@@ -219,6 +219,8 @@ export const deleteComment = async (req, res) => {
     { $pull: { comments: comment._id } },
     { new: true }
   );
+
+  return res.sendStatus(200);
 };
 
 export const commentProfile = async (req, res) => {

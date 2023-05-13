@@ -72,7 +72,7 @@ const removeComment = async (e) => {
   const li = target.closest(".video__comment");
   const index = Array.prototype.indexOf.call(videoComments.children, li);
 
-  const response = await fetch(`/api/videos/${videoId}/comment-delete`, {
+  await fetch(`/api/videos/${videoId}/comment-delete`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

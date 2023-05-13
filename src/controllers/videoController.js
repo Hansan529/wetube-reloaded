@@ -170,11 +170,13 @@ export const createComment = async (req, res) => {
   const {
     params: { id },
     body: { text },
-    session: { user },
+    session: {
+      user: { _id: loginUser },
+    },
   } = req;
 
   // 로그인하지 않은 유저인 경우 오류 상태코드 전송
-  if (!user) {
+  if (!loginUser) {
     return res.sendStatus(401);
   }
 
@@ -186,10 +188,16 @@ export const createComment = async (req, res) => {
 
   const comment = await Comment.create({
     text,
-    owner: user._id,
+    owner: loginUser,
     video: id,
   });
+
   video.comments.push(comment._id);
+  await User.findByIdAndUpdate(
+    loginUser,
+    { $push: { comments: comment._id } },
+    { new: true }
+  );
   video.save();
   res.sendStatus(201);
 };
@@ -207,21 +215,30 @@ export const deleteComment = async (req, res) => {
     path: "comments",
     populate: { path: "owner" },
   });
-  const comments = video.comments.map((comment) => ({
+
+  const videoComments = video.comments.map((comment) => ({
     _id: comment._id,
     text: comment.text,
     owner: comment.owner,
   }));
 
-  const comment = comments[comments.length - 1 - index];
+  const videoComment = videoComments[videoComments.length - 1 - index];
 
-  if (String(loginUser) !== String(comment.owner._id)) {
+  if (String(loginUser) !== String(videoComment.owner._id)) {
     return res.sendStatus(401);
   }
 
+  const comments = videoComment._id;
+
+  await Comment.findByIdAndDelete(videoComment);
   await Video.findOneAndUpdate(
     { _id: id },
-    { $pull: { comments: comment._id } },
+    { $pull: { comments } },
+    { new: true }
+  );
+  await User.findByIdAndUpdate(
+    loginUser,
+    { $pull: { comments } },
     { new: true }
   );
 

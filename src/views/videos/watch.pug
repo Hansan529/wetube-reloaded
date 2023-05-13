@@ -43,8 +43,11 @@ block content
     ul 
       each comment in video.comments.reverse()
         li.video__comment
-          img(src=`${comment.owner.avatarUrl}`, crossorigin="anonymous", alt="").video__comment-owner
-          span #{comment.text}
+          if comment.owner.avatarUrl
+            img(src=`${comment.owner.avatarUrl}`, crossorigin="anonymous", alt="").video__comment-owner
+          else
+            span.video__comment-owner 😀
+          span.video__comment-text #{comment.text}
           if String(loggedInUser._id) === String(comment.owner._id)
             span.video__comment-delete ❌
 

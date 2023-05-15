@@ -2,7 +2,8 @@ extends ../base
 
 block content
   #videoContainer(data-id=`${video._id}`)
-    video(src=`/${video.fileUrl}` autoplay playsinline) 
+    video(autoplay)
+      source(src=`/${video.fileUrl}` type="video/mp4" playsinline)
     #videoControls.videoControls
       .videoControls__play
         span#play.vidoControls__playBtn

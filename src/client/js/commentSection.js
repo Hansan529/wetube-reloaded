@@ -68,18 +68,59 @@ const handleSubmit = async (e) => {
   textarea.value = "";
 };
 
-const editComment = async (e) => {
+const editComment = (e) => {
   const target = e.currentTarget;
+  const removeBtn = target.nextSibling;
   const text = target.previousSibling;
   if (text.tagName !== "SPAN") {
     text.select();
     return;
   }
   const input = document.createElement("textarea");
-  input.className = "unstyled-input video__comment-text";
+  input.className = "video__comment-text";
   input.value = text.innerText;
-  text.replaceWith(input);
+  const submit = document.createElement("button");
+  submit.className = "video__comment-editSubmit fa-solid fa-check";
+  submit.setAttribute("type", "submit");
+  const cancel = document.createElement("button");
+  cancel.className = "video__comment-editCancel fa-solid fa-ban";
+  const createForm = document.createElement("form");
+  createForm.className = "video__comment-editForm";
+  // createForm.setAttribute("method", "POST");
+
+  text.replaceWith(createForm);
+  createForm.append(input, submit);
+  removeBtn.replaceWith(cancel);
+  cancel.addEventListener("click", editCommentCancel);
+
+  // 기존 btn 삭제
+  target.remove();
+  removeBtn.remove();
+
+  // input 요소 드래그 선택
   input.select();
+};
+
+const editCommentCancel = (e) => {
+  const target = e.currentTarget;
+  const targetForm = target.previousSibling;
+  const li = target.closest(".video__comment");
+  const value = targetForm.querySelector("textarea").value;
+  const span = document.createElement("span");
+  span.className = "video__comment-text";
+  span.innerText = value;
+
+  const editBtn = document.createElement("button");
+  editBtn.className = "video_-comment-edit fa-solid fa-pen-to-square";
+  editBtn.addEventListener("click", editComment);
+
+  const removeBtn = document.createElement("button");
+  removeBtn.className = "video__comment-delete fa-solid fa-trash-can";
+  removeBtn.addEventListener("click", removeComment);
+
+  targetForm.replaceWith(span);
+  target.replaceWith(removeBtn);
+  li.insertBefore(editBtn, removeBtn);
 };
 
 const removeComment = async (e) => {

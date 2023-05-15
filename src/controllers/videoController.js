@@ -202,6 +202,13 @@ export const createComment = async (req, res) => {
   res.sendStatus(201);
 };
 
+export const editComment = async (req, res) => {
+  const {
+    body: { text },
+  } = req;
+  console.log("text: ", text);
+};
+
 export const deleteComment = async (req, res) => {
   const {
     params: { id },

@@ -88,12 +88,13 @@ const editComment = (e) => {
   const submit = document.createElement("button");
   submit.className = "video__comment-editSubmit fa-solid fa-check";
   submit.setAttribute("type", "submit");
-  // submit.addEventListener("click", editCommentSubmit);
+  submit.addEventListener("click", editCommentSubmit);
   const cancel = document.createElement("button");
   cancel.className = "video__comment-editCancel fa-solid fa-ban";
   const createForm = document.createElement("form");
   createForm.className = "video__comment-editForm";
   // createForm.setAttribute("method", "POST");
+  createForm.addEventListener("submit", (e) => e.preventDefault());
 
   text.replaceWith(createForm);
   createForm.append(input, submit);
@@ -108,9 +109,18 @@ const editComment = (e) => {
   input.select();
 };
 
-// const editCommentSubmit = (e) => {
-//   document.querySelector(".video__comment-editForm");
-// }
+const editCommentSubmit = async (e) => {
+  const editForm = document.querySelector(".video__comment-editForm");
+  const text = editForm.querySelector(".video__comment-text").value;
+
+  const response = await fetch(`/api/videos/${videoId}/comment-edit`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ text }),
+  });
+};
 
 const editCommentCancel = (e) => {
   const target = e.currentTarget;

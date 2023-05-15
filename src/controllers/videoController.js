@@ -22,6 +22,37 @@ export const watch = async (req, res) => {
       path: "comments",
       populate: { path: "owner" },
     });
+  //
+  const comment = video.comments.map((comment) => ({
+    _id: comment._id.toString(),
+    owner: comment.owner._id.toString(),
+  }));
+
+  console.log("comment", comment);
+
+  comment.forEach(async (list, index) => {
+    console.log("list: ", list);
+    console.log("comment[index]", comment[index]);
+    console.log("comment[index]._id", comment[index]._id);
+    console.log("comment[index].owner", comment[index].owner);
+
+    const a = await User.findById(comment[index].owner);
+    const b = a.comments.toString().split(",");
+    console.log("b[index]", b[index]);
+    // const c = await User.findByIdAndUpdate(
+    //   comment[index].owner,
+    //   { $pull: { comments: b[index] } },
+    //   { new: true }
+    // );
+    // console.log("c: ", c);
+
+    // await Comment.findByIdAndDelete(b[index]);
+
+    console.log("aaaaaaaaaaa", a);
+  });
+  video.save();
+  // user.save();
+  //
   if (!video) {
     return res
       .status(404)
@@ -119,8 +150,10 @@ export const deleteVideo = async (req, res) => {
       user: { _id },
     },
   } = req;
-  const video = await Video.findById(id);
-  const user = await User.findById(_id);
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
   if (!video) {
     return res.status(404).render("404", {
       pageTitle: "찾을 수 없는 영상입니다.",
@@ -130,7 +163,17 @@ export const deleteVideo = async (req, res) => {
     return res.status(403).redirect("/");
   }
 
+  const comment = video.comments.map((comment) => ({
+    _id: comment._id.toString(),
+    owner: comment.owner._id,
+  }));
+
+  comment.forEach(async (list) => {
+    await Comment.findByIdAndDelete(list._id);
+  });
+
   await Video.findByIdAndDelete(id);
+
   fs.unlinkSync(video.fileUrl);
   return res.redirect("/");
 };
@@ -223,7 +266,6 @@ export const editComment = async (req, res) => {
   }));
 
   const videoComment = videoComments[videoComments.length - 1 - index];
-  console.log("videoComment: ", videoComment);
 
   if (String(loginUser) !== String(videoComment.owner._id)) {
     return res.sendStatus(401);

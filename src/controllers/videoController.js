@@ -23,35 +23,7 @@ export const watch = async (req, res) => {
       populate: { path: "owner" },
     });
   //
-  const comment = video.comments.map((comment) => ({
-    _id: comment._id.toString(),
-    owner: comment.owner._id.toString(),
-  }));
 
-  console.log("comment", comment);
-
-  comment.forEach(async (list, index) => {
-    console.log("list: ", list);
-    console.log("comment[index]", comment[index]);
-    console.log("comment[index]._id", comment[index]._id);
-    console.log("comment[index].owner", comment[index].owner);
-
-    const a = await User.findById(comment[index].owner);
-    const b = a.comments.toString().split(",");
-    console.log("b[index]", b[index]);
-    // const c = await User.findByIdAndUpdate(
-    //   comment[index].owner,
-    //   { $pull: { comments: b[index] } },
-    //   { new: true }
-    // );
-    // console.log("c: ", c);
-
-    // await Comment.findByIdAndDelete(b[index]);
-
-    console.log("aaaaaaaaaaa", a);
-  });
-  video.save();
-  // user.save();
   //
   if (!video) {
     return res
@@ -165,13 +137,24 @@ export const deleteVideo = async (req, res) => {
 
   const comment = video.comments.map((comment) => ({
     _id: comment._id.toString(),
-    owner: comment.owner._id,
+    owner: comment.owner._id.toString(),
   }));
 
-  comment.forEach(async (list) => {
-    await Comment.findByIdAndDelete(list._id);
+  comment.forEach(async (list, index) => {
+    const a = await User.findById(comment[index].owner);
+    const b = a.comments.toString().split(",");
+    await Comment.findByIdAndDelete(b[index]);
+    await User.findByIdAndUpdate(
+      comment[index].owner,
+      { $pull: { comments: b[index] } },
+      { new: true }
+    );
+    await Video.findByIdAndUpdate(
+      id,
+      { $pull: { comments: b[index] } },
+      { new: true }
+    );
   });
-
   await Video.findByIdAndDelete(id);
 
   fs.unlinkSync(video.fileUrl);

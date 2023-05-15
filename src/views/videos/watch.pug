@@ -38,7 +38,7 @@ block content
     .video__add-comments 
       form.video__comments-form#commentForm
         textarea(cols="30", rows="10") 
-        button 작성하기
+        button(type="submit") 작성하기
   .video__comments 
     ul 
       each comment in video.comments.reverse()
@@ -49,7 +49,8 @@ block content
             span.video__comment-owner 😀
           span.video__comment-text #{comment.text}
           if String(loggedInUser._id) === String(comment.owner._id)
-            span.video__comment-delete ❌
+            button.video__comment-edit.fa-solid.fa-pen-to-square
+            button.video__comment-delete.fa-solid.fa-trash-can
 
 block scripts 
   script(src="/assets/js/videoPlayer.js") 

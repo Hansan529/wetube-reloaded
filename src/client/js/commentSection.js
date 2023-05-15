@@ -69,6 +69,12 @@ const handleSubmit = async (e) => {
 };
 
 const editComment = (e) => {
+  const exists = document.querySelectorAll(".video__comment-editForm");
+  if (exists.length >= 1) {
+    exists.forEach((e) => {
+      e.nextSibling.click();
+    });
+  }
   const target = e.currentTarget;
   const removeBtn = target.nextSibling;
   const text = target.previousSibling;
@@ -82,6 +88,7 @@ const editComment = (e) => {
   const submit = document.createElement("button");
   submit.className = "video__comment-editSubmit fa-solid fa-check";
   submit.setAttribute("type", "submit");
+  // submit.addEventListener("click", editCommentSubmit);
   const cancel = document.createElement("button");
   cancel.className = "video__comment-editCancel fa-solid fa-ban";
   const createForm = document.createElement("form");
@@ -100,6 +107,10 @@ const editComment = (e) => {
   // input 요소 드래그 선택
   input.select();
 };
+
+// const editCommentSubmit = (e) => {
+//   document.querySelector(".video__comment-editForm");
+// }
 
 const editCommentCancel = (e) => {
   const target = e.currentTarget;

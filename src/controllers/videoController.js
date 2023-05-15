@@ -204,9 +204,44 @@ export const createComment = async (req, res) => {
 
 export const editComment = async (req, res) => {
   const {
-    body: { text },
+    params: { id },
+    session: {
+      user: { _id: loginUser },
+    },
+    body: { text, index },
   } = req;
-  console.log("text: ", text);
+
+  const video = await Video.findById(id).populate({
+    path: "comments",
+    populate: { path: "owner" },
+  });
+
+  const videoComments = video.comments.map((comment) => ({
+    _id: comment._id,
+    text: comment.text,
+    owner: comment.owner,
+  }));
+
+  const videoComment = videoComments[videoComments.length - 1 - index];
+  console.log("videoComment: ", videoComment);
+
+  if (String(loginUser) !== String(videoComment.owner._id)) {
+    return res.sendStatus(401);
+  }
+
+  const commentId = videoComment._id;
+
+  await Comment.findByIdAndUpdate(
+    commentId,
+    {
+      text,
+    },
+    { new: true }
+  );
+  await Video.findByIdAndUpdate(id, { text }, { new: true });
+  await User.findByIdAndUpdate(loginUser, { text }, { new: true });
+
+  return res.sendStatus(200);
 };
 
 export const deleteComment = async (req, res) => {

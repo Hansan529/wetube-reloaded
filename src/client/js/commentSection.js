@@ -1,5 +1,6 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
+const editBtn = document.querySelectorAll(".video__comment-edit");
 const deleteBtn = document.querySelectorAll(".video__comment-delete");
 const videoId = videoContainer.dataset.id;
 const videoComments = document.querySelector(".video__comments ul");
@@ -21,9 +22,12 @@ const addComment = async (text) => {
   const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
   const socialLogin = data.socialLogin;
 
-  const deleteBtn = document.createElement("span");
-  deleteBtn.className = "video__comment-delete";
-  deleteBtn.innerText = "❌";
+  const editBtn = document.createElement("button");
+  editBtn.className = "video__comment-edit fa-solid fa-pen-to-square";
+  editBtn.addEventListener("click", editComment);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "video__comment-delete fa-solid fa-trash-can";
   deleteBtn.addEventListener("click", removeComment);
 
   if (!avatarUrl) {
@@ -38,6 +42,7 @@ const addComment = async (text) => {
   }
 
   newComment.appendChild(span);
+  newComment.appendChild(editBtn);
   newComment.appendChild(deleteBtn);
   videoComments.prepend(newComment);
 };
@@ -63,9 +68,19 @@ const handleSubmit = async (e) => {
   textarea.value = "";
 };
 
-if (form) {
-  form.addEventListener("submit", handleSubmit);
-}
+const editComment = async (e) => {
+  const target = e.currentTarget;
+  const text = target.previousSibling;
+  if (text.tagName !== "SPAN") {
+    text.select();
+    return;
+  }
+  const input = document.createElement("textarea");
+  input.className = "unstyled-input video__comment-text";
+  input.value = text.innerText;
+  text.replaceWith(input);
+  input.select();
+};
 
 const removeComment = async (e) => {
   const target = e.currentTarget;
@@ -84,6 +99,14 @@ const removeComment = async (e) => {
   videoComments.removeChild(deleteLi);
 };
 
-deleteBtn.forEach((btn) => {
-  btn.addEventListener("click", removeComment);
-});
+if (form) {
+  form.addEventListener("submit", handleSubmit);
+
+  editBtn.forEach((btn) => {
+    btn.addEventListener("click", editComment);
+  });
+
+  deleteBtn.forEach((btn) => {
+    btn.addEventListener("click", removeComment);
+  });
+}

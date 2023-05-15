@@ -5,6 +5,8 @@ const deleteBtn = document.querySelectorAll(".video__comment-delete");
 const videoId = videoContainer.dataset.id;
 const videoComments = document.querySelector(".video__comments ul");
 
+let commentText;
+
 const addComment = async (text) => {
   const newComment = document.createElement("li");
   newComment.className = "video__comment";
@@ -70,21 +72,22 @@ const handleSubmit = async (e) => {
 
 const editComment = (e) => {
   const exists = document.querySelectorAll(".video__comment-editForm");
+  const target = e.currentTarget;
+  const removeBtn = target.nextSibling;
+  commentText = target.previousSibling;
+  // FIXME: 수정하기를 누른 후, 다른 댓글을 수정하기로 하면, 텍스트가 덮어 쓰임
   if (exists.length >= 1) {
     exists.forEach((e) => {
       e.nextSibling.click();
     });
   }
-  const target = e.currentTarget;
-  const removeBtn = target.nextSibling;
-  const text = target.previousSibling;
-  if (text.tagName !== "SPAN") {
-    text.select();
+  if (commentText.tagName !== "SPAN") {
+    commentText.select();
     return;
   }
   const input = document.createElement("textarea");
   input.className = "video__comment-text";
-  input.value = text.innerText;
+  input.value = commentText.innerText;
   const submit = document.createElement("button");
   submit.className = "video__comment-editSubmit fa-solid fa-check";
   submit.setAttribute("type", "submit");
@@ -93,10 +96,9 @@ const editComment = (e) => {
   cancel.className = "video__comment-editCancel fa-solid fa-ban";
   const createForm = document.createElement("form");
   createForm.className = "video__comment-editForm";
-  // createForm.setAttribute("method", "POST");
   createForm.addEventListener("submit", (e) => e.preventDefault());
 
-  text.replaceWith(createForm);
+  commentText.replaceWith(createForm);
   createForm.append(input, submit);
   removeBtn.replaceWith(cancel);
   cancel.addEventListener("click", editCommentCancel);
@@ -112,13 +114,15 @@ const editComment = (e) => {
 const editCommentSubmit = async (e) => {
   const editForm = document.querySelector(".video__comment-editForm");
   const text = editForm.querySelector(".video__comment-text").value;
+  const li = editForm.closest(".video__comment");
+  const index = Array.prototype.indexOf.call(videoComments.children, li);
 
-  const response = await fetch(`/api/videos/${videoId}/comment-edit`, {
+  await fetch(`/api/videos/${videoId}/comment-edit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({ text, index }),
   });
 };
 
@@ -126,7 +130,8 @@ const editCommentCancel = (e) => {
   const target = e.currentTarget;
   const targetForm = target.previousSibling;
   const li = target.closest(".video__comment");
-  const value = targetForm.querySelector("textarea").value;
+  const value = commentText.innerText;
+  // const value = targetForm.querySelector("textarea").value;
   const span = document.createElement("span");
   span.className = "video__comment-text";
   span.innerText = value;

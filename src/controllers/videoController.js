@@ -8,7 +8,7 @@ export const home = async (req, res) => {
   const videos = await Video.find({})
     .sort({ createdAt: "desc" })
     .populate("owner");
-  return res.render("home", { pageTitle: "Home", videos });
+  return res.render("home", { videos });
 };
 
 // * 비디오 페이지
@@ -26,11 +26,9 @@ export const watch = async (req, res) => {
 
   //
   if (!video) {
-    return res
-      .status(404)
-      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res.status(404).render("404");
   }
-  return res.render("videos/watch", { pageTitle: video.title, video });
+  return res.render("videos/watch", { video });
 };
 
 // * 비디오 수정 페이지
@@ -43,14 +41,12 @@ export const getEdit = async (req, res) => {
   } = req;
   const video = await Video.findById(id);
   if (!video) {
-    return res
-      .status(404)
-      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res.status(404).render("404");
   }
   if (String(video.owner) !== String(_id)) {
     return res.status(403).redirect("/");
   }
-  res.render("videos/edit", { pageTitle: `${video.title} Editing:`, video });
+  res.render("videos/edit", { video });
 };
 
 // * 비디오 수정
@@ -64,9 +60,7 @@ export const postEdit = async (req, res) => {
   } = req;
   const video = await Video.findById(id);
   if (!video) {
-    return res
-      .status(404)
-      .render("404", { pageTitle: "동영상을 찾을 수 없음" });
+    return res.status(404).render("404");
   }
   if (String(video.owner) !== String(_id)) {
     return res.status(403).redirect("/");
@@ -81,7 +75,7 @@ export const postEdit = async (req, res) => {
 
 // * 업로드 페이지
 export const getUpload = (req, res) => {
-  return res.render("videos/upload", { pageTitle: "Upload Video" });
+  return res.render("videos/upload");
 };
 
 // * 비디오 업로드
@@ -108,9 +102,7 @@ export const postUpload = async (req, res) => {
     return res.redirect("/");
   } catch (error) {
     req.flash("error", `${error._message} 업로드에 실패했습니다.`);
-    return res.status(400).render("videos/upload", {
-      pageTitle: "Upload Video",
-    });
+    return res.status(400).render("videos/upload");
   }
 };
 
@@ -127,9 +119,7 @@ export const deleteVideo = async (req, res) => {
     populate: { path: "owner" },
   });
   if (!video) {
-    return res.status(404).render("404", {
-      pageTitle: "찾을 수 없는 영상입니다.",
-    });
+    return res.status(404).render("404");
   }
   if (String(video.owner) !== String(_id)) {
     return res.status(403).redirect("/");
@@ -164,7 +154,6 @@ export const deleteVideo = async (req, res) => {
 
 // * 검색
 export const search = async (req, res) => {
-  const pageTitle = "검색";
   const {
     query: { q },
   } = req;
@@ -177,7 +166,7 @@ export const search = async (req, res) => {
       ],
     }).populate("owner");
   }
-  return res.render("videos/search", { pageTitle, videos });
+  return res.render("videos/search", { videos });
 };
 
 export const registerView = async (req, res) => {

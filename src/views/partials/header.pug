@@ -8,11 +8,14 @@ header.header
           i.fas.fa-search
       if loggedIn
         li
-          a(href="/videos/upload") Upload Video
+          a(href="/videos/upload").header__uploadBtn 동영상 업로드
+            i
         li 
-          a(href="/users/edit") Edit #{loggedInUser.name}
+          a(href="/users/edit").header__editBtn #{loggedInUser.name}
+            i
         li 
-          a(href="/users/logout") Logout
+          a(href="/users/logout").header__logoutBtn Logout
+            i
         li 
           a(href=`/users/${loggedInUser._id}`) 
             if !loggedInUser.avatarUrl

@@ -23,4 +23,6 @@ html(lang="ko")
       block content
     include partials/footer
   script(src="/assets/js/main.js") 
+  if loggedIn
+    script(src="/assets/js/mediaQuery.js")
   block scripts

@@ -51,8 +51,13 @@ const handleVolumeChange = (e) => {
   return (video.volume = value);
 };
 
-const formatTime = (seconds) =>
-  new Date(seconds * 1000).toISOString().substring(11, 19);
+const formatTime = (seconds) => {
+  if (seconds >= 3600) {
+    return new Date(seconds * 1000).toISOString().substring(11, 19);
+  } else {
+    return new Date(seconds * 1000).toISOString().substring(14, 19);
+  }
+};
 
 const handleLoadedMetadata = () => {
   timeline.max = Math.floor(video.duration);

@@ -96,8 +96,8 @@ export const postUpload = async (req, res) => {
   try {
     const newVideo = await Video.create({
       title,
-      fileUrl: video[0].path,
-      thumbUrl: thumb[0].path,
+      fileUrl: `/${video[0].path}`,
+      thumbUrl: `/${thumb[0].path}`,
       description,
       owner,
       hashtags: Video.formatHashtags(hashtags),
@@ -157,7 +157,8 @@ export const deleteVideo = async (req, res) => {
   });
   await Video.findByIdAndDelete(id);
 
-  fs.unlinkSync(video.fileUrl);
+  fs.unlinkSync(video.fileUrl.substring(1));
+  fs.unlinkSync(video.thumbUrl.substring(1));
   return res.redirect("/");
 };
 

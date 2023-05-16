@@ -10,6 +10,7 @@ module.exports = {
     recorder: `${BASE_JS}recorder.js`,
     commentSection: `${BASE_JS}commentSection.js`,
     editProfile: `${BASE_JS}editProfile.js`,
+    mediaQuery: `${BASE_JS}mediaQuery.js`,
   },
   plugins: [
     new MiniCssExtractPlugin({

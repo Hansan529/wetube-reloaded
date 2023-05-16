@@ -1,4 +1,5 @@
 extends ../base
+include ../mixins/hashtag
 
 block content
   #videoContainer(data-id=`${video._id}`)
@@ -38,7 +39,10 @@ block content
     .video__info
       p 조회수 #{video.meta.views}회
       small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
-      p=video.description
+      div.video__hashtags
+        each hashtag in video.hashtags
+          +hashtag(hashtag)
+      p.video__description=video.description
 
   if loggedIn
     .video__add-comments 

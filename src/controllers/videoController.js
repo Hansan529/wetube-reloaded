@@ -22,9 +22,6 @@ export const watch = async (req, res) => {
       path: "comments",
       populate: { path: "owner" },
     });
-  //
-
-  //
   if (!video) {
     return res.status(404).render("404");
   }
@@ -169,6 +166,7 @@ export const search = async (req, res) => {
   return res.render("videos/search", { videos });
 };
 
+// * 조회수
 export const registerView = async (req, res) => {
   const {
     params: { id },
@@ -182,6 +180,7 @@ export const registerView = async (req, res) => {
   return res.sendStatus(200);
 };
 
+// * 댓글 작성
 export const createComment = async (req, res) => {
   const {
     params: { id },
@@ -218,6 +217,7 @@ export const createComment = async (req, res) => {
   res.sendStatus(201);
 };
 
+// * 댓글 수정
 export const editComment = async (req, res) => {
   const {
     params: { id },
@@ -259,6 +259,7 @@ export const editComment = async (req, res) => {
   return res.sendStatus(200);
 };
 
+// * 댓글 삭제
 export const deleteComment = async (req, res) => {
   const {
     params: { id },
@@ -302,6 +303,7 @@ export const deleteComment = async (req, res) => {
   return res.sendStatus(200);
 };
 
+// * 프로필 이미지 API
 export const commentProfile = async (req, res) => {
   const {
     params: { id },

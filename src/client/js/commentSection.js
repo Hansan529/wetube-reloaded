@@ -16,7 +16,7 @@ const addComment = async (text) => {
   span.innerText = text.trim();
 
   const img = document.createElement("img");
-  img.className = "video__comment-owner";
+  img.className = "avatarImg";
   const response = await fetch(`/api/videos/${videoId}/profile`, {
     method: "POST",
   });
@@ -34,7 +34,7 @@ const addComment = async (text) => {
 
   if (!avatarUrl) {
     const imgSpan = document.createElement("span");
-    imgSpan.className = "video__comment-owner";
+    imgSpan.className = "avatarImg";
     imgSpan.innerText = "😀";
     newComment.appendChild(imgSpan);
   } else {

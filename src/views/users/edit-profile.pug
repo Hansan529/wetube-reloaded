@@ -2,14 +2,14 @@ extends ../base
 
 block content
   if !loggedInUser.avatarUrl
-    span 😀
+    span.edit-profile__img 😀
   else if loggedInUser.socialLogin
-    img(src=`${loggedInUser.avatarUrl}`, width="100", height="100", crossorigin="anonymous")
+    img(src=`${loggedInUser.avatarUrl}`, crossorigin="anonymous").edit-profile__img
   else
-    img(src=`${loggedInUser.avatarUrl}`, width="100", height="100")
+    img(src=`${loggedInUser.avatarUrl}`,)
   form(method="POST" enctype="multipart/form-data")
     label 프로필 사진 
-      input(name="avatarUrl" type="file" accept="image/*")
+      input(name="avatarUrl" type="file" accept="image/*")#edit-profile__file
     if loggedInUser.socialLogin 
       label 아이디: 
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)
@@ -28,3 +28,6 @@ block content
     label 지역
       input(name="location" placeholder="지역" value=`${loggedInUser.location}` required type="text")
     input(type="submit", value="저장하기")
+
+block scripts 
+  script(src="/assets/js/editProfile.js") 

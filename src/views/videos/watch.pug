@@ -3,7 +3,7 @@ extends ../base
 block content
   #videoContainer(data-id=`${video._id}`)
     video(autoplay)
-      source(src=`/${video.fileUrl}` type="video/mp4" playsinline)
+      source(src=`${video.fileUrl}` type="video/mp4" playsinline)
     #videoControls.videoControls
       .videoControls__play
         span#play.vidoControls__playBtn
@@ -25,7 +25,12 @@ block content
     p.video__title=video.title
     small.video__owner
       a(href=`/users/${video.owner._id}`) 
-        img(src=video.owner.avatarUrl, crossorigin="anonymous").video__comment-owner
+        if video.owner.socialLogin
+          img(src=`${video.owner.avatarUrl}` alt='' crossorigin="anonymous").avatarImg
+        else if video.owner.avatarUrl
+          img(src=`${video.owner.avatarUrl}` alt='').avatarImg
+        else 
+          span.avatarImg 😀
         | #{video.owner.name}
     if String(video.owner._id) === String(loggedInUser._id)
       a(href=`${video.id}/edit`) Edit Video &rarr;

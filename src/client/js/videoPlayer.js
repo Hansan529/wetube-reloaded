@@ -169,11 +169,12 @@ const handleLike = async () => {
   const likeCheck = data.likeCheck;
   const likeCount = data.likes;
   if (likeCheck) {
-    like.className = "video__likeBtn fa-solid fa-thumbs-up";
-  } else {
     like.className = "video__likeBtn fa-regular fa-thumbs-up";
+    like.innerText = likeCount - 1;
+  } else {
+    like.className = "video__likeBtn fa-solid fa-thumbs-up";
+    like.innerText = likeCount + 1;
   }
-  like.innerText = likeCount;
 };
 
 playBtn.addEventListener("click", handlePlayClick);

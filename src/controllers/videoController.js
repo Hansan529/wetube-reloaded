@@ -2,6 +2,7 @@ import User from "../models/User";
 import Video from "../models/Video";
 import Comment from "../models/Comment";
 import fs from "fs";
+import Like from "../models/Like";
 
 // * 메인 페이지
 export const home = async (req, res) => {
@@ -25,7 +26,7 @@ export const watch = async (req, res) => {
   if (!video) {
     return res.status(404).render("404");
   }
-  return res.render("videos/watch", { video, likeCheck });
+  return res.render("videos/watch", { video });
 };
 
 // * 비디오 수정 페이지
@@ -93,11 +94,16 @@ export const postUpload = async (req, res) => {
       owner,
       hashtags: Video.formatHashtags(hashtags),
     });
+    const like = await Like.create({
+      video: newVideo._id,
+    });
     const user = await User.findById(owner);
     user.videos.unshift(newVideo._id);
     user.save();
     return res.redirect("/");
   } catch (error) {
+    fs.unlinkSync(video[0].path);
+    fs.unlinkSync(thumb[0].path);
     req.flash("error", `${error._message} 업로드에 실패했습니다.`);
     return res.status(400).render("videos/upload");
   }
@@ -321,7 +327,7 @@ export const commentProfile = async (req, res) => {
 };
 
 // * 좋아요 API
-let likeCheck;
+// TODO: 사용자별로, 비디오별로 좋아요 체크 기능 추가하기, 현재는 공통으로 적용됨
 export const likeVideo = async (req, res) => {
   try {
     const {
@@ -331,16 +337,31 @@ export const likeVideo = async (req, res) => {
       },
     } = req;
     const video = await Video.findById(id);
+    const likeCheck = await Like.exists({ user: loginUser });
+    const like = await Like.findOne({ video: id });
     if (likeCheck) {
-      likeCheck = false;
-      const like = (video.meta.likes -= 1);
-      video.save();
-      return res.status(200).json({ likeCheck, like });
+      await Like.findOneAndUpdate(
+        { video: id },
+        { $pull: { user: loginUser } },
+        { new: true }
+      );
+      console.log("true- like", like);
+    } else {
+      const likes = await Like.findOneAndUpdate(
+        { video: id },
+        { $push: { user: loginUser } },
+        { new: true }
+      ).populate("video");
     }
-    likeCheck = true;
-    const like = (video.meta.likes += 1);
+    // if (likeCheck) {
+    //   likeCheck = false;
+    //   const like = (video.meta.likes -= 1);
+    //   video.save();
+    //   return res.status(200).json({ likeCheck, like });
+    // }
     video.save();
     return res.status(200).json({ likeCheck, like });
+    return res.sendStatus(200);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "로그인이 필요합니다." });

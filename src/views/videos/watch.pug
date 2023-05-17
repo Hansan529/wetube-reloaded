@@ -26,10 +26,11 @@ block content
     p.video__title=video.title
     .video__interactionBtn 
       .video__like-wrap
-        if likeCheck
-          button.video__likeBtn.fa-solid.fa-thumbs-up=video.meta.likes
+        if like.user.indexOf(loggedInUser._id) !== -1
+          button.video__likeBtn.fa-solid.fa-thumbs-up=like.likes
         else
-          button.video__likeBtn.fa-regular.fa-thumbs-up=video.meta.likes
+          button.video__likeBtn.fa-regular.fa-thumbs-up=like.likes
+
         button.video__unrecommendedBtn.fa-regular.fa-thumbs-down
       div 
         button.video__share 공유

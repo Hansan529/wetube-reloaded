@@ -167,7 +167,7 @@ const handleLike = async () => {
     return;
   }
   const likeCheck = data.likeCheck;
-  const likeCount = data.like;
+  const likeCount = data.likes;
   if (likeCheck) {
     like.className = "video__likeBtn fa-solid fa-thumbs-up";
   } else {

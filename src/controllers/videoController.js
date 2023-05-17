@@ -23,10 +23,11 @@ export const watch = async (req, res) => {
       path: "comments",
       populate: { path: "owner" },
     });
+  const like = await Like.findOne({ video: id });
   if (!video) {
     return res.status(404).render("404");
   }
-  return res.render("videos/watch", { video });
+  return res.render("videos/watch", { video, like });
 };
 
 // * 비디오 수정 페이지
@@ -345,7 +346,6 @@ export const likeVideo = async (req, res) => {
         { $pull: { user: loginUser }, $inc: { likes: -1 } },
         { new: true }
       );
-      console.log("true- like", like);
     } else {
       await Like.findOneAndUpdate(
         { video: id },

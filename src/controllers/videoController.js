@@ -342,26 +342,19 @@ export const likeVideo = async (req, res) => {
     if (likeCheck) {
       await Like.findOneAndUpdate(
         { video: id },
-        { $pull: { user: loginUser } },
+        { $pull: { user: loginUser }, $inc: { likes: -1 } },
         { new: true }
       );
       console.log("true- like", like);
     } else {
-      const likes = await Like.findOneAndUpdate(
+      await Like.findOneAndUpdate(
         { video: id },
-        { $push: { user: loginUser } },
+        { $push: { user: loginUser }, $inc: { likes: 1 } },
         { new: true }
       ).populate("video");
     }
-    // if (likeCheck) {
-    //   likeCheck = false;
-    //   const like = (video.meta.likes -= 1);
-    //   video.save();
-    //   return res.status(200).json({ likeCheck, like });
-    // }
-    video.save();
-    return res.status(200).json({ likeCheck, like });
-    return res.sendStatus(200);
+    const likes = like.likes;
+    return res.status(200).json({ likeCheck, likes });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "로그인이 필요합니다." });

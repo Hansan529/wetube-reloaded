@@ -4,6 +4,7 @@ import {
   createComment,
   deleteComment,
   editComment,
+  likeVideo,
   registerView,
 } from "../controllers/videoController";
 
@@ -14,5 +15,6 @@ apiRouter.post("/videos/:id([0-9a-f]{24})/comment", createComment);
 apiRouter.delete("/videos/:id([0-9a-f]{24})/comment-delete", deleteComment);
 apiRouter.post("/videos/:id([0-9a-f]{24})/profile", commentProfile);
 apiRouter.post("/videos/:id([0-9a-f]{24})/comment-edit", editComment);
+apiRouter.post("/videos/:id([0-9a-f]{24})/like", likeVideo);
 
 export default apiRouter;

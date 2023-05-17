@@ -25,7 +25,7 @@ export const watch = async (req, res) => {
   if (!video) {
     return res.status(404).render("404");
   }
-  return res.render("videos/watch", { video });
+  return res.render("videos/watch", { video, likeCheck });
 };
 
 // * 비디오 수정 페이지
@@ -166,7 +166,7 @@ export const search = async (req, res) => {
   return res.render("videos/search", { videos });
 };
 
-// * 조회수
+// * 조회수 API
 export const registerView = async (req, res) => {
   const {
     params: { id },
@@ -180,7 +180,7 @@ export const registerView = async (req, res) => {
   return res.sendStatus(200);
 };
 
-// * 댓글 작성
+// * 댓글 작성 API
 export const createComment = async (req, res) => {
   const {
     params: { id },
@@ -217,7 +217,7 @@ export const createComment = async (req, res) => {
   res.sendStatus(201);
 };
 
-// * 댓글 수정
+// * 댓글 수정 API
 export const editComment = async (req, res) => {
   const {
     params: { id },
@@ -259,7 +259,7 @@ export const editComment = async (req, res) => {
   return res.sendStatus(200);
 };
 
-// * 댓글 삭제
+// * 댓글 삭제 API
 export const deleteComment = async (req, res) => {
   const {
     params: { id },
@@ -318,4 +318,31 @@ export const commentProfile = async (req, res) => {
   const avatarUrls = video.comments.map((comment) => comment.owner.avatarUrl);
 
   return res.status(200).json({ socialLogin, avatarUrls });
+};
+
+// * 좋아요 API
+let likeCheck;
+export const likeVideo = async (req, res) => {
+  try {
+    const {
+      params: { id },
+      session: {
+        user: { _id: loginUser },
+      },
+    } = req;
+    const video = await Video.findById(id);
+    if (likeCheck) {
+      likeCheck = false;
+      const like = (video.meta.likes -= 1);
+      video.save();
+      return res.status(200).json({ likeCheck, like });
+    }
+    likeCheck = true;
+    const like = (video.meta.likes += 1);
+    video.save();
+    return res.status(200).json({ likeCheck, like });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "로그인이 필요합니다." });
+  }
 };

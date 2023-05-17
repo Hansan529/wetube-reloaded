@@ -12,6 +12,8 @@ const fullScreenBtnIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 const form = document.getElementById("commentForm");
+const like = document.querySelector(".video__likeBtn");
+const unrecommended = document.querySelector(".video__unrecommendedBtn");
 
 let volumeValue = 1;
 video.volume = volumeValue;
@@ -152,6 +154,28 @@ const handleEnded = () => {
   });
 };
 
+// * 좋아요 기능 API 요청
+const handleLike = async () => {
+  const { id } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${id}/like`, {
+    method: "POST",
+  });
+  const data = await response.json();
+  if (response.status === 500) {
+    const login = document.querySelector(".loginBtn");
+    login.click();
+    return;
+  }
+  const likeCheck = data.likeCheck;
+  const likeCount = data.like;
+  if (likeCheck) {
+    like.className = "video__likeBtn fa-solid fa-thumbs-up";
+  } else {
+    like.className = "video__likeBtn fa-regular fa-thumbs-up";
+  }
+  like.innerText = likeCount;
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -164,3 +188,4 @@ fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 document.addEventListener("keydown", handleKeydown);
+like.addEventListener("click", handleLike);

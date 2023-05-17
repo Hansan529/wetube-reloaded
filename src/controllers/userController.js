@@ -296,7 +296,10 @@ export const see = async (req, res) => {
   const { id } = req.params;
 
   /* User 객체에서 videos 객체를 가져옴 */
-  const user = await User.findById(id).populate("videos");
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: { path: "owner" },
+  });
   if (!user) {
     req.flash("error", "존재하지 않는 유저입니다.");
     return res.status(404).render("404", { pageTitle: "404" });

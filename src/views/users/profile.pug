@@ -3,7 +3,7 @@ include ../mixins/video
 
 block content
     div.profile__data
-        if !loggedInUser.avatarUrl
+        if !user.avatarUrl
             span 😀
         else
             img(src=user.avatarUrl crossorigin="anonymous").avatar

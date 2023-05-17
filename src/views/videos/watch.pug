@@ -58,10 +58,10 @@ block content
   if loggedIn
     .video__add-comments 
       form.video__comments-form#commentForm
-        if video.owner.socialLogin
-          img(src=`${video.owner.avatarUrl}` alt='' crossorigin="anonymous").avatarImg
-        else if video.owner.avatarUrl
-          img(src=`${video.owner.avatarUrl}` alt='').avatarImg
+        if loggedInUser.socialLogin
+          img(src=`${loggedInUser.avatarUrl}` alt='' crossorigin="anonymous").avatarImg
+        else if loggedInUser.avatarUrl
+          img(src=`${loggedInUser.avatarUrl}` alt='').avatarImg
         else 
           span.avatarImg 😀
         textarea

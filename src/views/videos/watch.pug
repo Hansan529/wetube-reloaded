@@ -24,6 +24,17 @@ block content
 
   .video__data
     p.video__title=video.title
+    .video__interactionBtn 
+      .video__like-wrap
+        if likeCheck
+          button.video__likeBtn.fa-solid.fa-thumbs-up=video.meta.likes
+        else
+          button.video__likeBtn.fa-regular.fa-thumbs-up=video.meta.likes
+        button.video__unrecommendedBtn.fa-regular.fa-thumbs-down
+      div 
+        button.video__share 공유
+      div 
+        button.video__offline-download 오프라인 저장
     small.video__owner
       a(href=`/users/${video.owner._id}`)
         if video.owner.socialLogin

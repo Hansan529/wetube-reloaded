@@ -70,6 +70,9 @@ block content
     ul 
       each comment in video.comments.reverse()
         li.video__comment
+          div.video__comment-nameDate
+            span.video__comment-owner=comment.owner.name
+            span.video__comment-createAt=comment.createdAt.toISOString().substring(0,10)
           if comment.owner.avatarUrl
             img(src=`${comment.owner.avatarUrl}`, crossorigin="anonymous", alt="").avatarImg
           else
@@ -83,7 +86,7 @@ block content
     .video__share
       .video__shareWrap-header 
         p 공유
-        button.fa-solid.fa-x
+        button.video__shareClose.fa-solid.fa-x
       .video__shareWrap-main 
         .video__shareWrap-list 
           .video__shareWrap-iframe

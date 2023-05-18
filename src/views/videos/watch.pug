@@ -78,6 +78,7 @@ block content
           if String(loggedInUser._id) === String(comment.owner._id)
             button.video__comment-edit.fa-solid.fa-pen-to-square
             button.video__comment-delete.fa-solid.fa-trash-can
+
   .video__shareWrap.none
     .video__share
       .video__shareWrap-header 
@@ -96,6 +97,8 @@ block content
         .video__shareWrap-url 
           input(type="url")
           button.btn 복사
+  .video__copyUrl 
+    p 링크를 클립보드에 복사했습니다.
 
 
 block scripts 

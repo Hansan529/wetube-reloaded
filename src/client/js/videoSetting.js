@@ -52,6 +52,9 @@ const handleShareCopy = async () => {
   const url = shareUrl.querySelector("input").value;
   try {
     await navigator.clipboard.writeText(url);
+    const copyPopup = document.querySelector(".video__copyUrl");
+    copyPopup.classList.add("active");
+    setTimeout(() => copyPopup.classList.remove("active"), 1100);
   } catch (error) {
     console.log(error);
   }

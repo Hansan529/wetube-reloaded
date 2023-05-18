@@ -5,7 +5,7 @@ import Video from "../models/Video";
 
 // * 회원가입 페이지
 export const getJoin = (req, res) => {
-  return res.render("users/join", { pageTitle: "회원가입" });
+  return res.render("users/join");
 };
 
 // * 회원가입
@@ -13,17 +13,16 @@ export const postJoin = async (req, res) => {
   const {
     body: { name, username, password, password2, email, location },
   } = req;
-  const pageTitle = "회원가입";
   if (password !== password2) {
     req.flash("error", "비밀번호가 일치하지 않습니다.");
-    return res.status(400).render("users/join", { pageTitle });
+    return res.status(400).render("users/join");
   }
   const exists = await User.exists({
     $or: [{ username }, { email }],
   });
   if (exists) {
     req.flash("error", "이미 사용중인 아이디/이메일입니다.");
-    return res.status(400).render("users/join", { pageTitle });
+    return res.status(400).render("users/join");
   }
   try {
     await User.create({
@@ -35,14 +34,14 @@ export const postJoin = async (req, res) => {
     });
   } catch (error) {
     req.flash("error", error._message);
-    return res.status(400).render("users/join", { pageTitle });
+    return res.status(400).render("users/join");
   }
   return res.redirect("/");
 };
 
 // * 프로필 수정 페이지
 export const getEdit = (req, res) => {
-  return res.render("users/edit-profile", { pageTitle: "사용자 수정" });
+  return res.render("users/edit-profile");
 };
 
 // * 프로필 수정
@@ -74,9 +73,7 @@ export const postEdit = async (req, res) => {
     const findUser = await User.findOne({ $or: searchParams });
     if (findUser && findUser._id.toString() !== _id) {
       req.flash("error", "이미 존재하는 아이디, 이메일, 별명입니다.");
-      return res
-        .status(400)
-        .render("users/edit-profile", { pageTitle: "edit Profile" });
+      return res.status(400).render("users/edit-profile");
     }
   }
   const updatedUser = await User.findByIdAndUpdate(
@@ -96,9 +93,7 @@ export const postEdit = async (req, res) => {
 
 // * 비밀번호 변경 페이지
 export const getChangePassword = (req, res) => {
-  return res.render("users/change-password", {
-    pageTitle: "비밀번호 변경",
-  });
+  return res.render("users/change-password");
 };
 
 // * 비밀번호 변경
@@ -109,26 +104,25 @@ export const postChangePassword = async (req, res) => {
     },
     body: { oldPassword, newPassword, newPassword1 },
   } = req;
-  const pageTitle = "비밀번호 변경";
   const user = await User.findById(_id);
 
   /* 비밀번호가 일치하는지 체크 */
   const passwordExists = await bcrypt.compare(oldPassword, user.password);
   if (!passwordExists) {
     req.flash("error", "기존 비밀번호가 일치하지 않습니다.");
-    return res.status(400).render("users/change-password", { pageTitle });
+    return res.status(400).render("users/change-password");
   }
 
   /* 변경하고자 하는 비밀번호 체크 */
   if (newPassword !== newPassword1) {
     req.flash("error", "변경하고자 하는 비밀번호가 일치하지 않습니다.");
-    return res.status(400).render("users/change-password", { pageTitle });
+    return res.status(400).render("users/change-password");
   }
 
   /* 기존 비밀번호와 동일한지 체크 */
   if (oldPassword === newPassword) {
     req.flash("error", "기존의 비밀번호와 동일한 비밀번호입니다");
-    return res.status(400).render("users/change-password", { pageTitle });
+    return res.status(400).render("users/change-password");
   }
 
   /* 비밀번호 업데이트 */
@@ -142,12 +136,11 @@ export const remove = (req, res) => res.send("Delete User");
 
 //* 로그인 페이지
 export const getLogin = (req, res) => {
-  return res.render("users/login", { pageTitle: "로그인" });
+  return res.render("users/login");
 };
 
 //* 로그인 절차
 export const postLogin = async (req, res) => {
-  const pageTitle = "로그인";
   const { username, password } = req.body;
 
   /* 아이디, socialLogin이 false인 배열 찾기 */
@@ -156,13 +149,13 @@ export const postLogin = async (req, res) => {
   // 존재하지 않은 아이디를 입력했을 경우
   if (!user) {
     req.flash("error", "존재하지 않는 유저입니다.");
-    return res.status(400).render("users/login", { pageTitle });
+    return res.status(400).render("users/login");
   }
   const ok = await bcrypt.compare(password, user.password);
   /* 비밀번호가 입력한 것과 일치하지 않을 경우 */
   if (!ok) {
     req.flash("error", "아디이 혹은 비밀번호가 일치하지 않습니다.");
-    return res.status(400).render("users/login", { pageTitle });
+    return res.status(400).render("users/login");
   }
   req.session.loggedIn = true;
   req.session.user = user;
@@ -302,11 +295,9 @@ export const see = async (req, res) => {
   });
   if (!user) {
     req.flash("error", "존재하지 않는 유저입니다.");
-    return res.status(404).render("404", { pageTitle: "404" });
+    return res.status(404).render("404");
   }
-  const pageTitle = `${user.name}의 프로필`;
   return res.render("users/profile", {
-    pageTitle,
     user,
   });
 };

@@ -7,6 +7,7 @@ module.exports = {
   entry: {
     main: `${BASE_JS}main.js`,
     videoPlayer: `${BASE_JS}videoPlayer.js`,
+    videoSetting: `${BASE_JS}videoSetting.js`,
     recorder: `${BASE_JS}recorder.js`,
     commentSection: `${BASE_JS}commentSection.js`,
     editProfile: `${BASE_JS}editProfile.js`,

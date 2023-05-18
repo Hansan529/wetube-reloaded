@@ -10,6 +10,7 @@ import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import apiRouter from "./routers/apiRouter";
+import embedRouter from "./routers/embedRouter";
 
 const app = express(); // express 어플리케이션
 const logger = morgan("dev"); // morgan 미들웨어
@@ -50,5 +51,6 @@ app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 app.use("/api", apiRouter);
+app.use("/embed", embedRouter);
 
 export default app;

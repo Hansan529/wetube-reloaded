@@ -1,0 +1,22 @@
+link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+link(rel="stylesheet", href="/assets/css/styles.css")
+#videoContainer(data-id=`${video._id}`)
+  video(autoplay style="height: 100%")
+    source(src=`${video.fileUrl}` type="video/mp4" playsinline)
+  #videoControls.videoControls
+        .videoControls__play
+          span#play.videoControls__playBtn
+            i.fas.fa-play
+          .videoControls__time
+            span#currenTime 00:00
+            span  / 
+            span#totalTime 00:00
+        input(type="range",step="1" value="0"  min="0")#timeline
+        .videoControls__volume 
+          input(type="range",step="0.1" value="1"  min="0" max="1")#volume
+          span#mute
+            i.fas.fa-volume-up
+        div 
+          span#fullScreen
+            i.fas.fa-expand
+script(src="/assets/js/videoPlayer.js")

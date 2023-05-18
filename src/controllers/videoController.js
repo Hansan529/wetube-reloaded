@@ -360,3 +360,11 @@ export const likeVideo = async (req, res) => {
     return res.status(500).json({ error: "로그인이 필요합니다." });
   }
 };
+
+export const getVideo = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  return res.render("videos/embed", { video });
+};

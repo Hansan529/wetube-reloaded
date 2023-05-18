@@ -14,6 +14,8 @@ const videoControls = document.getElementById("videoControls");
 const form = document.getElementById("commentForm");
 const like = document.querySelector(".video__likeBtn");
 const unrecommended = document.querySelector(".video__unrecommendedBtn");
+const shareBtn = document.querySelector(".video__shareBtn");
+const shareUrl = document.querySelector(".video__shareWrap-url");
 
 let volumeValue = 1;
 video.volume = volumeValue;
@@ -177,6 +179,37 @@ const handleLike = async () => {
   }
 };
 
+// * 공유 http 경로 설정
+const url = document.querySelector(".video__shareWrap-url input");
+const currentPath = window.location.href;
+url.value = currentPath;
+
+// * 공유하기 on/off
+const handleShare = () => {
+  const bg = document.querySelector(".video__shareWrap");
+  const share = document.querySelector(".video__share");
+  bg.classList.remove("none");
+  bg.addEventListener("click", () => {
+    handleCloseBg(bg);
+  });
+  share.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+};
+const handleCloseBg = (bg) => {
+  bg.classList.add("none");
+};
+
+// * 공유 링크 복사
+const handleShareCopy = async () => {
+  const url = shareUrl.querySelector("input").value;
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -190,3 +223,5 @@ videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 document.addEventListener("keydown", handleKeydown);
 like.addEventListener("click", handleLike);
+shareBtn.addEventListener("click", handleShare);
+shareUrl.querySelector(".btn").addEventListener("click", handleShareCopy);

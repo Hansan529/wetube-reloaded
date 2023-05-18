@@ -24,18 +24,6 @@ block content
 
   .video__data
     p.video__title=video.title
-    .video__interactionBtn 
-      .video__like-wrap
-        if like.user.indexOf(loggedInUser._id) !== -1
-          button.video__likeBtn.fa-solid.fa-thumbs-up=like.likes
-        else
-          button.video__likeBtn.fa-regular.fa-thumbs-up=like.likes
-
-        button.video__unrecommendedBtn.fa-regular.fa-thumbs-down
-      div 
-        button.video__share 공유
-      div 
-        button.video__offline-download 오프라인 저장
     small.video__owner
       a(href=`/users/${video.owner._id}`)
         if video.owner.socialLogin
@@ -48,6 +36,17 @@ block content
       if String(video.owner._id) === String(loggedInUser._id)
         a(href=`${video.id}/edit`).btn.video__edit 동영상 수정
         a(href=`${video.id}/delete`).btn.video__delete 동영상 삭제
+      .video__interactionBtn 
+        .video__like-wrap
+          if like.user.indexOf(loggedInUser._id) !== -1
+            button.video__likeBtn.fa-solid.fa-thumbs-up=like.likes
+          else
+            button.video__likeBtn.fa-regular.fa-thumbs-up=like.likes
+          button.video__unrecommendedBtn.fa-regular.fa-thumbs-down
+        div 
+          button.video__share 공유
+        div 
+          button.video__offline-download 오프라인 저장
     .video__info
       p 조회수 #{video.meta.views}회
       small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})

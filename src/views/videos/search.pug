@@ -7,8 +7,9 @@ block content
     button
       i.fas.fa-search
 
-  .video-grid
-    each video in videos 
-      +video(video)
-    else
-      span.empty__message 아무것도 찾지 못했습니다.
+  if videos.toString() !== ""
+    .video-grid
+      each video in videos 
+        +video(video)
+      else
+        span.empty__message 아무것도 찾지 못했습니다.

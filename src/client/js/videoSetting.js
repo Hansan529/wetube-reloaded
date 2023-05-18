@@ -2,6 +2,7 @@ const like = document.querySelector(".video__likeBtn");
 const unrecommended = document.querySelector(".video__unrecommendedBtn");
 const shareBtn = document.querySelector(".video__shareBtn");
 const shareUrl = document.querySelector(".video__shareWrap-url");
+const shareCloseBtn = document.querySelector(".video__shareClose");
 
 // * 좋아요 기능 API 요청
 const handleLike = async () => {
@@ -36,8 +37,10 @@ const handleShare = () => {
   const bg = document.querySelector(".video__shareWrap");
   const share = document.querySelector(".video__share");
   bg.classList.remove("none");
-  bg.addEventListener("click", () => {
-    handleCloseBg(bg);
+  [bg, shareCloseBtn].forEach((element) => {
+    element.addEventListener("click", () => {
+      handleCloseBg(bg);
+    });
   });
   share.addEventListener("click", (e) => {
     e.stopPropagation();

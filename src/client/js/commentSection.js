@@ -8,29 +8,39 @@ const videoComments = document.querySelector(".video__comments ul");
 let commentText;
 
 const addComment = async (text) => {
-  const newComment = document.createElement("li");
-  newComment.className = "video__comment";
-
-  const span = document.createElement("span");
-  span.className = "video__comment-text";
-  span.innerText = text.trim();
-
-  const img = document.createElement("img");
-  img.className = "avatarImg";
   const response = await fetch(`/api/videos/${videoId}/profile`, {
     method: "POST",
   });
   const data = await response.json();
   const avatarUrl = data.avatarUrls[data.avatarUrls.length - 1];
   const socialLogin = data.socialLogin;
+  const name = data.name;
 
+  const newComment = document.createElement("li");
+  const nameDate = document.createElement("div");
+  const owner = document.createElement("span");
+  const createAt = document.createElement("span");
+  const span = document.createElement("span");
+  const img = document.createElement("img");
   const editBtn = document.createElement("button");
-  editBtn.className = "video__comment-edit fa-solid fa-pen-to-square";
-  editBtn.addEventListener("click", editComment);
-
   const deleteBtn = document.createElement("button");
+
+  newComment.className = "video__comment";
+  nameDate.className = "video__comment-nameDate";
+  owner.className = "video__comment-owner";
+  createAt.className = "video__comment-createAt";
+  span.className = "video__comment-text";
+  img.className = "avatarImg";
+  editBtn.className = "video__comment-edit fa-solid fa-pen-to-square";
   deleteBtn.className = "video__comment-delete fa-solid fa-trash-can";
-  deleteBtn.addEventListener("click", removeComment);
+
+  owner.innerText = name;
+  createAt.innerText = new Date().toISOString().substring(0, 10);
+  span.innerText = text.trim();
+
+  nameDate.appendChild(owner);
+  nameDate.appendChild(createAt);
+  newComment.appendChild(nameDate);
 
   if (!avatarUrl) {
     const imgSpan = document.createElement("span");
@@ -42,6 +52,9 @@ const addComment = async (text) => {
     socialLogin ? (img.crossOrigin = "anonymous") : (img.crossOrigin = null);
     newComment.appendChild(img);
   }
+
+  editBtn.addEventListener("click", editComment);
+  deleteBtn.addEventListener("click", removeComment);
 
   newComment.appendChild(span);
   newComment.appendChild(editBtn);
@@ -75,7 +88,6 @@ const editComment = (e) => {
   const target = e.currentTarget;
   const removeBtn = target.nextSibling;
   commentText = target.previousSibling;
-  // FIXME: 수정하기를 누른 후, 다른 댓글을 수정하기로 하면, 텍스트가 덮어 쓰임
   if (exists.length >= 1) {
     exists.forEach((e) => {
       e.nextSibling.click();

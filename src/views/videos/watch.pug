@@ -44,9 +44,9 @@ block content
             button.video__likeBtn.fa-regular.fa-thumbs-up=like.likes
           button.video__unrecommendedBtn.fa-regular.fa-thumbs-down
         div 
-          button.video__share 공유
-        div 
-          button.video__offline-download 오프라인 저장
+          button.video__shareBtn
+            i.fa-regular.fa-share-from-square
+            | 공유
     .video__info
       p 조회수 #{video.meta.views}회
       small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
@@ -78,8 +78,28 @@ block content
           if String(loggedInUser._id) === String(comment.owner._id)
             button.video__comment-edit.fa-solid.fa-pen-to-square
             button.video__comment-delete.fa-solid.fa-trash-can
+  .video__shareWrap.none
+    .video__share
+      .video__shareWrap-header 
+        p 공유
+        button.fa-solid.fa-x
+      .video__shareWrap-main 
+        .video__shareWrap-list 
+          .video__shareWrap-iframe
+            p 퍼가기
+          .video__shareWrap-facebook 
+            p Facebook
+          .video__shareWrap-email  
+            p 이메일
+          .video__shareWrap-kakaotalk 
+            p 카카오톡
+        .video__shareWrap-url 
+          input(type="url")
+          button.btn 복사
+
 
 block scripts 
   script(src="/assets/js/videoPlayer.js") 
+  script(src="/assets/js/videoSetting.js") 
   if loggedIn
     script(src="/assets/js/commentSection.js")

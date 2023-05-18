@@ -310,12 +310,12 @@ export const deleteComment = async (req, res) => {
   return res.sendStatus(200);
 };
 
-// * 프로필 이미지 API
+// * 작성자 정보 가져오기 API
 export const commentProfile = async (req, res) => {
   const {
     params: { id },
     session: {
-      user: { socialLogin },
+      user: { socialLogin, name },
     },
   } = req;
   const video = await Video.findById(id).populate({
@@ -324,7 +324,7 @@ export const commentProfile = async (req, res) => {
   });
   const avatarUrls = video.comments.map((comment) => comment.owner.avatarUrl);
 
-  return res.status(200).json({ socialLogin, avatarUrls });
+  return res.status(200).json({ socialLogin, name, avatarUrls });
 };
 
 // * 좋아요 API

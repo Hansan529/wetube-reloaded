@@ -189,39 +189,38 @@ export const registerView = async (req, res) => {
 
 // * 댓글 작성 API
 export const createComment = async (req, res) => {
-  const {
-    params: { id },
-    body: { text },
-    session: {
-      user: { _id: loginUser },
-    },
-  } = req;
+  try {
+    const {
+      params: { id },
+      body: { text },
+      session: {
+        user: { _id: loginUser },
+      },
+    } = req;
 
-  // 로그인하지 않은 유저인 경우 오류 상태코드 전송
-  if (!loginUser) {
+    const video = await Video.findById(id);
+
+    if (!video) {
+      return res.sendStatus(404);
+    }
+
+    const comment = await Comment.create({
+      text,
+      owner: loginUser,
+      video: id,
+    });
+
+    video.comments.push(comment._id);
+    await User.findByIdAndUpdate(
+      loginUser,
+      { $push: { comments: comment._id } },
+      { new: true }
+    );
+    video.save();
+    res.sendStatus(201);
+  } catch {
     return res.sendStatus(401);
   }
-
-  const video = await Video.findById(id);
-
-  if (!video) {
-    return res.sendStatus(404);
-  }
-
-  const comment = await Comment.create({
-    text,
-    owner: loginUser,
-    video: id,
-  });
-
-  video.comments.push(comment._id);
-  await User.findByIdAndUpdate(
-    loginUser,
-    { $push: { comments: comment._id } },
-    { new: true }
-  );
-  video.save();
-  res.sendStatus(201);
 };
 
 // * 댓글 수정 API

@@ -7,10 +7,19 @@ html(lang="ko")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
     meta(http-equiv="Cross-Origin-Embedder-Policy" content="require-corp")
     meta(http-equiv="Cross-Origin-Opener-Policy" content="same-origin")
+    meta(property="og:title" content="Wetube")
+    meta(property="og:type" content="video.website")
+    meta(property="og:url" content="https://wetube.hxan.net")
+    meta(property="og:image" content="https://avatars.githubusercontent.com/u/115819770?v=4")
+    meta(property="og:image:alt" content="Github Hansan529")
+    meta(property="og:description" content="미디어 공유 플랫폼 만들기")
+    meta(property="og:locale" content="ko_KR")
+    meta(property="og:site_name" content="Video Sharing Website")
     meta(name="viewport", content="width=device-width , initial-scale=1.0")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
     link(rel="stylesheet", href="/assets/css/styles.css")
-    title #{pageTitle} | #{siteName}
+    link(rel="shortcut icon" type="image/x-cion" href="https://www.youtube.com/s/desktop/286e6262/img/favicon.ico")
+    title=siteName
   body 
     include partials/header
     if messages.error

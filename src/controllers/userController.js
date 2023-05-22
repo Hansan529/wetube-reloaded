@@ -2,6 +2,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import Video from "../models/Video";
+import axios from "axios";
 
 // * 회원가입 페이지
 export const getJoin = (req, res) => {
@@ -190,41 +191,35 @@ export const finishGithubLogin = async (req, res) => {
   const finalUrl = `${baseUrl}?${params}`;
 
   /** fetch로 POST하여 서버에서 JSON 형태로 정보를 받고, tokenRequest를 JSON으로 저장한다. */
-  const tokenRequest = await (
-    await fetch(finalUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-  ).json();
+  const tokenResponse = await axios(finalUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
 
   /** tokenRequest.json 안에 access_token이 있는지 체크 */
-  if ("access_token" in tokenRequest) {
+  if (tokenResponse) {
     /** access_token:value를 access_token에 저장하고, tokenRequest의 access_token 프로퍼티에
     값을 access_token에 저장한다 */
-    const { access_token } = tokenRequest;
+    const { access_token } = tokenResponse.data;
     const apiUrl = "https://api.github.com";
 
     /** api.github.com/user 에서 headers 객체를 가져오는데 Authorization의 값을 token ${access_token}으로 변경해서 불러온다.
      *  그 후, json으로 저장한다.
      */
-    const userData = await (
-      await fetch(`${apiUrl}/user`, {
-        headers: {
-          Authorization: `token ${access_token}`,
-        },
-      })
-    ).json();
-    const emailData = await (
-      await fetch(`${apiUrl}/user/emails`, {
-        headers: {
-          Authorization: `token ${access_token}`,
-        },
-      })
-    ).json();
+    const userData = await axios(`${apiUrl}/user`, {
+      headers: {
+        Authorization: `token ${access_token}`,
+      },
+    });
+    const emailData = await axios(`${apiUrl}/user/emails`, {
+      headers: {
+        Authorization: `token ${access_token}`,
+      },
+    });
     /** 이메일 배열에서 primary와 verified가 모두 true 인 배열만 찾기 */
-    const emailObj = emailData.find(
+    const emailObj = emailData.data.find(
       (email) => email.primary === true && email.verified === true
     );
 
@@ -242,10 +237,12 @@ export const finishGithubLogin = async (req, res) => {
       req.session.user = userAlready;
       return res.redirect("/");
     } else {
-      const userNameExists = await User.exists({ username: userData.login });
-      const nameExists = await User.exists({ name: userData.name });
-      let username = userData.login;
-      let name = userData.name;
+      const userNameExists = await User.exists({
+        username: userData.data.login,
+      });
+      const nameExists = await User.exists({ name: userData.data.name });
+      let username = userData.data.login;
+      let name = userData.data.name;
 
       /* 일치하는 아이디가 있으면 랜덤 아이디로 지정 */
       userNameExists ? (username = nanoid(10)) : username;
@@ -256,11 +253,11 @@ export const finishGithubLogin = async (req, res) => {
       /* 유저 생성 */
       const user = await User.create({
         name,
-        avatarUrl: userData.avatar_url,
+        avatarUrl: userData.data.avatar_url,
         socialLogin: true,
         username,
         email: emailObj.email,
-        location: userData.location,
+        location: userData.data.location,
       });
 
       /* login 처리 */

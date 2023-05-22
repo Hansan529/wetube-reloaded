@@ -4,7 +4,6 @@ const editBtn = document.querySelectorAll(".video__comment-edit");
 const deleteBtn = document.querySelectorAll(".video__comment-delete");
 const videoId = videoContainer.dataset.id;
 const videoComments = document.querySelector(".video__comments ul");
-
 let commentText;
 
 const addComment = async (text) => {
@@ -77,8 +76,15 @@ const handleSubmit = async (e) => {
     body: JSON.stringify({ text }),
     credentials: "same-origin",
   });
-  if (status === 201) {
-    addComment(text);
+  switch (status) {
+    case 201:
+      addComment(text);
+      break;
+    case 401:
+      window.location.href = "/login";
+      break;
+    default:
+      break;
   }
   textarea.value = "";
 };

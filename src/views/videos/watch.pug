@@ -55,17 +55,16 @@ block content
           +hashtag(hashtag)
       p.video__description=video.description
 
-  if loggedIn
-    .video__add-comments 
-      form.video__comments-form#commentForm
-        if loggedInUser.socialLogin
-          img(src=`${loggedInUser.avatarUrl}` alt='' crossorigin="anonymous").avatarImg
-        else if loggedInUser.avatarUrl
-          img(src=`${loggedInUser.avatarUrl}` alt='').avatarImg
-        else 
-          span.avatarImg 😀
-        textarea
-        button(type="submit") 작성하기
+  .video__add-comments 
+    form.video__comments-form#commentForm
+      if loggedInUser.socialLogin
+        img(src=`${loggedInUser.avatarUrl}` alt='' crossorigin="anonymous").avatarImg
+      else if loggedInUser.avatarUrl
+        img(src=`${loggedInUser.avatarUrl}` alt='').avatarImg
+      else 
+        span.avatarImg 😀
+      textarea
+      button(type="submit") 작성하기
   .video__comments 
     ul 
       each comment in video.comments.reverse()
@@ -107,5 +106,4 @@ block content
 block scripts 
   script(src="/assets/js/videoPlayer.js") 
   script(src="/assets/js/videoSetting.js") 
-  if loggedIn
-    script(src="/assets/js/commentSection.js")
+  script(src="/assets/js/commentSection.js")

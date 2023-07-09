@@ -381,3 +381,9 @@ video.addEventListener("ended", handleEnded);
 기타 Router는 제외한 코드인데, video가 종료되면 handleEnded가 실행되고, fetch로 POST 요청을 해서 meta views를 늘린다.
 
 그리고 `res.sendStatus(200)` re.status(200) 과는 다른 점이, 상태코드를 보내고 연결을 끝내는 것이라 이 점이 다르다.
+
+## [Video Recorder](http://github.com/Hansan529/wetube-reloaded/blob/main/README/video-recorder.md)
+
+## [Webassembly Video Transcode](http://github.com/Hansan529/wetube-reloaded/blob/main/README/webassembly-video-transcode.md)
+
+## [Flash Messages, Comment Section](http://github.com/Hansan529/wetube-reloaded/blob/main/README/comment.md)

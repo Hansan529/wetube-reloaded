@@ -1,0 +1,32 @@
+$red: #ff1300;
+$bg: #0e1117;
+$fsz: 16px;
+$imgSize: 35px;
+$videoComment: 420px;
+$videoCommentGap: 10px;
+
+@mixin type($w: null, $h: null, $d: null) {
+  width: $w;
+  height: $h;
+  display: $d;
+}
+
+@mixin pos($p: relative, $t: null, $r: null, $b: null, $l: null) {
+  position: $p;
+  top: $t;
+  right: $r;
+  bottom: $b;
+  left: $l;
+}
+
+@mixin res($min, $max) {
+  @media screen and (min-width: #{$min}px) and (max-width: #{$max}px) {
+    @content;
+  }
+}
+
+@mixin resAll($max) {
+  @media screen and (max-width: #{$max}px) {
+    @content;
+  }
+}

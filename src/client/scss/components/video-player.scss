@@ -1,0 +1,108 @@
+#videoContainer {
+  width: 100%;
+  position: relative;
+  video {
+    width: 100%;
+  }
+  .videoControls {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    &.showing {
+      opacity: 1;
+    }
+    align-items: center;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 95%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr auto;
+    gap: 10px;
+    justify-content: space-between;
+    background-color: #0f1117;
+    padding: 10px;
+    left: 0;
+    box-sizing: border-box;
+    @include resAll(1200) {
+    }
+    @include res(768, 1200) {
+    }
+    @include res(481, 767) {
+      gap: 0 10px;
+      grid-template-columns: 0 4fr 15px auto;
+    }
+    @include resAll(480) {
+      gap: 0 10px;
+      grid-template-columns: 0 4fr 15px auto;
+    }
+    .videoControls__play {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      @include resAll(1200) {
+      }
+      @include res(768, 1200) {
+      }
+      @include res(481, 767) {
+      }
+      @include resAll(480) {
+        width: 0;
+      }
+      .videoControls__playBtn {
+        @include resAll(1200) {
+        }
+        @include res(768, 1200) {
+        }
+        @include res(481, 767) {
+          display: none;
+        }
+        @include resAll(480) {
+          display: none;
+        }
+        margin: 0px 15px;
+      }
+      .videoControls__time {
+        font-size: 12px;
+        @include resAll(1200) {
+        }
+        @include res(768, 1200) {
+        }
+        @include res(481, 767) {
+        }
+        @include resAll(480) {
+          white-space: nowrap;
+          position: absolute;
+          top: -20px;
+          left: 0;
+          font-size: 8px;
+        }
+      }
+    }
+    #timeline {
+      width: 100%;
+    }
+    .videoControls__volume {
+      display: flex;
+      align-items: center;
+      @include resAll(1200) {
+      }
+      @include res(768, 1200) {
+      }
+      @include res(481, 767) {
+        display: none;
+      }
+      @include resAll(480) {
+        display: none;
+      }
+      span {
+        margin-left: 10px;
+        i {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}

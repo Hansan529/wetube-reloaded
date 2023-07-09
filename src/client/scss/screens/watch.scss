@@ -1,0 +1,242 @@
+.video__data {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  .video__title {
+    font-size: 26px;
+    margin-bottom: 5px;
+  }
+  .video__interactionBtn {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    justify-content: flex-end;
+    .video__like-wrap {
+      .video__likeBtn {
+        padding-right: 15px;
+        position: relative;
+        &::after {
+          content: "";
+          display: block;
+          width: 2px;
+          height: 15px;
+          background-color: rgba(255, 255, 255, 0.5);
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+      button:first-child {
+        margin-right: 10px;
+      }
+      button::before {
+        margin-right: 5px;
+      }
+    }
+    div {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 5px 15px;
+      border-radius: 999px;
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+  .video__createdAt {
+    font-size: 12px;
+  }
+  .video__owner {
+    display: flex;
+    margin-bottom: 5px;
+    a {
+      display: flex;
+      align-items: center;
+      &:first-child {
+        margin-right: 20px;
+      }
+    }
+  }
+  .video__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+    .video__hashtags {
+      color: deepskyblue;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .video__description {
+      width: 100%;
+    }
+  }
+}
+
+.video__add-comments {
+  position: relative;
+  .video__add-comments-public {
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .video__comments-form {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+  }
+  textarea {
+    all: unset;
+    flex: 1;
+    color: #fff;
+    background-color: $bg;
+    border-bottom: 1px solid #fff;
+    padding: 0 10px;
+  }
+  button {
+    color: #fff;
+  }
+}
+
+.video__comments {
+  display: flex;
+  flex-direction: column;
+  max-width: $videoComment;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 20px;
+  color: black;
+  .video__comment {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: $imgSize 3fr auto auto;
+    gap: 0 $videoCommentGap;
+    align-items: center;
+    position: relative;
+    // 40px img 크기, 16px 폰트 사이즈, 20px padding 10px
+    .video__comment-nameDate {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      grid-column: 1/5;
+      .video__comment-createAt {
+        font-size: 12px;
+      }
+    }
+    .avatarImg {
+      align-self: flex-start;
+    }
+
+    .video__comment-text {
+      all: unset;
+      max-width: calc(
+        $videoComment - $imgSize - (2 * $fsz) - (5 * $videoCommentGap)
+      );
+    }
+    form {
+      all: unset;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      .video__comment-text {
+        width: calc(
+          $videoComment - $imgSize - (2 * $fsz) - (5 * $videoCommentGap)
+        );
+        margin-right: 10px;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// * 별도의 팝업
+
+.video__shareWrap {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  .video__share {
+    background-color: rgba(255, 255, 255, 0.2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 300px;
+    border-radius: 20px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 1fr 1fr;
+    .video__shareWrap-header {
+      display: flex;
+      justify-content: space-between;
+    }
+    .video__shareWrap-main {
+      display: grid;
+      grid-template: 1fr;
+      .video__shareWrap-list {
+        display: flex;
+      }
+      .video__shareWrap-url {
+        display: flex;
+        padding: 10px;
+        background-color: black;
+        border-radius: 10px;
+        input {
+          padding: 5px 10px;
+          border: none;
+        }
+      }
+    }
+    .video__shareWrap-footer {
+    }
+  }
+}
+
+.video__copyUrl {
+  background-color: #fff;
+  border-radius: 10px;
+  line-height: 60px;
+  padding: 0 20px;
+  width: 300px;
+  height: 60px;
+  color: #000;
+  position: fixed;
+  left: 30px;
+  bottom: 0px;
+  transform: translateY(100%);
+  transition: 0.5s ease-in-out;
+  &.active {
+    bottom: 20px;
+    transform: translateY(0);
+  }
+}
+
+// .video__comment-owner {
+//   margin-right: 5px;
+//   width: $imgSize;
+//   height: $imgSize;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   font-size: 25px;
+// }

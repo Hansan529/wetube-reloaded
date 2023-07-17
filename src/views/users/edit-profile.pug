@@ -9,7 +9,7 @@ block content
     img(src=`${loggedInUser.avatarUrl}`,)
   form(method="POST" enctype="multipart/form-data")
     label 프로필 사진 
-      input(name="avatarUrl" type="file" accept="image/*")#edit-profile__file
+      input(name="avatarUrl" type="file" accept="image/jpeg, image/png")#edit-profile__file
     if loggedInUser.socialLogin 
       label 아이디: 
         input(name="username" placeholder="아이디" type="text" value=`${loggedInUser.username}`)

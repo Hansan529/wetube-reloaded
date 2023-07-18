@@ -1,4 +1,215 @@
-# Setup
+# Wetube
+
+<div align="center">
+<img src="https://github.com/Hansan529/wetube-reloaded/assets/115819770/1e996a73-6c75-4577-9974-c84742ba6669" />
+</div>
+
+# **프로젝트 정보**
+
+> 1인 개발  
+> 개발 기간: **2023.01.24 ~ 2023.05.22**
+
+## 홈페이지 배포 주소
+
+> 프론트 서버: null  
+> 백엔드 서버: https://wetube.hxan.net
+
+> 백엔드에서 정적파일을 출력하는 형태로 별도의 프론트용 서버가 존재하지는 않는다.
+
+## 프로젝트 소개
+
+multer 패키지를 사용해 미디어 혹은 이미지를 업로드할 수 있는 페이지를 제작해 보고자 해 시작했습니다.
+
+한산: @Hansan529 / 웹퍼블리셔 및 프론트엔드 스터디
+
+## 프로젝트 목표
+
+1. 사용자가 작성한 댓글을 볼 수 있습니다.
+2. 제작자가 업로드한 동영상을 해당 제작자의 프로필에서 확인 할 수 있습니다.
+3. 소셜 로그인을 통해 계정을 생성할 수 있습니다.
+
+<br>
+
+## 코드 도우미
+
+```zsh
+$ git clone https://github.com/Hansan529/wetube-reloaded
+
+$ npm install
+
+$ npm start
+```
+
+### Package
+
+- @ffmpeg/core: 0.11.0
+- @ffmpeg/ffmpeg: 0.11.6
+- axios: 1.4.0
+- bcrypt: 5.1.0
+- connect-mongo: 5.0.0
+- cors: 2.8.5
+- dotenv: 16.0.3
+- express: 4.18.2
+- express-flash: 0.0.2
+- express-session: 1.17.3
+- mongoose: 7.0.3
+- morgan: 1.10.0
+- multer: 1.4.5-lts.1
+- nanoid: 3.0.0
+- pug: 3.0.2
+- @babel/cli: 7.21.5
+- @babel/core: 7.21.4
+- @babel/node: 7.20.7
+- @babel/preset-env: 7.21.4
+- babel-loader: 9.1.2
+- css-loader: 6.7.3
+- mini-css-extract-plugin: 2.7.5
+- nodemon: 2.0.22
+- sass: 1.62.1
+- sass-loader: 13.2.2
+- webpack: 5.81.0
+- webpack-cli: 5.0.2
+
+개발 환경
+
+- nodeJS
+- SASS
+- mongoDB
+
+<br>
+
+## 기술 스택
+
+### Environment
+
+![Visual Studio Code](https://img.shields.io/badge/visual%20studio%20code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)
+![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![Github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)
+
+### Config
+
+![Yarn](https://img.shields.io/badge/yarn-2C8EBB?style=for-the-badge&logo=yarn&logoColor=white)
+
+### Developement
+
+![Javascript](https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white)
+![Node.js](https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/mongodb-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+
+## 화면 구성
+
+- 로그인
+  ![스크린샷 2023-07-18 15 26 47](https://github.com/Hansan529/wetube-reloaded/assets/115819770/be21d55a-3f2c-4d7d-9641-1b4556fac9cb)
+
+- 회원가입
+  ![스크린샷 2023-07-18 15 26 55](https://github.com/Hansan529/wetube-reloaded/assets/115819770/1949bcb1-e968-4ff6-9e21-f8196732d615)
+
+- 동영상
+  ![스크린샷 2023-07-18 15 27 42](https://github.com/Hansan529/wetube-reloaded/assets/115819770/1722b242-a3ae-455d-a15c-4171d1612bb1)
+
+- 프로필 수정
+  ![스크린샷 2023-07-18 15 27 55](https://github.com/Hansan529/wetube-reloaded/assets/115819770/cca91c79-a8d8-468a-934e-cd472b02d4ef)
+
+- 유저 프로필
+  ![스크린샷 2023-07-18 15 28 07](https://github.com/Hansan529/wetube-reloaded/assets/115819770/20cc0db5-70f3-4583-b709-191a9fef9989)
+
+<br>
+
+## 주요 기능
+
+### 프로젝트 정보
+
+- 업로드한 프로젝트에 대한 정보 확인 및 소스 코드 제공
+
+## 디렉토리 구조
+
+```zsh
+├── README.md
+├── babel.config.json
+├── nodemon.json
+├── package.json
+├── src
+│   ├── client : 사용자 브라우저에서 실행 될 스크립트 및 스타일시트
+│   │   ├── js
+│   │   │   ├── commentSection.js
+│   │   │   ├── editProfile.js
+│   │   │   ├── main.js
+│   │   │   ├── mediaQuery.js
+│   │   │   ├── recorder.js
+│   │   │   ├── videoPlayer.js
+│   │   │   └── videoSetting.js
+│   │   └── scss
+│   │       ├── components
+│   │       │   ├── footer.scss
+│   │       │   ├── forms.scss
+│   │       │   ├── header.scss
+│   │       │   ├── shared.scss
+│   │       │   ├── social-login.scss
+│   │       │   ├── video-player.scss
+│   │       │   └── video.scss
+│   │       ├── config
+│   │       │   ├── _reset.scss
+│   │       │   └── _variable.scss
+│   │       ├── screens
+│   │       │   ├── edit-profile.scss
+│   │       │   ├── home.scss
+│   │       │   ├── profile.scss
+│   │       │   ├── search.scss
+│   │       │   ├── upload.scss
+│   │       │   └── watch.scss
+│   │       └── styles.scss
+│   ├── controllers : 서버에서 작동할 스크립트
+│   │   ├── userController.js
+│   │   └── videoController.js
+│   ├── db.js
+│   ├── init.js
+│   ├── middlewares.js
+│   ├── models
+│   │   ├── Comment.js
+│   │   ├── Like.js
+│   │   ├── User.js
+│   │   └── Video.js
+│   ├── routers : 경로에 대한 라우터
+│   │   ├── apiRouter.js
+│   │   ├── embedRouter.js
+│   │   ├── rootRouter.js
+│   │   ├── userRouter.js
+│   │   └── videoRouter.js
+│   ├── server.js
+│   ├── views : PUG 렌더 페이지
+│   │   ├── 404.pug
+│   │   ├── base.pug
+│   │   ├── home.pug
+│   │   ├── mixins
+│   │   │   ├── hashtag.pug
+│   │   │   ├── message.pug
+│   │   │   └── video.pug
+│   │   ├── partials
+│   │   │   ├── footer.pug
+│   │   │   ├── header.pug
+│   │   │   └── social-login.pug
+│   │   ├── users
+│   │   │   ├── change-password.pug
+│   │   │   ├── edit-profile.pug
+│   │   │   ├── join.pug
+│   │   │   ├── login.pug
+│   │   │   └── profile.pug
+│   │   └── videos
+│   │       ├── edit.pug
+│   │       ├── embed.pug
+│   │       ├── search.pug
+│   │       ├── upload.pug
+│   │       └── watch.pug
+│   ├── uploads : 업로드 파일 저장 폴더
+│   │   ├── avatars
+│   │   └── videos
+├── webpack.config.js
+└── yarn.lock
+```
+
+## 업데이트 내역 (CHANGELOG)
 
 ## nodeJS 프로젝트 생성
 

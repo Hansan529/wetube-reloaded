@@ -80,16 +80,6 @@ $ npm start
 
 ## 기술 스택
 
-### Environment
-
-![Visual Studio Code](https://img.shields.io/badge/visual%20studio%20code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)
-![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![Github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)
-
-### Config
-
-![Yarn](https://img.shields.io/badge/yarn-2C8EBB?style=for-the-badge&logo=yarn&logoColor=white)
-
 ### Developement
 
 ![Javascript](https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white)
@@ -116,12 +106,6 @@ $ npm start
   ![스크린샷 2023-07-18 15 28 07](https://github.com/Hansan529/wetube-reloaded/assets/115819770/20cc0db5-70f3-4583-b709-191a9fef9989)
 
 <br>
-
-## 주요 기능
-
-### 프로젝트 정보
-
-- 업로드한 프로젝트에 대한 정보 확인 및 소스 코드 제공
 
 ## 디렉토리 구조
 
